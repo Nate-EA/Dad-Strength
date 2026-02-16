@@ -2236,7 +2236,36 @@
 
         function addSet() {
             currentSetCount++;
-            renderSets();
+            
+            // Check if we're in edit mode (custom action buttons)
+            const actionButtons = document.getElementById('actionButtons');
+            const isEditMode = actionButtons.innerHTML.includes('updateWorkout');
+            
+            if (isEditMode) {
+                // In edit mode, manually add a new set row
+                const container = document.getElementById('setsContainer');
+                const newSetHTML = `
+                    <div class="set-row">
+                        <div class="set-label">Set ${currentSetCount}</div>
+                        <div class="input-group">
+                            <input type="number" step="0.5" class="input-field" placeholder="0" 
+                                   onchange="calculateStatsWithComparison()" 
+                                   data-set="${currentSetCount}" data-type="weight">
+                            <div class="input-label">Weight (kg)</div>
+                        </div>
+                        <div class="input-group">
+                            <input type="number" class="input-field" placeholder="0" 
+                                   onchange="calculateStatsWithComparison()" 
+                                   data-set="${currentSetCount}" data-type="reps">
+                            <div class="input-label">Reps</div>
+                        </div>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', newSetHTML);
+            } else {
+                // Normal mode
+                renderSets();
+            }
         }
 
         function removeSet(setNum) {
@@ -3047,12 +3076,17 @@
             document.querySelector('.notes-section').style.display = 'block';
             document.getElementById('exerciseNotes').disabled = false;
             
+            // Show sets container and its title
+            const setsContainer = document.getElementById('setsContainer');
+            setsContainer.style.display = 'block';
+            const sectionTitles = setsContainer.parentElement.querySelectorAll('.section-title');
+            if (sectionTitles[0]) sectionTitles[0].style.display = 'block';
+            
             // Render sets with existing data
-            const container = document.getElementById('setsContainer');
-            container.innerHTML = '';
+            setsContainer.innerHTML = '';
             
             workout.sets.forEach((set, i) => {
-                container.innerHTML += `
+                setsContainer.innerHTML += `
                     <div class="set-row">
                         <div class="set-label">Set ${i + 1}</div>
                         <div class="input-group">
@@ -3073,6 +3107,9 @@
             
             // Fill notes
             document.getElementById('exerciseNotes').value = workout.notes || '';
+            
+            // Load exercise history to show previous workouts
+            loadExerciseHistory();
             
             // Show custom save button for editing
             document.getElementById('actionButtons').style.display = 'grid';
