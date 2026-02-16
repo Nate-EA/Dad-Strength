@@ -1445,6 +1445,136 @@
         let mobilityTimerActive = false;
         let currentLogFilter = 'all';
 
+        // Session persistence - save and restore workout state
+        function saveSessionState() {
+            if (!workoutActive) return;
+            const state = {
+                workoutActive,
+                currentDay,
+                sessionStartTime,
+                lastUpdate: Date.now()
+            };
+            localStorage.setItem('activeSession', JSON.stringify(state));
+        }
+
+        function restoreSessionState() {
+            const saved = localStorage.getItem('activeSession');
+            if (!saved) return false;
+            
+            const state = JSON.parse(saved);
+            const timeSinceUpdate = Date.now() - state.lastUpdate;
+            
+            // If session was less than 4 hours ago, offer to resume
+            if (timeSinceUpdate < 4 * 60 * 60 * 1000) {
+                if (confirm('You have an active workout session. Resume it?')) {
+                    workoutActive = state.workoutActive;
+                    currentDay = state.currentDay;
+                    sessionStartTime = state.sessionStartTime;
+                    
+                    // Update UI
+                    const btn = document.getElementById('startWorkoutBtn');
+                    const timer = document.getElementById('sessionTimer');
+                    const progress = document.getElementById('workoutProgress');
+                    
+                    btn.textContent = 'End Workout';
+                    btn.classList.add('active');
+                    timer.classList.add('active');
+                    progress.style.display = 'block';
+                    sessionInterval = setInterval(updateSessionTimer, 1000);
+                    
+                    // Navigate to workout
+                    goToDay(currentDay);
+                    updateProgress();
+                    
+                    return true;
+                }
+            }
+            
+            // Clear old session
+            localStorage.removeItem('activeSession');
+            return false;
+        }
+
+        function clearSessionState() {
+            localStorage.removeItem('activeSession');
+        }
+
+        // Auto-save session every 5 seconds when active
+        setInterval(() => {
+            if (workoutActive) saveSessionState();
+        }, 5000);
+
+        // Browser history management for back button
+        function pushHistoryState(page, data = {}) {
+            const state = { page, ...data };
+            history.pushState(state, '', '');
+        }
+
+        window.addEventListener('popstate', function(event) {
+            if (event.state) {
+                const page = event.state.page;
+                
+                if (page === 'home') {
+                    // Go to home without confirmation
+                    document.getElementById('homeTab').style.display = 'block';
+                    document.getElementById('workoutTab').style.display = 'none';
+                    document.getElementById('historyTab').style.display = 'none';
+                    document.getElementById('tabNavigation').style.display = 'none';
+                    document.getElementById('backToHome').style.display = 'none';
+                    renderHome();
+                } else if (page === 'workout') {
+                    currentDay = event.state.day;
+                    document.getElementById('homeTab').style.display = 'none';
+                    document.getElementById('workoutTab').style.display = 'block';
+                    document.getElementById('historyTab').style.display = 'none';
+                    renderDay();
+                } else if (page === 'history') {
+                    document.getElementById('homeTab').style.display = 'none';
+                    document.getElementById('workoutTab').style.display = 'none';
+                    document.getElementById('historyTab').style.display = 'block';
+                    renderHistory();
+                } else if (page === 'modal-close') {
+                    closeModal();
+                }
+            } else {
+                // If no state and modal is open, close it
+                if (document.getElementById('exerciseModal').classList.contains('active')) {
+                    closeModal();
+                } else if (document.getElementById('summaryModal').classList.contains('active')) {
+                    closeSummary();
+                }
+            }
+        });
+
+        // Timer sound
+        function playTimerSound() {
+            try {
+                // Create simple beep sound
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = 800;
+                oscillator.type = 'sine';
+                
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.5);
+                
+                // Vibrate if available
+                if (navigator.vibrate) {
+                    navigator.vibrate([200, 100, 200]);
+                }
+            } catch (e) {
+                console.log('Audio not available');
+            }
+        }
+
         function goHome() {
             // Stop workout if active
             if (workoutActive) {
@@ -1463,6 +1593,9 @@
             
             // Update home screen
             renderHome();
+            
+            // Push history state
+            pushHistoryState('home');
         }
 
         function goToDay(day) {
@@ -1488,6 +1621,9 @@
             }
             
             renderDay();
+            
+            // Push history state
+            pushHistoryState('workout', { day });
         }
 
         function goToHistory() {
@@ -1505,6 +1641,9 @@
             document.querySelectorAll('.tab-btn')[3].classList.add('active');
             
             renderHistory();
+            
+            // Push history state
+            pushHistoryState('history');
         }
 
         function switchTab(tab) {
@@ -2044,6 +2183,9 @@
                 });
                 document.querySelectorAll('.exercise-card')[idx].classList.add('in-progress');
             }
+            
+            // Push history state for back button
+            pushHistoryState('modal-close');
         }
 
         function prefillLastWorkout() {
@@ -2197,6 +2339,7 @@
         }
 
         function playAlert() {
+            playTimerSound();
             if (navigator.vibrate) {
                 navigator.vibrate([200, 100, 200]);
             }
@@ -2290,13 +2433,20 @@
                 return;
             }
 
+            // Calculate duration if session is active
+            let duration = null;
+            if (sessionStartTime) {
+                duration = Math.floor((Date.now() - sessionStartTime) / 1000);
+            }
+
             const workout = {
                 id: Date.now().toString(),
                 day: currentDay,
                 exercise: currentExercise.name,
                 date: new Date().toISOString(),
                 sets: sets,
-                notes: document.getElementById('exerciseNotes').value
+                notes: document.getElementById('exerciseNotes').value,
+                duration: duration
             };
 
             let history = JSON.parse(localStorage.getItem('workoutHistory') || '[]');
@@ -2310,6 +2460,7 @@
             alert('Exercise saved! 💪');
             closeModal();
             renderDay();
+            updateProgress();
         }
 
         function saveAndNext() {
@@ -2475,6 +2626,9 @@
             
             closeSummary();
             renderDay();
+            
+            // Clear saved session
+            clearSessionState();
         }
 
         function renderHistory() {
@@ -2642,6 +2796,11 @@
             );
             const totalSets = session.exercises.reduce((sum, ex) => sum + ex.sets.length, 0);
             
+            // Calculate total duration if available
+            const totalDuration = session.exercises.reduce((sum, ex) => sum + (ex.duration || 0), 0);
+            const durationMinutes = Math.floor(totalDuration / 60);
+            const durationDisplay = durationMinutes > 0 ? `${durationMinutes}m` : 'N/A';
+            
             // Set modal title
             document.getElementById('modalExerciseName').textContent = date;
             document.getElementById('modalExerciseTarget').textContent = `Day ${session.day} - Complete Session`;
@@ -2660,7 +2819,7 @@
             // Create session detail content
             const sessionDetailHTML = `
                 <div style="background: var(--pale-purple); padding: 20px; border-radius: 12px; margin-bottom: 24px;">
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;">
                         <div style="text-align: center;">
                             <div style="font-family: 'Bebas Neue', sans-serif; font-size: 32px; color: var(--ravens-purple);">${session.exercises.length}</div>
                             <div style="font-size: 12px; color: var(--light-purple); font-weight: 600;">EXERCISES</div>
@@ -2668,6 +2827,10 @@
                         <div style="text-align: center;">
                             <div style="font-family: 'Bebas Neue', sans-serif; font-size: 32px; color: var(--ravens-purple);">${totalSets}</div>
                             <div style="font-size: 12px; color: var(--light-purple); font-weight: 600;">TOTAL SETS</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-family: 'Bebas Neue', sans-serif; font-size: 32px; color: var(--ravens-purple);">${durationDisplay}</div>
+                            <div style="font-size: 12px; color: var(--light-purple); font-weight: 600;">DURATION</div>
                         </div>
                         <div style="text-align: center; grid-column: 1 / -1;">
                             <div style="font-family: 'Bebas Neue', sans-serif; font-size: 32px; color: var(--ravens-purple);">${Math.round(totalVolume)}</div>
@@ -2702,7 +2865,10 @@
                     
                     return `
                         <div style="background: white; padding: 16px; border-radius: 10px; margin-bottom: 12px; border-left: 4px solid ${isPR ? '#ffd700' : 'var(--ravens-gold)'}; position: relative;">
-                            <button class="delete-session-exercise" data-delete-id="${ex.id}" style="position: absolute; top: 12px; right: 12px; background: #fee; border: none; color: #c44; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; font-size: 16px; transition: all 0.3s ease;">×</button>
+                            <div style="position: absolute; top: 12px; right: 12px; display: flex; gap: 8px;">
+                                <button class="edit-session-exercise" data-edit-id="${ex.id}" style="background: var(--ravens-gold); border: none; color: white; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; font-size: 16px; transition: all 0.3s ease;">✎</button>
+                                <button class="delete-session-exercise" data-delete-id="${ex.id}" style="background: #fee; border: none; color: #c44; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; font-size: 16px; transition: all 0.3s ease;">×</button>
+                            </div>
                             <div style="font-weight: 700; color: var(--ravens-purple); font-size: 18px; margin-bottom: 8px;">
                                 ${ex.exercise}
                                 ${isPR ? '<span class="pr-badge-inline">PR</span>' : ''}
@@ -2748,6 +2914,15 @@
                         deleteLogEntry(workoutId);
                         closeModal();
                     }
+                });
+            });
+            
+            // Add edit listeners
+            document.querySelectorAll('.edit-session-exercise').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const workoutId = this.dataset.editId;
+                    openEditWorkout(workoutId);
                 });
             });
             
@@ -2828,6 +3003,121 @@
             renderDay();
             
             alert('Deleted!');
+        }
+
+        function openEditWorkout(workoutId) {
+            const history = JSON.parse(localStorage.getItem('workoutHistory') || '[]');
+            const workout = history.find(w => w.id === workoutId);
+            if (!workout) {
+                alert('Workout not found!');
+                return;
+            }
+            
+            // Close session detail
+            const sessionDetail = document.getElementById('sessionDetailContent');
+            if (sessionDetail) sessionDetail.remove();
+            const historySection = document.querySelector('.history-section');
+            if (historySection) historySection.style.display = 'block';
+            
+            // Set up the exercise modal for editing
+            currentDay = workout.day;
+            const exercises = workoutData[currentDay].exercises;
+            const exIdx = exercises.findIndex(ex => ex.name === workout.exercise);
+            
+            if (exIdx === -1) {
+                alert('Exercise not found in current program!');
+                return;
+            }
+            
+            currentExercise = exercises[exIdx];
+            currentExerciseIndex = exIdx;
+            currentSetCount = workout.sets.length;
+            
+            document.getElementById('modalExerciseName').textContent = currentExercise.name + ' (EDITING)';
+            document.getElementById('modalExerciseTarget').textContent = 
+                `Editing workout from ${new Date(workout.date).toLocaleDateString()}`;
+            
+            // Show editing UI
+            document.getElementById('viewOnlyNotice').style.display = 'none';
+            document.getElementById('restTimer').style.display = 'none';
+            document.getElementById('prefillSection').style.display = 'none';
+            document.getElementById('addSetBtn').style.display = 'block';
+            document.getElementById('actionButtons').style.display = 'none';
+            document.querySelector('.stats-grid').style.display = 'grid';
+            document.querySelector('.notes-section').style.display = 'block';
+            document.getElementById('exerciseNotes').disabled = false;
+            
+            // Render sets with existing data
+            const container = document.getElementById('setsContainer');
+            container.innerHTML = '';
+            
+            workout.sets.forEach((set, i) => {
+                container.innerHTML += `
+                    <div class="set-row">
+                        <div class="set-label">Set ${i + 1}</div>
+                        <div class="input-group">
+                            <input type="number" step="0.5" class="input-field" placeholder="0" 
+                                   value="${set.weight}" onchange="calculateStatsWithComparison()" 
+                                   data-set="${i + 1}" data-type="weight">
+                            <div class="input-label">Weight (kg)</div>
+                        </div>
+                        <div class="input-group">
+                            <input type="number" class="input-field" placeholder="0" 
+                                   value="${set.reps}" onchange="calculateStatsWithComparison()" 
+                                   data-set="${i + 1}" data-type="reps">
+                            <div class="input-label">Reps</div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            // Fill notes
+            document.getElementById('exerciseNotes').value = workout.notes || '';
+            
+            // Show custom save button for editing
+            document.getElementById('actionButtons').style.display = 'grid';
+            document.getElementById('actionButtons').innerHTML = `
+                <button class="save-btn" onclick="updateWorkout('${workoutId}')">Update Workout</button>
+                <button class="cancel-btn" onclick="closeModal()">Cancel</button>
+            `;
+            
+            calculateStatsWithComparison();
+            document.getElementById('exerciseModal').classList.add('active');
+        }
+
+        function updateWorkout(workoutId) {
+            const sets = [];
+            for (let i = 1; i <= currentSetCount; i++) {
+                const weight = document.querySelector(`[data-set="${i}"][data-type="weight"]`)?.value;
+                const reps = document.querySelector(`[data-set="${i}"][data-type="reps"]`)?.value;
+                if (weight && reps) {
+                    sets.push({ weight: parseFloat(weight), reps: parseInt(reps) });
+                }
+            }
+
+            if (sets.length === 0) {
+                alert('Please enter at least one set!');
+                return;
+            }
+
+            let history = JSON.parse(localStorage.getItem('workoutHistory') || '[]');
+            const workoutIndex = history.findIndex(w => w.id === workoutId);
+            
+            if (workoutIndex === -1) {
+                alert('Workout not found!');
+                return;
+            }
+            
+            // Update the workout
+            history[workoutIndex].sets = sets;
+            history[workoutIndex].notes = document.getElementById('exerciseNotes').value;
+            
+            localStorage.setItem('workoutHistory', JSON.stringify(history));
+            
+            alert('✅ Workout updated!');
+            closeModal();
+            renderHistory();
+            renderDay();
         }
 
         function getThisWeekWorkouts(history) {
@@ -3011,8 +3301,16 @@
 
         // Initialize
         migrateOldData();
-        renderHome();
-        renderDay();
+        
+        // Try to restore active session
+        if (!restoreSessionState()) {
+            // No active session, show home normally
+            renderHome();
+            renderDay();
+        }
+        
+        // Set initial history state
+        pushHistoryState('home');
     </script>
 </body>
 </html>
