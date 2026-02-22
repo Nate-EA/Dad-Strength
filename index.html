@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dad Strength Tracker v4.2</title>
+    <title>Dad Strength Tracker v4.3</title>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -1485,6 +1485,115 @@
         let mobilityTimerActive = false;
         let currentLogFilter = 'all';
 
+        // ============================================
+        // SESSION PERSISTENCE & BROWSER HISTORY
+        // ============================================
+        
+        // Save workout session state to localStorage
+        function saveSessionState() {
+            if (!workoutActive) return;
+            const state = {
+                workoutActive,
+                currentDay,
+                sessionStartTime,
+                lastUpdate: Date.now()
+            };
+            localStorage.setItem('activeSession', JSON.stringify(state));
+        }
+
+        // Restore session on page load
+        function restoreSessionState() {
+            const saved = localStorage.getItem('activeSession');
+            if (!saved) return false;
+            
+            const state = JSON.parse(saved);
+            const timeSinceUpdate = Date.now() - state.lastUpdate;
+            
+            // If session was less than 4 hours ago, offer to resume
+            if (timeSinceUpdate < 4 * 60 * 60 * 1000) {
+                if (confirm('You have an active workout session. Resume it?')) {
+                    workoutActive = state.workoutActive;
+                    currentDay = state.currentDay;
+                    sessionStartTime = state.sessionStartTime;
+                    
+                    const btn = document.getElementById('startWorkoutBtn');
+                    const timer = document.getElementById('sessionTimer');
+                    const progress = document.getElementById('workoutProgress');
+                    
+                    btn.textContent = 'End Workout';
+                    btn.classList.add('active');
+                    timer.classList.add('active');
+                    progress.style.display = 'block';
+                    sessionInterval = setInterval(updateSessionTimer, 1000);
+                    
+                    goToDay(currentDay);
+                    updateProgress();
+                    return true;
+                }
+            }
+            
+            localStorage.removeItem('activeSession');
+            return false;
+        }
+
+        function clearSessionState() {
+            localStorage.removeItem('activeSession');
+        }
+
+        // Auto-save session every 5 seconds when active
+        setInterval(() => {
+            if (workoutActive) saveSessionState();
+        }, 5000);
+
+        // Browser history management for Android back button
+        function pushHistoryState(page, data = {}) {
+            const state = { page, ...data };
+            history.pushState(state, '', '');
+        }
+
+        window.addEventListener('popstate', function(event) {
+            if (event.state) {
+                const page = event.state.page;
+                
+                if (page === 'home') {
+                    document.getElementById('homeTab').style.display = 'block';
+                    document.getElementById('workoutTab').style.display = 'none';
+                    document.getElementById('statsTab').style.display = 'none';
+                    document.getElementById('historyTab').style.display = 'none';
+                    document.getElementById('tabNavigation').style.display = 'none';
+                    document.getElementById('backToHome').style.display = 'none';
+                    renderHome();
+                } else if (page === 'workout') {
+                    currentDay = event.state.day;
+                    document.getElementById('homeTab').style.display = 'none';
+                    document.getElementById('workoutTab').style.display = 'block';
+                    document.getElementById('statsTab').style.display = 'none';
+                    document.getElementById('historyTab').style.display = 'none';
+                    renderDay();
+                } else if (page === 'stats') {
+                    document.getElementById('homeTab').style.display = 'none';
+                    document.getElementById('workoutTab').style.display = 'none';
+                    document.getElementById('statsTab').style.display = 'block';
+                    document.getElementById('historyTab').style.display = 'none';
+                    renderStats();
+                } else if (page === 'history') {
+                    document.getElementById('homeTab').style.display = 'none';
+                    document.getElementById('workoutTab').style.display = 'none';
+                    document.getElementById('statsTab').style.display = 'none';
+                    document.getElementById('historyTab').style.display = 'block';
+                    renderHistory();
+                } else if (page === 'modal-close') {
+                    closeModal();
+                }
+            } else {
+                if (document.getElementById('exerciseModal').classList.contains('active')) {
+                    closeModal();
+                } else if (document.getElementById('summaryModal').classList.contains('active')) {
+                    closeSummary();
+                }
+            }
+        });
+
         // Weight Tracking Functions
         function saveWeight() {
             const weightInput = document.getElementById('statsWeightInput');
@@ -1582,6 +1691,7 @@
             // Hide all tabs except home
             document.getElementById('homeTab').style.display = 'block';
             document.getElementById('workoutTab').style.display = 'none';
+            document.getElementById('statsTab').style.display = 'none';
             document.getElementById('historyTab').style.display = 'none';
             
             // Hide ribbon and back button
@@ -1590,6 +1700,7 @@
             
             // Update home screen
             renderHome();
+            pushHistoryState('home');
         }
 
         function goToDay(day) {
@@ -1598,6 +1709,7 @@
             // Show workout tab
             document.getElementById('homeTab').style.display = 'none';
             document.getElementById('workoutTab').style.display = 'block';
+            document.getElementById('statsTab').style.display = 'none';
             document.getElementById('historyTab').style.display = 'none';
             
             // Show ribbon and back button
@@ -1615,6 +1727,7 @@
             }
             
             renderDay();
+            pushHistoryState('workout', { day });
         }
 
         function goToStats() {
@@ -1630,6 +1743,7 @@
             document.querySelectorAll('.tab-btn')[3].classList.add('active');
             
             renderStats();
+            pushHistoryState('stats');
         }
 
         function goToHistory() {
@@ -1648,6 +1762,7 @@
             document.querySelectorAll('.tab-btn')[4].classList.add('active');
             
             renderHistory();
+            pushHistoryState('history');
         }
 
         function switchTab(tab) {
@@ -2594,6 +2709,7 @@
             
             closeSummary();
             renderDay();
+            clearSessionState();
         }
 
         function renderStats() {
@@ -3153,8 +3269,16 @@
 
         // Initialize
         migrateOldData();
-        renderHome();
-        renderDay();
+        
+        // Try to restore active session
+        if (!restoreSessionState()) {
+            // No active session, show home normally
+            renderHome();
+            renderDay();
+        }
+        
+        // Set initial history state
+        pushHistoryState('home');
     </script>
 </body>
 </html>
