@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dad Strength Tracker v4.3</title>
+    <title>Dad Strength Tracker v4.4</title>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -1081,6 +1081,13 @@
             transform: translateY(-2px);
             box-shadow: 0 6px 30px rgba(34, 197, 94, 0.4);
         }
+
+        /* Power-to-Weight Tier Badge Colors */
+        .pw-ratio-tier.rookie { background: #e0e0e0; color: #666; }
+        .pw-ratio-tier.built { background: #d4edda; color: #155724; }
+        .pw-ratio-tier.strong { background: #cce5ff; color: #004085; }
+        .pw-ratio-tier.veteran { background: #d1ecf1; color: #0c5460; }
+        .pw-ratio-tier.elite { background: #f8d7da; color: #721c24; }
     </style>
 </head>
 <body>
@@ -1638,47 +1645,90 @@
         function calculatePowerToWeight() {
             const weightHistory = JSON.parse(localStorage.getItem('weightHistory') || '[]');
             const workoutHistory = JSON.parse(localStorage.getItem('workoutHistory') || '[]');
-            if (weightHistory.length === 0) { document.getElementById('powerToWeightCard').style.display = 'none'; return; }
+            
+            if (weightHistory.length === 0) {
+                document.getElementById('powerToWeightCard').style.display = 'none';
+                return;
+            }
+            
             const currentWeight = weightHistory.sort((a, b) => new Date(b.date) - new Date(a.date))[0].weight;
+            
             const mainLifts = [
-                { name: 'Deadlift', key: 'deadlift' },
-                { name: 'Bench Press', key: 'bench' },
-                { name: 'Shoulder Press', key: 'shoulder press' },
-                { name: 'DB Row', key: 'row' }
+                { name: 'Deadlift', searchKey: 'deadlift', standardKey: 'deadlift' },
+                { name: 'Bench Press', searchKey: 'bench', standardKey: 'barbell bench press' },
+                { name: 'Shoulder Press', searchKey: 'shoulder press', standardKey: 'barbell shoulder press' },
+                { name: 'DB Row', searchKey: 'row', standardKey: 'db row' }
             ];
+            
             const ratios = [];
+            
             mainLifts.forEach(lift => {
-                const liftWorkouts = workoutHistory.filter(w => w.exercise.toLowerCase().includes(lift.key));
+                // Find workouts matching this lift
+                const liftWorkouts = workoutHistory.filter(w => 
+                    w.exercise.toLowerCase().includes(lift.searchKey)
+                );
+                
                 if (liftWorkouts.length === 0) return;
+                
+                // Find max 1RM across all workouts
                 let max1RM = 0;
                 liftWorkouts.forEach(workout => {
                     const workout1RM = Math.max(...workout.sets.map(s => calculate1RM(s.weight, s.reps)));
                     if (workout1RM > max1RM) max1RM = workout1RM;
                 });
+                
+                // Calculate ratio and determine tier
                 const ratio = max1RM / currentWeight;
-                const tier = getPowerToWeightTier(lift.key, ratio);
-                ratios.push({ name: lift.name, ratio: ratio.toFixed(2), tier: tier, rm: Math.round(max1RM) });
+                const tier = getPowerToWeightTier(lift.standardKey, ratio);
+                
+                ratios.push({ 
+                    name: lift.name, 
+                    ratio: ratio.toFixed(2), 
+                    tier: tier, 
+                    rm: Math.round(max1RM) 
+                });
             });
-            if (ratios.length === 0) { document.getElementById('powerToWeightCard').style.display = 'none'; return; }
+            
+            if (ratios.length === 0) {
+                document.getElementById('powerToWeightCard').style.display = 'none';
+                return;
+            }
+            
+            // Render ratio cards
             document.getElementById('powerToWeightGrid').innerHTML = ratios.map(r => 
-                `<div class="pw-ratio-card"><div class="pw-ratio-value">${r.ratio}x</div><div class="pw-ratio-label">${r.name}</div><div class="pw-ratio-tier ${r.tier}">${r.tier}</div><div style="font-size: 11px; color: #888; margin-top: 4px;">${r.rm}kg 1RM</div></div>`
+                `<div class="pw-ratio-card">
+                    <div class="pw-ratio-value">${r.ratio}x</div>
+                    <div class="pw-ratio-label">${r.name}</div>
+                    <div class="pw-ratio-tier ${r.tier.toLowerCase()}">${r.tier}</div>
+                    <div style="font-size: 11px; color: #888; margin-top: 4px;">${r.rm}kg 1RM</div>
+                </div>`
             ).join('');
+            
             document.getElementById('powerToWeightCard').style.display = 'block';
         }
 
         function getPowerToWeightTier(liftKey, ratio) {
             const standards = { 
-                'deadlift': { novice: 1.0, intermediate: 1.5, advanced: 2.0, elite: 2.5 }, 
-                'bench': { novice: 0.6, intermediate: 0.9, advanced: 1.25, elite: 1.6 }, 
-                'shoulder press': { novice: 0.4, intermediate: 0.6, advanced: 0.85, elite: 1.1 },
-                'row': { novice: 0.5, intermediate: 0.8, advanced: 1.1, elite: 1.4 }
+                'barbell bench press': { built: 0.75, strong: 1.0, veteran: 1.4, elite: 1.75 },
+                'barbell shoulder press': { built: 0.5, strong: 0.7, veteran: 0.9, elite: 1.1 },
+                'db row': { built: 0.30, strong: 0.45, veteran: 0.60, elite: 0.75 },
+                'deadlift': { built: 1.25, strong: 1.75, veteran: 2.25, elite: 2.75 }
             };
-            const standard = standards[liftKey] || standards.deadlift;
-            if (ratio < standard.novice) return 'beginner';
-            if (ratio < standard.intermediate) return 'novice';
-            if (ratio < standard.advanced) return 'intermediate';
-            if (ratio < standard.elite) return 'advanced';
-            return 'elite';
+            
+            // Normalize key to lowercase for matching
+            const normalizedKey = liftKey.toLowerCase();
+            const standard = standards[normalizedKey];
+            
+            if (!standard) {
+                console.warn(`Lift "${liftKey}" not found in standards. Defaulting to deadlift.`);
+                return getPowerToWeightTier('deadlift', ratio);
+            }
+            
+            if (ratio < standard.built) return 'Rookie';
+            if (ratio < standard.strong) return 'Built';
+            if (ratio < standard.veteran) return 'Strong';
+            if (ratio < standard.elite) return 'Veteran';
+            return 'Elite';
         }
 
         function goHome() {
