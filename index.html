@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dad Strength Tracker v3</title>
+    <title>Dad Strength Tracker v4.2</title>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -1097,6 +1097,7 @@
             <button class="tab-btn" onclick="switchTab('dayA')">Day A</button>
             <button class="tab-btn" onclick="switchTab('dayB')">Day B</button>
             <button class="tab-btn" onclick="switchTab('dayC')">Day C</button>
+            <button class="tab-btn" onclick="switchTab('stats')">Stats</button>
             <button class="tab-btn" onclick="switchTab('history')">History</button>
         </div>
     </div>
@@ -1111,37 +1112,12 @@
                 <div style="color: var(--ravens-gold); font-weight: 600; font-size: 14px; letter-spacing: 1px;">STOP BEING A BITCH AND COME ON!</div>
             </div>
 
-            <!-- Quick Stats -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px;">
-                <button onclick="showWeeklyBreakdown()" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 12px var(--shadow); text-align: center; border: 2px solid var(--ravens-gold); cursor: pointer; transition: all 0.3s ease;">
-                    <div style="font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--ravens-purple);" id="homeWeeklyWorkouts">0</div>
-                    <div style="font-size: 11px; color: var(--light-purple); font-weight: 600; text-transform: uppercase; margin-bottom: 4px;">Workouts This Week</div>
-                    <div style="font-size: 10px; color: #888;">Tap to view</div>
-                </button>
-                <button onclick="showPRList()" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 12px var(--shadow); text-align: center; border: 2px solid var(--ravens-gold); cursor: pointer; transition: all 0.3s ease;">
-                    <div style="font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--ravens-purple);" id="homeTotalPRs">0</div>
-                    <div style="font-size: 11px; color: var(--light-purple); font-weight: 600; text-transform: uppercase; margin-bottom: 4px;">Personal Records</div>
-                    <div style="font-size: 10px; color: #888;">Tap to view</div>
-                </button>
-                <button onclick="showBestLifts()" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 12px var(--shadow); text-align: center; border: 2px solid var(--ravens-purple); cursor: pointer; transition: all 0.3s ease;">
-                    <div style="font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--ravens-purple);" id="homeBestLifts">0</div>
-                    <div style="font-size: 11px; color: var(--light-purple); font-weight: 600; text-transform: uppercase; margin-bottom: 4px;">Best Lifts (1RM)</div>
-                    <div style="font-size: 10px; color: #888;">Tap to view</div>
-                </button>
-                <button onclick="showStrengthScore()" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 12px var(--shadow); text-align: center; border: 2px solid var(--ravens-purple); cursor: pointer; transition: all 0.3s ease;">
-                    <div style="font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--ravens-purple);" id="homeStrengthScore">0</div>
-                    <div style="font-size: 11px; color: var(--light-purple); font-weight: 600; text-transform: uppercase; margin-bottom: 4px;">Strength Score</div>
-                    <div style="font-size: 11px; color: #888; margin-top: 4px;" id="homeScoreTrend"></div>
-                    <div style="font-size: 10px; color: #888; margin-top: 4px;">Tap to learn</div>
-                </button>
-            </div>
-
             <!-- Navigation Cards -->
             <div style="display: grid; gap: 12px; margin-bottom: 24px;">
                 <button onclick="goToDay('A')" style="padding: 20px; background: white; border: 2px solid var(--ravens-gold); border-radius: 12px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 12px var(--shadow); display: flex; justify-content: space-between; align-items: center;">
                     <div style="text-align: left;">
                         <div style="font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--ravens-purple); letter-spacing: 1px;">Day A</div>
-                        <div style="font-size: 13px; color: var(--light-purple); font-weight: 500;">Lower Emphasis • 6 exercises</div>
+                        <div style="font-size: 13px; color: var(--light-purple); font-weight: 500;">Upper + Hinge • 5 exercises</div>
                     </div>
                     <div style="font-size: 40px;">💪</div>
                 </button>
@@ -1149,7 +1125,7 @@
                 <button onclick="goToDay('B')" style="padding: 20px; background: white; border: 2px solid var(--ravens-purple); border-radius: 12px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 12px var(--shadow); display: flex; justify-content: space-between; align-items: center;">
                     <div style="text-align: left;">
                         <div style="font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--ravens-purple); letter-spacing: 1px;">Day B</div>
-                        <div style="font-size: 13px; color: var(--light-purple); font-weight: 500;">Upper Emphasis • 6 exercises</div>
+                        <div style="font-size: 13px; color: var(--light-purple); font-weight: 500;">Upper + Core • 6 exercises</div>
                     </div>
                     <div style="font-size: 40px;">🔥</div>
                 </button>
@@ -1157,15 +1133,23 @@
                 <button onclick="goToDay('C')" style="padding: 20px; background: white; border: 2px solid var(--ravens-gold); border-radius: 12px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 12px var(--shadow); display: flex; justify-content: space-between; align-items: center;">
                     <div style="text-align: left;">
                         <div style="font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--ravens-purple); letter-spacing: 1px;">Day C</div>
-                        <div style="font-size: 13px; color: var(--light-purple); font-weight: 500;">Balanced • 6 exercises</div>
+                        <div style="font-size: 13px; color: var(--light-purple); font-weight: 500;">Hinge + Upper • 6 exercises</div>
                     </div>
                     <div style="font-size: 40px;">⚡</div>
+                </button>
+
+                <button onclick="goToStats()" style="padding: 20px; background: linear-gradient(135deg, var(--ravens-gold) 0%, #c4961a 100%); border: none; border-radius: 12px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 12px var(--shadow); display: flex; justify-content: space-between; align-items: center;">
+                    <div style="text-align: left;">
+                        <div style="font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: white; letter-spacing: 1px;">View Stats</div>
+                        <div style="font-size: 13px; color: var(--ravens-purple); font-weight: 600;">Weight & P/W Ratios</div>
+                    </div>
+                    <div style="font-size: 40px;">📈</div>
                 </button>
 
                 <button onclick="goToHistory()" style="padding: 20px; background: linear-gradient(135deg, var(--ravens-purple) 0%, var(--light-purple) 100%); border: none; border-radius: 12px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 12px var(--shadow); display: flex; justify-content: space-between; align-items: center;">
                     <div style="text-align: left;">
                         <div style="font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: white; letter-spacing: 1px;">View History</div>
-                        <div style="font-size: 13px; color: var(--ravens-gold); font-weight: 600;">All workouts & stats</div>
+                        <div style="font-size: 13px; color: var(--ravens-gold); font-weight: 600;">All workouts & logs</div>
                     </div>
                     <div style="font-size: 40px;">📊</div>
                 </button>
@@ -1283,6 +1267,63 @@
         </div>
     </div>
 
+    <!-- Stats Tab -->
+    <div id="statsTab" class="tab-content" style="display: none;">
+        <div style="padding: 20px;">
+            <!-- Quick Stats Grid -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px;">
+                <button onclick="showWeeklyBreakdown()" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 12px var(--shadow); text-align: center; border: 2px solid var(--ravens-gold); cursor: pointer; transition: all 0.3s ease;">
+                    <div style="font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--ravens-purple);" id="statsWeeklyWorkouts">0</div>
+                    <div style="font-size: 11px; color: var(--light-purple); font-weight: 600; text-transform: uppercase; margin-bottom: 4px;">Workouts This Week</div>
+                    <div style="font-size: 10px; color: #888;">Tap to view</div>
+                </button>
+                <button onclick="showPRList()" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 12px var(--shadow); text-align: center; border: 2px solid var(--ravens-gold); cursor: pointer; transition: all 0.3s ease;">
+                    <div style="font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--ravens-purple);" id="statsTotalPRs">0</div>
+                    <div style="font-size: 11px; color: var(--light-purple); font-weight: 600; text-transform: uppercase; margin-bottom: 4px;">Personal Records</div>
+                    <div style="font-size: 10px; color: #888;">Tap to view</div>
+                </button>
+                <button onclick="showBestLifts()" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 12px var(--shadow); text-align: center; border: 2px solid var(--ravens-purple); cursor: pointer; transition: all 0.3s ease;">
+                    <div style="font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--ravens-purple);" id="statsBestLifts">0</div>
+                    <div style="font-size: 11px; color: var(--light-purple); font-weight: 600; text-transform: uppercase; margin-bottom: 4px;">Best Lifts (1RM)</div>
+                    <div style="font-size: 10px; color: #888;">Tap to view</div>
+                </button>
+                <button onclick="showStrengthScore()" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 12px var(--shadow); text-align: center; border: 2px solid var(--ravens-purple); cursor: pointer; transition: all 0.3s ease;">
+                    <div style="font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--ravens-purple);" id="statsStrengthScore">0</div>
+                    <div style="font-size: 11px; color: var(--light-purple); font-weight: 600; text-transform: uppercase; margin-bottom: 4px;">Strength Score</div>
+                    <div style="font-size: 11px; color: #888; margin-top: 4px;" id="statsScoreTrend"></div>
+                    <div style="font-size: 10px; color: #888; margin-top: 4px;">Tap to learn</div>
+                </button>
+            </div>
+
+            <!-- Weight Tracker -->
+            <div class="weight-tracker-card">
+                <div style="font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--ravens-purple); margin-bottom: 12px; letter-spacing: 0.5px;">⚖️ Body Weight Tracker</div>
+                <div id="statsCurrentWeightDisplay" style="text-align: center; padding: 16px; background: var(--pale-purple); border-radius: 10px; margin-bottom: 16px;">
+                    <div style="font-size: 12px; color: var(--light-purple); font-weight: 600; margin-bottom: 4px;">CURRENT WEIGHT</div>
+                    <div style="font-family: 'Bebas Neue', sans-serif; font-size: 48px; color: var(--ravens-purple);" id="statsCurrentWeightValue">—</div>
+                    <div style="font-size: 12px; color: #888;" id="statsCurrentWeightDate">No weight logged yet</div>
+                </div>
+                <div class="weight-input-section">
+                    <div class="weight-input-group">
+                        <div class="weight-input-label">New Weight (kg)</div>
+                        <input type="number" step="0.1" class="weight-input" id="statsWeightInput" placeholder="75.5">
+                    </div>
+                    <button class="weight-save-btn" onclick="saveWeight()">Log Weight</button>
+                </div>
+                <div style="margin-top: 16px;">
+                    <button onclick="toggleWeightHistory()" style="width: 100%; padding: 10px; background: transparent; border: 2px solid var(--ravens-gold); color: var(--ravens-gold); border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">View History</button>
+                    <div id="weightHistoryList" style="margin-top: 12px; display: none;"></div>
+                </div>
+            </div>
+
+            <!-- Power-to-Weight Ratios -->
+            <div class="weight-tracker-card" id="powerToWeightCard" style="display: none;">
+                <div style="font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--ravens-purple); margin-bottom: 16px; letter-spacing: 0.5px;">💪 Power-to-Weight Ratios</div>
+                <div id="powerToWeightGrid" class="pw-ratio-grid"></div>
+            </div>
+        </div>
+    </div>
+
     <!-- Exercise Modal -->
     <div id="exerciseModal" class="modal">
         <div class="modal-content">
@@ -1391,41 +1432,40 @@
         const workoutData = {
             A: {
                 title: "Day A",
-                description: "Lower Emphasis",
+                description: "Upper + Hinge Focus",
                 mobility: "Elevated Pigeon 2×45s/side, Elephant Walks 2×8",
                 exercises: [
-                    { name: "Zercher Squat", sets: 3, reps: "8–10" },
-                    { name: "Single-Leg RDL", sets: 3, reps: "8–10/side" },
-                    { name: "Lateral Lunge", sets: 3, reps: "8/side" },
-                    { name: "Barbell Bench Press", sets: 4, reps: "5–8" },
-                    { name: "Lat Pulldown", sets: 3, reps: "8–12" },
-                    { name: "Bent-Knee Calf Raise", sets: 2, reps: "15-20" }
+                    { name: "Barbell Bench Press", sets: 4, reps: "6–8" },
+                    { name: "Lat Pulldown", sets: 4, reps: "8–10" },
+                    { name: "Seated Cable Row", sets: 3, reps: "8–12" },
+                    { name: "Deadlift", sets: 3, reps: "6–8" },
+                    { name: "Single-Leg RDL", sets: 3, reps: "8–10/side" }
                 ]
             },
             B: {
                 title: "Day B",
-                description: "Upper Emphasis",
-                mobility: "Couch Stretch 2×45s/side, Weighted Butterfly 2×45s",
+                description: "Upper + Core Focus",
+                mobility: "90/90 Rotations 2×8/side, Weighted Butterfly 2×45s",
                 exercises: [
-                    { name: "Deadlift", sets: 3, reps: "6–8" },
-                    { name: "Zercher Step-Ups", sets: 3, reps: "10/side" },
-                    { name: "Pull-Ups or Lat Pulldown", sets: 3, reps: "6–10" },
                     { name: "Incline DB Bench Press", sets: 3, reps: "8–12" },
+                    { name: "Seated DB Shoulder Press", sets: 3, reps: "8–10" },
+                    { name: "Lat Pulldown", sets: 3, reps: "8–10" },
                     { name: "Face Pulls", sets: 3, reps: "15–20" },
-                    { name: "Straight-Leg Calf Raise", sets: 2, reps: "12-15" }
+                    { name: "Cable Hip Flexor Raise", sets: 3, reps: "12–15" },
+                    { name: "Dead Bug", sets: 3, reps: "8/side" }
                 ]
             },
             C: {
                 title: "Day C",
-                description: "Balanced",
-                mobility: "90/90 Rotations 2×8/side, Couch Stretch 2×45s/side, Elevated Pigeon 2×45s/side",
+                description: "Hinge + Upper Balance",
+                mobility: "Couch Stretch 2×45s/side, Elevated Pigeon 2×45s/side",
                 exercises: [
                     { name: "Romanian Deadlift", sets: 3, reps: "8–10" },
-                    { name: "Bulgarian Split Squat", sets: 3, reps: "8–10/side" },
-                    { name: "Barbell Shoulder Press", sets: 4, reps: "6–10" },
-                    { name: "DB Row", sets: 3, reps: "8–12" },
+                    { name: "Good Mornings", sets: 3, reps: "10" },
+                    { name: "Barbell Shoulder Press", sets: 3, reps: "6–10" },
                     { name: "Rear-Delt Fly", sets: 3, reps: "15–20" },
-                    { name: "Plank Pull-Throughs", sets: 3, reps: "8-10/side" }
+                    { name: "DB Row", sets: 3, reps: "8–12/side" },
+                    { name: "Plank Pull-Throughs", sets: 3, reps: "8–10/side" }
                 ]
             }
         };
@@ -1445,134 +1485,91 @@
         let mobilityTimerActive = false;
         let currentLogFilter = 'all';
 
-        // Session persistence - save and restore workout state
-        function saveSessionState() {
-            if (!workoutActive) return;
-            const state = {
-                workoutActive,
-                currentDay,
-                sessionStartTime,
-                lastUpdate: Date.now()
+        // Weight Tracking Functions
+        function saveWeight() {
+            const weightInput = document.getElementById('statsWeightInput');
+            const weight = parseFloat(weightInput.value);
+            if (!weight || weight <= 0) { alert('Please enter a valid weight!'); return; }
+            let weightHistory = JSON.parse(localStorage.getItem('weightHistory') || '[]');
+            weightHistory.push({ weight: weight, date: new Date().toISOString(), id: Date.now().toString() });
+            localStorage.setItem('weightHistory', JSON.stringify(weightHistory));
+            weightInput.value = '';
+            displayCurrentWeight();
+            calculatePowerToWeight();
+            alert('✅ Weight logged!');
+        }
+
+        function displayCurrentWeight() {
+            const weightHistory = JSON.parse(localStorage.getItem('weightHistory') || '[]');
+            if (weightHistory.length === 0) {
+                document.getElementById('statsCurrentWeightValue').textContent = '—';
+                document.getElementById('statsCurrentWeightDate').textContent = 'No weight logged yet';
+                return;
+            }
+            const current = weightHistory.sort((a, b) => new Date(b.date) - new Date(a.date))[0];
+            document.getElementById('statsCurrentWeightValue').textContent = current.weight.toFixed(1) + 'kg';
+            const daysAgo = Math.floor((Date.now() - new Date(current.date).getTime()) / (1000 * 60 * 60 * 24));
+            let dateText = daysAgo === 0 ? 'Logged today' : daysAgo === 1 ? 'Logged yesterday' : daysAgo < 7 ? `Logged ${daysAgo} days ago` : `Logged ${new Date(current.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
+            document.getElementById('statsCurrentWeightDate').textContent = dateText;
+        }
+
+        function toggleWeightHistory() {
+            const historyList = document.getElementById('weightHistoryList');
+            if (historyList.style.display !== 'none') { historyList.style.display = 'none'; return; }
+            const weightHistory = JSON.parse(localStorage.getItem('weightHistory') || '[]');
+            if (weightHistory.length === 0) { historyList.innerHTML = '<div style="text-align: center; color: #888; padding: 20px;">No weight entries yet</div>'; historyList.style.display = 'block'; return; }
+            const recent = weightHistory.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 10);
+            historyList.innerHTML = recent.map(entry => {
+                const dateStr = new Date(entry.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: new Date(entry.date).getFullYear() !== new Date().getFullYear() ? 'numeric' : undefined });
+                return `<div class="weight-history-item"><div class="weight-history-date">${dateStr}</div><div class="weight-history-value">${entry.weight.toFixed(1)}kg</div></div>`;
+            }).join('');
+            historyList.style.display = 'block';
+        }
+
+        function calculatePowerToWeight() {
+            const weightHistory = JSON.parse(localStorage.getItem('weightHistory') || '[]');
+            const workoutHistory = JSON.parse(localStorage.getItem('workoutHistory') || '[]');
+            if (weightHistory.length === 0) { document.getElementById('powerToWeightCard').style.display = 'none'; return; }
+            const currentWeight = weightHistory.sort((a, b) => new Date(b.date) - new Date(a.date))[0].weight;
+            const mainLifts = [
+                { name: 'Deadlift', key: 'deadlift' },
+                { name: 'Bench Press', key: 'bench' },
+                { name: 'Shoulder Press', key: 'shoulder press' },
+                { name: 'DB Row', key: 'row' }
+            ];
+            const ratios = [];
+            mainLifts.forEach(lift => {
+                const liftWorkouts = workoutHistory.filter(w => w.exercise.toLowerCase().includes(lift.key));
+                if (liftWorkouts.length === 0) return;
+                let max1RM = 0;
+                liftWorkouts.forEach(workout => {
+                    const workout1RM = Math.max(...workout.sets.map(s => calculate1RM(s.weight, s.reps)));
+                    if (workout1RM > max1RM) max1RM = workout1RM;
+                });
+                const ratio = max1RM / currentWeight;
+                const tier = getPowerToWeightTier(lift.key, ratio);
+                ratios.push({ name: lift.name, ratio: ratio.toFixed(2), tier: tier, rm: Math.round(max1RM) });
+            });
+            if (ratios.length === 0) { document.getElementById('powerToWeightCard').style.display = 'none'; return; }
+            document.getElementById('powerToWeightGrid').innerHTML = ratios.map(r => 
+                `<div class="pw-ratio-card"><div class="pw-ratio-value">${r.ratio}x</div><div class="pw-ratio-label">${r.name}</div><div class="pw-ratio-tier ${r.tier}">${r.tier}</div><div style="font-size: 11px; color: #888; margin-top: 4px;">${r.rm}kg 1RM</div></div>`
+            ).join('');
+            document.getElementById('powerToWeightCard').style.display = 'block';
+        }
+
+        function getPowerToWeightTier(liftKey, ratio) {
+            const standards = { 
+                'deadlift': { novice: 1.0, intermediate: 1.5, advanced: 2.0, elite: 2.5 }, 
+                'bench': { novice: 0.6, intermediate: 0.9, advanced: 1.25, elite: 1.6 }, 
+                'shoulder press': { novice: 0.4, intermediate: 0.6, advanced: 0.85, elite: 1.1 },
+                'row': { novice: 0.5, intermediate: 0.8, advanced: 1.1, elite: 1.4 }
             };
-            localStorage.setItem('activeSession', JSON.stringify(state));
-        }
-
-        function restoreSessionState() {
-            const saved = localStorage.getItem('activeSession');
-            if (!saved) return false;
-            
-            const state = JSON.parse(saved);
-            const timeSinceUpdate = Date.now() - state.lastUpdate;
-            
-            // If session was less than 4 hours ago, offer to resume
-            if (timeSinceUpdate < 4 * 60 * 60 * 1000) {
-                if (confirm('You have an active workout session. Resume it?')) {
-                    workoutActive = state.workoutActive;
-                    currentDay = state.currentDay;
-                    sessionStartTime = state.sessionStartTime;
-                    
-                    // Update UI
-                    const btn = document.getElementById('startWorkoutBtn');
-                    const timer = document.getElementById('sessionTimer');
-                    const progress = document.getElementById('workoutProgress');
-                    
-                    btn.textContent = 'End Workout';
-                    btn.classList.add('active');
-                    timer.classList.add('active');
-                    progress.style.display = 'block';
-                    sessionInterval = setInterval(updateSessionTimer, 1000);
-                    
-                    // Navigate to workout
-                    goToDay(currentDay);
-                    updateProgress();
-                    
-                    return true;
-                }
-            }
-            
-            // Clear old session
-            localStorage.removeItem('activeSession');
-            return false;
-        }
-
-        function clearSessionState() {
-            localStorage.removeItem('activeSession');
-        }
-
-        // Auto-save session every 5 seconds when active
-        setInterval(() => {
-            if (workoutActive) saveSessionState();
-        }, 5000);
-
-        // Browser history management for back button
-        function pushHistoryState(page, data = {}) {
-            const state = { page, ...data };
-            history.pushState(state, '', '');
-        }
-
-        window.addEventListener('popstate', function(event) {
-            if (event.state) {
-                const page = event.state.page;
-                
-                if (page === 'home') {
-                    // Go to home without confirmation
-                    document.getElementById('homeTab').style.display = 'block';
-                    document.getElementById('workoutTab').style.display = 'none';
-                    document.getElementById('historyTab').style.display = 'none';
-                    document.getElementById('tabNavigation').style.display = 'none';
-                    document.getElementById('backToHome').style.display = 'none';
-                    renderHome();
-                } else if (page === 'workout') {
-                    currentDay = event.state.day;
-                    document.getElementById('homeTab').style.display = 'none';
-                    document.getElementById('workoutTab').style.display = 'block';
-                    document.getElementById('historyTab').style.display = 'none';
-                    renderDay();
-                } else if (page === 'history') {
-                    document.getElementById('homeTab').style.display = 'none';
-                    document.getElementById('workoutTab').style.display = 'none';
-                    document.getElementById('historyTab').style.display = 'block';
-                    renderHistory();
-                } else if (page === 'modal-close') {
-                    closeModal();
-                }
-            } else {
-                // If no state and modal is open, close it
-                if (document.getElementById('exerciseModal').classList.contains('active')) {
-                    closeModal();
-                } else if (document.getElementById('summaryModal').classList.contains('active')) {
-                    closeSummary();
-                }
-            }
-        });
-
-        // Timer sound
-        function playTimerSound() {
-            try {
-                // Create simple beep sound
-                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-                
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                
-                oscillator.frequency.value = 800;
-                oscillator.type = 'sine';
-                
-                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-                
-                oscillator.start(audioContext.currentTime);
-                oscillator.stop(audioContext.currentTime + 0.5);
-                
-                // Vibrate if available
-                if (navigator.vibrate) {
-                    navigator.vibrate([200, 100, 200]);
-                }
-            } catch (e) {
-                console.log('Audio not available');
-            }
+            const standard = standards[liftKey] || standards.deadlift;
+            if (ratio < standard.novice) return 'beginner';
+            if (ratio < standard.intermediate) return 'novice';
+            if (ratio < standard.advanced) return 'intermediate';
+            if (ratio < standard.elite) return 'advanced';
+            return 'elite';
         }
 
         function goHome() {
@@ -1593,9 +1590,6 @@
             
             // Update home screen
             renderHome();
-            
-            // Push history state
-            pushHistoryState('home');
         }
 
         function goToDay(day) {
@@ -1621,29 +1615,39 @@
             }
             
             renderDay();
+        }
+
+        function goToStats() {
+            document.getElementById('homeTab').style.display = 'none';
+            document.getElementById('workoutTab').style.display = 'none';
+            document.getElementById('statsTab').style.display = 'block';
+            document.getElementById('historyTab').style.display = 'none';
             
-            // Push history state
-            pushHistoryState('workout', { day });
+            document.getElementById('tabNavigation').style.display = 'flex';
+            document.getElementById('backToHome').style.display = 'block';
+            
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-btn')[3].classList.add('active');
+            
+            renderStats();
         }
 
         function goToHistory() {
             // Show history tab
             document.getElementById('homeTab').style.display = 'none';
             document.getElementById('workoutTab').style.display = 'none';
+            document.getElementById('statsTab').style.display = 'none';
             document.getElementById('historyTab').style.display = 'block';
             
             // Show ribbon and back button
             document.getElementById('tabNavigation').style.display = 'flex';
             document.getElementById('backToHome').style.display = 'block';
             
-            // Set active tab (History is now the 4th button, index 3)
+            // Set active tab (History is now the 5th button, index 4)
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.tab-btn')[3].classList.add('active');
+            document.querySelectorAll('.tab-btn')[4].classList.add('active');
             
             renderHistory();
-            
-            // Push history state
-            pushHistoryState('history');
         }
 
         function switchTab(tab) {
@@ -1651,6 +1655,7 @@
             event.target.classList.add('active');
 
             document.getElementById('workoutTab').style.display = (tab === 'dayA' || tab === 'dayB' || tab === 'dayC') ? 'block' : 'none';
+            document.getElementById('statsTab').style.display = tab === 'stats' ? 'block' : 'none';
             document.getElementById('historyTab').style.display = tab === 'history' ? 'block' : 'none';
 
             if (tab === 'dayA') {
@@ -1662,6 +1667,8 @@
             } else if (tab === 'dayC') {
                 currentDay = 'C';
                 renderDay();
+            } else if (tab === 'stats') {
+                renderStats();
             } else if (tab === 'history') {
                 renderHistory();
             }
@@ -1670,34 +1677,7 @@
         function renderHome() {
             const history = JSON.parse(localStorage.getItem('workoutHistory') || '[]');
             
-            // Calculate stats
-            const thisWeek = getThisWeekWorkouts(history);
-            const lastWeek = getLastWeekWorkouts(history);
-            const allPRs = countPRs(history);
-            
-            const thisWeekCount = new Set(thisWeek.map(w => new Date(w.date).toDateString())).size;
-            const strengthScore = calculateStrengthScore(history);
-            const lastWeekScore = calculateStrengthScore(lastWeek);
-            const scoreChange = strengthScore - lastWeekScore;
-            
-            // Update stats
-            document.getElementById('homeWeeklyWorkouts').textContent = thisWeekCount;
-            document.getElementById('homeTotalPRs').textContent = allPRs;
-            
-            // Count unique exercises for Best Lifts
-            const uniqueExercises = new Set(history.map(w => w.exercise)).size;
-            document.getElementById('homeBestLifts').textContent = uniqueExercises;
-            
-            document.getElementById('homeStrengthScore').textContent = strengthScore;
-            
-            let trendText = '';
-            if (scoreChange > 0) trendText = `↑ ${scoreChange} from last week`;
-            else if (scoreChange < 0) trendText = `↓ ${Math.abs(scoreChange)} from last week`;
-            else trendText = 'Same as last week';
-            document.getElementById('homeScoreTrend').textContent = trendText;
-            document.getElementById('homeScoreTrend').style.color = scoreChange > 0 ? 'var(--green)' : scoreChange < 0 ? 'var(--red)' : '#888';
-            
-            // Recent activity
+            // Recent activity only (stats moved to Stats tab)
             const recentWorkouts = history
                 .sort((a, b) => new Date(b.date) - new Date(a.date))
                 .slice(0, 5);
@@ -2183,9 +2163,6 @@
                 });
                 document.querySelectorAll('.exercise-card')[idx].classList.add('in-progress');
             }
-            
-            // Push history state for back button
-            pushHistoryState('modal-close');
         }
 
         function prefillLastWorkout() {
@@ -2236,36 +2213,7 @@
 
         function addSet() {
             currentSetCount++;
-            
-            // Check if we're in edit mode (custom action buttons)
-            const actionButtons = document.getElementById('actionButtons');
-            const isEditMode = actionButtons.innerHTML.includes('updateWorkout');
-            
-            if (isEditMode) {
-                // In edit mode, manually add a new set row
-                const container = document.getElementById('setsContainer');
-                const newSetHTML = `
-                    <div class="set-row">
-                        <div class="set-label">Set ${currentSetCount}</div>
-                        <div class="input-group">
-                            <input type="number" step="0.5" class="input-field" placeholder="0" 
-                                   onchange="calculateStatsWithComparison()" 
-                                   data-set="${currentSetCount}" data-type="weight">
-                            <div class="input-label">Weight (kg)</div>
-                        </div>
-                        <div class="input-group">
-                            <input type="number" class="input-field" placeholder="0" 
-                                   onchange="calculateStatsWithComparison()" 
-                                   data-set="${currentSetCount}" data-type="reps">
-                            <div class="input-label">Reps</div>
-                        </div>
-                    </div>
-                `;
-                container.insertAdjacentHTML('beforeend', newSetHTML);
-            } else {
-                // Normal mode
-                renderSets();
-            }
+            renderSets();
         }
 
         function removeSet(setNum) {
@@ -2368,7 +2316,6 @@
         }
 
         function playAlert() {
-            playTimerSound();
             if (navigator.vibrate) {
                 navigator.vibrate([200, 100, 200]);
             }
@@ -2462,20 +2409,13 @@
                 return;
             }
 
-            // Calculate duration if session is active
-            let duration = null;
-            if (sessionStartTime) {
-                duration = Math.floor((Date.now() - sessionStartTime) / 1000);
-            }
-
             const workout = {
                 id: Date.now().toString(),
                 day: currentDay,
                 exercise: currentExercise.name,
                 date: new Date().toISOString(),
                 sets: sets,
-                notes: document.getElementById('exerciseNotes').value,
-                duration: duration
+                notes: document.getElementById('exerciseNotes').value
             };
 
             let history = JSON.parse(localStorage.getItem('workoutHistory') || '[]');
@@ -2489,7 +2429,6 @@
             alert('Exercise saved! 💪');
             closeModal();
             renderDay();
-            updateProgress();
         }
 
         function saveAndNext() {
@@ -2655,9 +2594,29 @@
             
             closeSummary();
             renderDay();
+        }
+
+        function renderStats() {
+            const history = JSON.parse(localStorage.getItem('workoutHistory') || '[]');
+            const thisWeek = getThisWeekWorkouts(history);
+            const lastWeek = getLastWeekWorkouts(history);
+            const allPRs = countPRs(history);
+            const thisWeekCount = new Set(thisWeek.map(w => new Date(w.date).toDateString())).size;
+            const strengthScore = calculateStrengthScore(history);
+            const lastWeekScore = calculateStrengthScore(lastWeek);
+            const scoreChange = strengthScore - lastWeekScore;
             
-            // Clear saved session
-            clearSessionState();
+            document.getElementById('statsWeeklyWorkouts').textContent = thisWeekCount;
+            document.getElementById('statsTotalPRs').textContent = allPRs;
+            document.getElementById('statsBestLifts').textContent = new Set(history.map(w => w.exercise)).size;
+            document.getElementById('statsStrengthScore').textContent = strengthScore;
+            
+            let trendText = scoreChange > 0 ? `↑ ${scoreChange} from last week` : scoreChange < 0 ? `↓ ${Math.abs(scoreChange)} from last week` : 'Same as last week';
+            document.getElementById('statsScoreTrend').textContent = trendText;
+            document.getElementById('statsScoreTrend').style.color = scoreChange > 0 ? 'var(--green)' : scoreChange < 0 ? 'var(--red)' : '#888';
+            
+            displayCurrentWeight();
+            calculatePowerToWeight();
         }
 
         function renderHistory() {
@@ -2825,11 +2784,6 @@
             );
             const totalSets = session.exercises.reduce((sum, ex) => sum + ex.sets.length, 0);
             
-            // Calculate total duration if available
-            const totalDuration = session.exercises.reduce((sum, ex) => sum + (ex.duration || 0), 0);
-            const durationMinutes = Math.floor(totalDuration / 60);
-            const durationDisplay = durationMinutes > 0 ? `${durationMinutes}m` : 'N/A';
-            
             // Set modal title
             document.getElementById('modalExerciseName').textContent = date;
             document.getElementById('modalExerciseTarget').textContent = `Day ${session.day} - Complete Session`;
@@ -2848,7 +2802,7 @@
             // Create session detail content
             const sessionDetailHTML = `
                 <div style="background: var(--pale-purple); padding: 20px; border-radius: 12px; margin-bottom: 24px;">
-                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
                         <div style="text-align: center;">
                             <div style="font-family: 'Bebas Neue', sans-serif; font-size: 32px; color: var(--ravens-purple);">${session.exercises.length}</div>
                             <div style="font-size: 12px; color: var(--light-purple); font-weight: 600;">EXERCISES</div>
@@ -2856,10 +2810,6 @@
                         <div style="text-align: center;">
                             <div style="font-family: 'Bebas Neue', sans-serif; font-size: 32px; color: var(--ravens-purple);">${totalSets}</div>
                             <div style="font-size: 12px; color: var(--light-purple); font-weight: 600;">TOTAL SETS</div>
-                        </div>
-                        <div style="text-align: center;">
-                            <div style="font-family: 'Bebas Neue', sans-serif; font-size: 32px; color: var(--ravens-purple);">${durationDisplay}</div>
-                            <div style="font-size: 12px; color: var(--light-purple); font-weight: 600;">DURATION</div>
                         </div>
                         <div style="text-align: center; grid-column: 1 / -1;">
                             <div style="font-family: 'Bebas Neue', sans-serif; font-size: 32px; color: var(--ravens-purple);">${Math.round(totalVolume)}</div>
@@ -2894,11 +2844,8 @@
                     
                     return `
                         <div style="background: white; padding: 16px; border-radius: 10px; margin-bottom: 12px; border-left: 4px solid ${isPR ? '#ffd700' : 'var(--ravens-gold)'}; position: relative;">
-                            <div style="position: absolute; top: 12px; right: 12px; display: flex; gap: 8px;">
-                                <button class="edit-session-exercise" data-edit-id="${ex.id}" style="background: var(--ravens-gold); border: none; color: white; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; font-size: 16px; transition: all 0.3s ease;">✎</button>
-                                <button class="delete-session-exercise" data-delete-id="${ex.id}" style="background: #fee; border: none; color: #c44; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; font-size: 16px; transition: all 0.3s ease;">×</button>
-                            </div>
-                            <div style="font-weight: 700; color: var(--ravens-purple); font-size: 18px; margin-bottom: 8px; padding-right: 80px;">
+                            <button class="delete-session-exercise" data-delete-id="${ex.id}" style="position: absolute; top: 12px; right: 12px; background: #fee; border: none; color: #c44; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; font-size: 16px; transition: all 0.3s ease;">×</button>
+                            <div style="font-weight: 700; color: var(--ravens-purple); font-size: 18px; margin-bottom: 8px;">
                                 ${ex.exercise}
                                 ${isPR ? '<span class="pr-badge-inline">PR</span>' : ''}
                             </div>
@@ -2943,15 +2890,6 @@
                         deleteLogEntry(workoutId);
                         closeModal();
                     }
-                });
-            });
-            
-            // Add edit listeners
-            document.querySelectorAll('.edit-session-exercise').forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    const workoutId = this.dataset.editId;
-                    openEditWorkout(workoutId);
                 });
             });
             
@@ -3032,129 +2970,6 @@
             renderDay();
             
             alert('Deleted!');
-        }
-
-        function openEditWorkout(workoutId) {
-            const history = JSON.parse(localStorage.getItem('workoutHistory') || '[]');
-            const workout = history.find(w => w.id === workoutId);
-            if (!workout) {
-                alert('Workout not found!');
-                return;
-            }
-            
-            // Close session detail
-            const sessionDetail = document.getElementById('sessionDetailContent');
-            if (sessionDetail) sessionDetail.remove();
-            const historySection = document.querySelector('.history-section');
-            if (historySection) historySection.style.display = 'block';
-            
-            // Set up the exercise modal for editing
-            currentDay = workout.day;
-            const exercises = workoutData[currentDay].exercises;
-            const exIdx = exercises.findIndex(ex => ex.name === workout.exercise);
-            
-            if (exIdx === -1) {
-                alert('Exercise not found in current program!');
-                return;
-            }
-            
-            currentExercise = exercises[exIdx];
-            currentExerciseIndex = exIdx;
-            currentSetCount = workout.sets.length;
-            
-            document.getElementById('modalExerciseName').textContent = currentExercise.name + ' (EDITING)';
-            document.getElementById('modalExerciseTarget').textContent = 
-                `Editing workout from ${new Date(workout.date).toLocaleDateString()}`;
-            
-            // Show editing UI
-            document.getElementById('viewOnlyNotice').style.display = 'none';
-            document.getElementById('restTimer').style.display = 'none';
-            document.getElementById('prefillSection').style.display = 'none';
-            document.getElementById('addSetBtn').style.display = 'block';
-            document.getElementById('actionButtons').style.display = 'none';
-            document.querySelector('.stats-grid').style.display = 'grid';
-            document.querySelector('.notes-section').style.display = 'block';
-            document.getElementById('exerciseNotes').disabled = false;
-            
-            // Show sets container and its title
-            const setsContainer = document.getElementById('setsContainer');
-            setsContainer.style.display = 'block';
-            const sectionTitles = setsContainer.parentElement.querySelectorAll('.section-title');
-            if (sectionTitles[0]) sectionTitles[0].style.display = 'block';
-            
-            // Render sets with existing data
-            setsContainer.innerHTML = '';
-            
-            workout.sets.forEach((set, i) => {
-                setsContainer.innerHTML += `
-                    <div class="set-row">
-                        <div class="set-label">Set ${i + 1}</div>
-                        <div class="input-group">
-                            <input type="number" step="0.5" class="input-field" placeholder="0" 
-                                   value="${set.weight}" onchange="calculateStatsWithComparison()" 
-                                   data-set="${i + 1}" data-type="weight">
-                            <div class="input-label">Weight (kg)</div>
-                        </div>
-                        <div class="input-group">
-                            <input type="number" class="input-field" placeholder="0" 
-                                   value="${set.reps}" onchange="calculateStatsWithComparison()" 
-                                   data-set="${i + 1}" data-type="reps">
-                            <div class="input-label">Reps</div>
-                        </div>
-                    </div>
-                `;
-            });
-            
-            // Fill notes
-            document.getElementById('exerciseNotes').value = workout.notes || '';
-            
-            // Load exercise history to show previous workouts
-            loadExerciseHistory();
-            
-            // Show custom save button for editing
-            document.getElementById('actionButtons').style.display = 'grid';
-            document.getElementById('actionButtons').innerHTML = `
-                <button class="save-btn" onclick="updateWorkout('${workoutId}')">Update Workout</button>
-                <button class="cancel-btn" onclick="closeModal()">Cancel</button>
-            `;
-            
-            calculateStatsWithComparison();
-            document.getElementById('exerciseModal').classList.add('active');
-        }
-
-        function updateWorkout(workoutId) {
-            const sets = [];
-            for (let i = 1; i <= currentSetCount; i++) {
-                const weight = document.querySelector(`[data-set="${i}"][data-type="weight"]`)?.value;
-                const reps = document.querySelector(`[data-set="${i}"][data-type="reps"]`)?.value;
-                if (weight && reps) {
-                    sets.push({ weight: parseFloat(weight), reps: parseInt(reps) });
-                }
-            }
-
-            if (sets.length === 0) {
-                alert('Please enter at least one set!');
-                return;
-            }
-
-            let history = JSON.parse(localStorage.getItem('workoutHistory') || '[]');
-            const workoutIndex = history.findIndex(w => w.id === workoutId);
-            
-            if (workoutIndex === -1) {
-                alert('Workout not found!');
-                return;
-            }
-            
-            // Update the workout
-            history[workoutIndex].sets = sets;
-            history[workoutIndex].notes = document.getElementById('exerciseNotes').value;
-            
-            localStorage.setItem('workoutHistory', JSON.stringify(history));
-            
-            alert('✅ Workout updated!');
-            closeModal();
-            renderHistory();
-            renderDay();
         }
 
         function getThisWeekWorkouts(history) {
@@ -3338,16 +3153,8 @@
 
         // Initialize
         migrateOldData();
-        
-        // Try to restore active session
-        if (!restoreSessionState()) {
-            // No active session, show home normally
-            renderHome();
-            renderDay();
-        }
-        
-        // Set initial history state
-        pushHistoryState('home');
+        renderHome();
+        renderDay();
     </script>
 </body>
 </html>
