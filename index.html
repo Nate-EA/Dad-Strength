@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dad Strength Tracker v4.6</title>
+    <title>Dad Strength Tracker v4.7</title>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -3103,7 +3103,7 @@
                 btn.addEventListener('click', function(e) {
                     e.stopPropagation();
                     const workoutId = this.dataset.editId;
-                    openExerciseLog(workoutId);
+                    editExerciseLog(workoutId);
                 });
             });
             
@@ -3160,6 +3160,116 @@
             
             // Then open the exercise
             openExercise(idx);
+        }
+
+        function editExerciseLog(workoutId) {
+            const history = JSON.parse(localStorage.getItem('workoutHistory') || '[]');
+            const workout = history.find(w => w.id === workoutId);
+            if (!workout) {
+                alert('Workout not found!');
+                return;
+            }
+            
+            // Close the session detail popup first
+            const sessionDetail = document.getElementById('sessionDetailContent');
+            if (sessionDetail) sessionDetail.remove();
+            
+            // Show history section again
+            const historySection = document.querySelector('.history-section');
+            if (historySection) historySection.style.display = 'block';
+            
+            // Set up the modal for editing
+            currentDay = workout.day;
+            const exercises = workoutData[currentDay].exercises;
+            const idx = exercises.findIndex(ex => ex.name === workout.exercise);
+            currentExercise = exercises[idx];
+            currentExerciseIndex = idx;
+            currentSetCount = currentExercise.sets;
+            
+            // Set modal title
+            document.getElementById('modalExerciseName').textContent = workout.exercise;
+            document.getElementById('modalExerciseTarget').textContent = 
+                `Target: ${currentExercise.sets} × ${currentExercise.reps}`;
+            
+            // ENABLE editing mode
+            document.getElementById('viewOnlyNotice').style.display = 'none';
+            document.getElementById('restTimer').style.display = 'none';
+            document.getElementById('addSetBtn').style.display = 'block';
+            document.getElementById('actionButtons').style.display = 'grid';
+            document.getElementById('exerciseNotes').disabled = false;
+            document.getElementById('prefillSection').style.display = 'none';
+            
+            // Load the workout data into the form
+            renderSets(false); // false = not disabled
+            
+            // Pre-fill with existing data
+            workout.sets.forEach((set, i) => {
+                const weightInput = document.querySelector(`[data-set="${i + 1}"][data-type="weight"]`);
+                const repsInput = document.querySelector(`[data-set="${i + 1}"][data-type="reps"]`);
+                if (weightInput) weightInput.value = set.weight;
+                if (repsInput) repsInput.value = set.reps;
+            });
+            
+            // Pre-fill notes
+            document.getElementById('exerciseNotes').value = workout.notes || '';
+            
+            // Change action buttons to "Update" and "Delete"
+            document.getElementById('actionButtons').innerHTML = `
+                <button class="save-btn" onclick="updateWorkout('${workoutId}')">Update</button>
+                <button class="next-btn" style="background: var(--red);" onclick="deleteAndClose('${workoutId}')">Delete</button>
+            `;
+            
+            // Show modal
+            loadExerciseHistory();
+            calculateStatsWithComparison();
+            document.getElementById('exerciseModal').classList.add('active');
+            pushHistoryState('modal-open', { type: 'editExercise' });
+        }
+
+        function updateWorkout(workoutId) {
+            // Gather updated data from inputs
+            const sets = [];
+            for (let i = 1; i <= currentSetCount; i++) {
+                const weight = parseFloat(document.querySelector(`[data-set="${i}"][data-type="weight"]`)?.value);
+                const reps = parseInt(document.querySelector(`[data-set="${i}"][data-type="reps"]`)?.value);
+                
+                if (weight && reps) {
+                    sets.push({ weight, reps });
+                }
+            }
+            
+            if (sets.length === 0) {
+                alert('Please enter at least one set!');
+                return;
+            }
+            
+            const notes = document.getElementById('exerciseNotes').value;
+            
+            // Update the workout in history
+            let history = JSON.parse(localStorage.getItem('workoutHistory') || '[]');
+            const workoutIndex = history.findIndex(w => w.id === workoutId);
+            
+            if (workoutIndex === -1) {
+                alert('Error: Workout not found!');
+                return;
+            }
+            
+            history[workoutIndex].sets = sets;
+            history[workoutIndex].notes = notes;
+            
+            localStorage.setItem('workoutHistory', JSON.stringify(history));
+            
+            alert('✅ Workout updated!');
+            closeModal();
+            renderHistory();
+            renderDay();
+        }
+
+        function deleteAndClose(workoutId) {
+            if (confirm('Delete this workout?')) {
+                deleteLogEntry(workoutId);
+                closeModal();
+            }
         }
 
         function deleteLogEntry(workoutId) {
