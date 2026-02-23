@@ -2527,6 +2527,11 @@
         }
 
         function calculateStatsWithComparison() {
+            // Safety check
+            if (!currentExercise || !currentExercise.name) {
+                return;
+            }
+            
             const inputs = document.querySelectorAll('.input-field');
             let maxWeight = 0;
             let maxReps = 0;
@@ -2641,6 +2646,13 @@
         }
 
         function loadExerciseHistory() {
+            // Safety check: currentExercise must exist
+            if (!currentExercise || !currentExercise.name) {
+                const container = document.getElementById('historyContainer');
+                container.innerHTML = '<div style="color: #999; font-style: italic;">No previous workouts recorded</div>';
+                return;
+            }
+            
             const history = JSON.parse(localStorage.getItem('workoutHistory') || '[]');
             const exerciseHistory = history
                 .filter(w => w.exercise === currentExercise.name && w.day === currentDay)
@@ -3182,22 +3194,41 @@
             currentDay = workout.day;
             const exercises = workoutData[currentDay].exercises;
             const idx = exercises.findIndex(ex => ex.name === workout.exercise);
-            currentExercise = exercises[idx];
-            currentExerciseIndex = idx;
-            currentSetCount = currentExercise.sets;
+            
+            // Safety check: exercise might have been removed from workout plan
+            if (idx === -1) {
+                // Create a dummy exercise object for editing old workouts
+                currentExercise = {
+                    name: workout.exercise,
+                    sets: workout.sets.length,
+                    reps: '0' // We don't need this for editing
+                };
+                currentExerciseIndex = -1;
+            } else {
+                currentExercise = exercises[idx];
+                currentExerciseIndex = idx;
+            }
+            
+            currentSetCount = workout.sets.length; // Use actual number of sets done, not target
             
             // Set modal title
             document.getElementById('modalExerciseName').textContent = workout.exercise;
             document.getElementById('modalExerciseTarget').textContent = 
-                `Target: ${currentExercise.sets} × ${currentExercise.reps}`;
+                `Editing ${workout.sets.length} sets from ${new Date(workout.date).toLocaleDateString()}`;
             
-            // ENABLE editing mode
+            // ENABLE editing mode - show all sections
             document.getElementById('viewOnlyNotice').style.display = 'none';
             document.getElementById('restTimer').style.display = 'none';
             document.getElementById('addSetBtn').style.display = 'block';
             document.getElementById('actionButtons').style.display = 'grid';
             document.getElementById('exerciseNotes').disabled = false;
             document.getElementById('prefillSection').style.display = 'none';
+            
+            // Make sure sets section is visible
+            const sectionTitles = document.querySelectorAll('.section-title');
+            sectionTitles.forEach(title => title.style.display = 'block');
+            document.getElementById('setsContainer').style.display = 'block';
+            document.getElementById('setsContainer').parentElement.style.display = 'block';
             
             // Load the workout data into the form
             renderSets(false); // false = not disabled
