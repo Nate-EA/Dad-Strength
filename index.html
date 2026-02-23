@@ -3046,8 +3046,11 @@
                     
                     return `
                         <div style="background: white; padding: 16px; border-radius: 10px; margin-bottom: 12px; border-left: 4px solid ${isPR ? '#ffd700' : 'var(--ravens-gold)'}; position: relative;">
-                            <button class="delete-session-exercise" data-delete-id="${ex.id}" style="position: absolute; top: 12px; right: 12px; background: #fee; border: none; color: #c44; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; font-size: 16px; transition: all 0.3s ease;">×</button>
-                            <div style="font-weight: 700; color: var(--ravens-purple); font-size: 18px; margin-bottom: 8px;">
+                            <div style="position: absolute; top: 12px; right: 12px; display: flex; gap: 8px;">
+                                <button class="edit-session-exercise" data-edit-id="${ex.id}" style="background: #e3f2fd; border: none; color: #1976d2; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; font-size: 16px; transition: all 0.3s ease; font-weight: bold;">✎</button>
+                                <button class="delete-session-exercise" data-delete-id="${ex.id}" style="background: #fee; border: none; color: #c44; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; font-size: 16px; transition: all 0.3s ease;">×</button>
+                            </div>
+                            <div style="font-weight: 700; color: var(--ravens-purple); font-size: 18px; margin-bottom: 8px; padding-right: 80px;">
                                 ${ex.exercise}
                                 ${isPR ? '<span class="pr-badge-inline">PR</span>' : ''}
                             </div>
@@ -3092,6 +3095,15 @@
                         deleteLogEntry(workoutId);
                         closeModal();
                     }
+                });
+            });
+            
+            // Add edit listeners
+            document.querySelectorAll('.edit-session-exercise').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const workoutId = this.dataset.editId;
+                    openExerciseLog(workoutId);
                 });
             });
             
