@@ -3,16 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rugby Strength Tracker v3</title>
+    <title>Dad Strength Tracker v4.4</title>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --niue-yellow: #FFCD00;
-            --niue-blue: #012169;
-            --light-blue: #4A6FA5;
-            --pale-yellow: #FFF9E6;
-            --cream: #FFFBF0;
-            --shadow: rgba(1, 33, 105, 0.12);
+            --ravens-purple: #241773;
+            --ravens-gold: #9E7C0C;
+            --ravens-black: #000000;
+            --light-purple: #3D2C8D;
+            --pale-purple: #E8E5F2;
+            --cream: #F5F5F0;
+            --shadow: rgba(36, 23, 115, 0.12);
             --green: #22c55e;
             --red: #ef4444;
             --orange: #f97316;
@@ -26,13 +27,13 @@
 
         body {
             font-family: 'Work Sans', sans-serif;
-            background: linear-gradient(135deg, var(--pale-yellow) 0%, var(--cream) 100%);
+            background: linear-gradient(135deg, var(--pale-purple) 0%, var(--cream) 100%);
             min-height: 100vh;
             padding: 0;
         }
 
         .header {
-            background: var(--niue-blue);
+            background: var(--ravens-purple);
             padding: 24px 20px 16px;
             box-shadow: 0 4px 20px var(--shadow);
             position: sticky;
@@ -43,7 +44,7 @@
         .flag-accent {
             width: 60px;
             height: 8px;
-            background: linear-gradient(90deg, var(--niue-yellow) 0%, var(--niue-yellow) 50%, var(--niue-blue) 50%, var(--niue-blue) 100%);
+            background: linear-gradient(90deg, var(--ravens-gold) 0%, var(--ravens-gold) 50%, var(--ravens-purple) 50%, var(--ravens-purple) 100%);
             margin-bottom: 16px;
             border-radius: 4px;
         }
@@ -63,12 +64,12 @@
         }
 
         .session-timer {
-            background: rgba(255, 205, 0, 0.2);
+            background: rgba(158, 124, 12, 0.2);
             padding: 8px 16px;
             border-radius: 8px;
             font-family: 'Bebas Neue', sans-serif;
             font-size: 20px;
-            color: var(--niue-yellow);
+            color: var(--ravens-gold);
             letter-spacing: 0.5px;
         }
 
@@ -89,9 +90,9 @@
         .tab-btn {
             font-family: 'Bebas Neue', sans-serif;
             padding: 8px 16px;
-            border: 2px solid var(--niue-yellow);
+            border: 2px solid var(--ravens-gold);
             background: transparent;
-            color: var(--niue-yellow);
+            color: var(--ravens-gold);
             border-radius: 6px;
             font-size: 16px;
             cursor: pointer;
@@ -101,8 +102,8 @@
         }
 
         .tab-btn.active {
-            background: var(--niue-yellow);
-            color: var(--niue-blue);
+            background: var(--ravens-gold);
+            color: var(--ravens-purple);
         }
 
         .session-control {
@@ -152,13 +153,13 @@
 
         .progress-bar-fill {
             height: 100%;
-            background: linear-gradient(90deg, var(--niue-yellow) 0%, var(--niue-blue) 100%);
+            background: linear-gradient(90deg, var(--ravens-gold) 0%, var(--ravens-purple) 100%);
             transition: width 0.3s ease;
         }
 
         .progress-text {
             text-align: center;
-            color: var(--light-blue);
+            color: var(--light-purple);
             font-weight: 600;
             font-size: 14px;
         }
@@ -169,19 +170,19 @@
             padding: 20px;
             border-radius: 12px;
             box-shadow: 0 2px 12px var(--shadow);
-            border-left: 5px solid var(--niue-yellow);
+            border-left: 5px solid var(--ravens-gold);
         }
 
         .day-title {
             font-family: 'Bebas Neue', sans-serif;
             font-size: 24px;
-            color: var(--niue-blue);
+            color: var(--ravens-purple);
             margin-bottom: 8px;
             letter-spacing: 0.5px;
         }
 
         .day-description {
-            color: var(--light-blue);
+            color: var(--light-purple);
             font-size: 14px;
             font-weight: 500;
         }
@@ -205,7 +206,7 @@
         .exercise-card:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 16px var(--shadow);
-            border-color: var(--niue-yellow);
+            border-color: var(--ravens-gold);
         }
 
         .exercise-card.logged::before {
@@ -226,8 +227,8 @@
         }
 
         .exercise-card.in-progress {
-            border-color: var(--niue-yellow);
-            background: var(--pale-yellow);
+            border-color: var(--ravens-gold);
+            background: var(--pale-purple);
         }
 
         .pr-badge {
@@ -235,7 +236,7 @@
             top: 10px;
             right: 50px;
             background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-            color: var(--niue-blue);
+            color: var(--ravens-purple);
             padding: 4px 10px;
             border-radius: 12px;
             font-size: 11px;
@@ -253,7 +254,7 @@
         .exercise-number {
             font-family: 'Bebas Neue', sans-serif;
             font-size: 22px;
-            color: var(--niue-blue);
+            color: var(--ravens-purple);
             min-width: 28px;
             font-weight: 400;
         }
@@ -265,13 +266,13 @@
         .exercise-name {
             font-size: 18px;
             font-weight: 600;
-            color: var(--niue-blue);
+            color: var(--ravens-purple);
             margin-bottom: 4px;
         }
 
         .exercise-details {
             font-size: 14px;
-            color: var(--light-blue);
+            color: var(--light-purple);
             font-weight: 500;
         }
 
@@ -287,7 +288,7 @@
         }
 
         .stat-item strong {
-            color: var(--niue-blue);
+            color: var(--ravens-purple);
             font-weight: 600;
         }
 
@@ -345,7 +346,7 @@
         }
 
         .modal-header {
-            background: var(--niue-blue);
+            background: var(--ravens-purple);
             padding: 24px 20px;
             position: sticky;
             top: 0;
@@ -361,7 +362,7 @@
         }
 
         .modal-subtitle {
-            color: var(--niue-yellow);
+            color: var(--ravens-gold);
             font-size: 14px;
             font-weight: 500;
         }
@@ -372,7 +373,7 @@
             right: 20px;
             background: rgba(255, 205, 0, 0.2);
             border: none;
-            color: var(--niue-yellow);
+            color: var(--ravens-gold);
             width: 32px;
             height: 32px;
             border-radius: 50%;
@@ -382,8 +383,8 @@
         }
 
         .close-btn:hover {
-            background: var(--niue-yellow);
-            color: var(--niue-blue);
+            background: var(--ravens-gold);
+            color: var(--ravens-purple);
             transform: rotate(90deg);
         }
 
@@ -393,7 +394,7 @@
 
         .view-only-notice {
             background: #e8f4f8;
-            border: 2px solid var(--light-blue);
+            border: 2px solid var(--light-purple);
             border-radius: 12px;
             padding: 16px;
             margin-bottom: 24px;
@@ -401,20 +402,20 @@
         }
 
         .view-only-notice strong {
-            color: var(--niue-blue);
+            color: var(--ravens-purple);
             display: block;
             margin-bottom: 8px;
             font-size: 16px;
         }
 
         .view-only-notice p {
-            color: var(--light-blue);
+            color: var(--light-purple);
             font-size: 14px;
         }
 
         .rest-timer-section {
-            background: var(--pale-yellow);
-            border: 3px solid var(--niue-yellow);
+            background: var(--pale-purple);
+            border: 3px solid var(--ravens-gold);
             border-radius: 12px;
             padding: 20px;
             margin-bottom: 24px;
@@ -422,20 +423,20 @@
         }
 
         .rest-timer-section.active {
-            background: var(--niue-blue);
-            border-color: var(--niue-blue);
+            background: var(--ravens-purple);
+            border-color: var(--ravens-purple);
         }
 
         .rest-timer-display {
             font-family: 'Bebas Neue', sans-serif;
             font-size: 48px;
-            color: var(--niue-blue);
+            color: var(--ravens-purple);
             margin-bottom: 16px;
             letter-spacing: 2px;
         }
 
         .rest-timer-section.active .rest-timer-display {
-            color: var(--niue-yellow);
+            color: var(--ravens-gold);
         }
 
         .rest-timer-controls {
@@ -447,9 +448,9 @@
 
         .timer-btn {
             padding: 10px 20px;
-            border: 2px solid var(--niue-blue);
+            border: 2px solid var(--ravens-purple);
             background: white;
-            color: var(--niue-blue);
+            color: var(--ravens-purple);
             border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
@@ -458,7 +459,7 @@
         }
 
         .timer-btn:hover {
-            background: var(--niue-blue);
+            background: var(--ravens-purple);
             color: white;
         }
 
@@ -470,7 +471,7 @@
 
         .prefill-section {
             background: #e8f4f8;
-            border: 2px solid var(--light-blue);
+            border: 2px solid var(--light-purple);
             border-radius: 12px;
             padding: 16px;
             margin-bottom: 24px;
@@ -478,13 +479,13 @@
 
         .prefill-title {
             font-weight: 600;
-            color: var(--niue-blue);
+            color: var(--ravens-purple);
             margin-bottom: 8px;
             font-size: 14px;
         }
 
         .prefill-data {
-            color: var(--light-blue);
+            color: var(--light-purple);
             font-size: 13px;
             margin-bottom: 12px;
         }
@@ -492,7 +493,7 @@
         .prefill-btn {
             width: 100%;
             padding: 10px;
-            background: var(--light-blue);
+            background: var(--light-purple);
             color: white;
             border: none;
             border-radius: 8px;
@@ -502,13 +503,13 @@
         }
 
         .prefill-btn:hover {
-            background: var(--niue-blue);
+            background: var(--ravens-purple);
         }
 
         .section-title {
             font-family: 'Bebas Neue', sans-serif;
             font-size: 16px;
-            color: var(--niue-blue);
+            color: var(--ravens-purple);
             margin-bottom: 12px;
             letter-spacing: 0.5px;
             text-transform: uppercase;
@@ -528,7 +529,7 @@
 
         .set-label {
             font-weight: 600;
-            color: var(--niue-blue);
+            color: var(--ravens-purple);
             font-size: 14px;
         }
 
@@ -543,14 +544,14 @@
             border-radius: 8px;
             font-size: 16px;
             font-weight: 600;
-            color: var(--niue-blue);
+            color: var(--ravens-purple);
             transition: all 0.3s ease;
         }
 
         .input-field:focus {
             outline: none;
-            border-color: var(--niue-yellow);
-            background: var(--pale-yellow);
+            border-color: var(--ravens-gold);
+            background: var(--pale-purple);
         }
 
         .input-field:disabled {
@@ -589,9 +590,9 @@
         .add-set-btn {
             width: 100%;
             padding: 12px;
-            background: var(--pale-yellow);
-            border: 2px dashed var(--niue-yellow);
-            color: var(--niue-blue);
+            background: var(--pale-purple);
+            border: 2px dashed var(--ravens-gold);
+            color: var(--ravens-purple);
             border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
@@ -600,7 +601,7 @@
         }
 
         .add-set-btn:hover {
-            background: var(--niue-yellow);
+            background: var(--ravens-gold);
         }
 
         .stats-grid {
@@ -611,11 +612,11 @@
         }
 
         .stat-card {
-            background: var(--pale-yellow);
+            background: var(--pale-purple);
             padding: 16px;
             border-radius: 10px;
             text-align: center;
-            border: 2px solid var(--niue-yellow);
+            border: 2px solid var(--ravens-gold);
         }
 
         .stat-card.pr {
@@ -626,7 +627,7 @@
 
         .stat-label {
             font-size: 12px;
-            color: var(--light-blue);
+            color: var(--light-purple);
             font-weight: 600;
             margin-bottom: 4px;
             text-transform: uppercase;
@@ -635,7 +636,7 @@
         .stat-value {
             font-family: 'Bebas Neue', sans-serif;
             font-size: 28px;
-            color: var(--niue-blue);
+            color: var(--ravens-purple);
             letter-spacing: 0.5px;
         }
 
@@ -666,8 +667,8 @@
 
         .notes-input:focus {
             outline: none;
-            border-color: var(--niue-yellow);
-            background: var(--pale-yellow);
+            border-color: var(--ravens-gold);
+            background: var(--pale-purple);
         }
 
         .action-buttons {
@@ -679,7 +680,7 @@
 
         .save-btn {
             padding: 16px;
-            background: var(--niue-blue);
+            background: var(--ravens-purple);
             color: white;
             border: none;
             border-radius: 10px;
@@ -692,7 +693,7 @@
         }
 
         .save-btn:hover {
-            background: var(--light-blue);
+            background: var(--light-purple);
             transform: translateY(-2px);
             box-shadow: 0 6px 20px var(--shadow);
         }
@@ -738,7 +739,7 @@
 
         .history-date {
             font-weight: 600;
-            color: var(--niue-blue);
+            color: var(--ravens-purple);
             margin-bottom: 4px;
         }
 
@@ -772,47 +773,47 @@
             padding: 20px;
             border-radius: 12px;
             box-shadow: 0 2px 12px var(--shadow);
-            border-left: 5px solid var(--niue-blue);
+            border-left: 5px solid var(--ravens-purple);
         }
 
         .mobility-title {
             font-family: 'Bebas Neue', sans-serif;
             font-size: 18px;
-            color: var(--niue-blue);
+            color: var(--ravens-purple);
             margin-bottom: 10px;
             letter-spacing: 0.5px;
         }
 
         .mobility-content {
-            color: var(--light-blue);
+            color: var(--light-purple);
             font-weight: 500;
             line-height: 1.6;
             margin-bottom: 16px;
         }
 
         .mobility-timer {
-            background: var(--pale-yellow);
+            background: var(--pale-purple);
             padding: 16px;
             border-radius: 10px;
             text-align: center;
-            border: 2px solid var(--niue-yellow);
+            border: 2px solid var(--ravens-gold);
         }
 
         .mobility-timer-display {
             font-family: 'Bebas Neue', sans-serif;
             font-size: 36px;
-            color: var(--niue-blue);
+            color: var(--ravens-purple);
             margin-bottom: 12px;
             letter-spacing: 1px;
         }
 
         .mobility-timer.active {
-            background: var(--niue-blue);
-            border-color: var(--niue-blue);
+            background: var(--ravens-purple);
+            border-color: var(--ravens-purple);
         }
 
         .mobility-timer.active .mobility-timer-display {
-            color: var(--niue-yellow);
+            color: var(--ravens-gold);
         }
 
         /* History Tab - Exercise Log Style */
@@ -833,20 +834,20 @@
             border-radius: 12px;
             box-shadow: 0 2px 12px var(--shadow);
             text-align: center;
-            border-left: 4px solid var(--niue-yellow);
+            border-left: 4px solid var(--ravens-gold);
         }
 
         .dashboard-value {
             font-family: 'Bebas Neue', sans-serif;
             font-size: 36px;
-            color: var(--niue-blue);
+            color: var(--ravens-purple);
             margin-bottom: 4px;
             letter-spacing: 1px;
         }
 
         .dashboard-label {
             font-size: 12px;
-            color: var(--light-blue);
+            color: var(--light-purple);
             font-weight: 600;
             text-transform: uppercase;
         }
@@ -883,7 +884,7 @@
         .log-list-title {
             font-family: 'Bebas Neue', sans-serif;
             font-size: 20px;
-            color: var(--niue-blue);
+            color: var(--ravens-purple);
             letter-spacing: 0.5px;
         }
 
@@ -894,9 +895,9 @@
 
         .filter-btn {
             padding: 6px 12px;
-            border: 2px solid var(--niue-blue);
+            border: 2px solid var(--ravens-purple);
             background: white;
-            color: var(--niue-blue);
+            color: var(--ravens-purple);
             border-radius: 6px;
             font-size: 12px;
             font-weight: 600;
@@ -905,16 +906,16 @@
         }
 
         .filter-btn.active {
-            background: var(--niue-blue);
+            background: var(--ravens-purple);
             color: white;
         }
 
         .log-entry {
-            background: var(--pale-yellow);
+            background: var(--pale-purple);
             padding: 16px;
             border-radius: 10px;
             margin-bottom: 12px;
-            border-left: 4px solid var(--niue-yellow);
+            border-left: 4px solid var(--ravens-gold);
             cursor: pointer;
             transition: all 0.3s ease;
             position: relative;
@@ -939,7 +940,7 @@
 
         .log-entry-name {
             font-weight: 700;
-            color: var(--niue-blue);
+            color: var(--ravens-purple);
             font-size: 16px;
         }
 
@@ -951,7 +952,7 @@
 
         .log-entry-details {
             font-size: 14px;
-            color: var(--light-blue);
+            color: var(--light-purple);
             margin-bottom: 8px;
         }
 
@@ -996,7 +997,7 @@
         .pr-badge-inline {
             display: inline-block;
             background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-            color: var(--niue-blue);
+            color: var(--ravens-purple);
             padding: 2px 8px;
             border-radius: 8px;
             font-size: 10px;
@@ -1026,7 +1027,7 @@
         .summary-title {
             font-family: 'Bebas Neue', sans-serif;
             font-size: 32px;
-            color: var(--niue-blue);
+            color: var(--ravens-purple);
             margin-bottom: 16px;
             letter-spacing: 1px;
         }
@@ -1039,23 +1040,23 @@
         }
 
         .summary-stat {
-            background: var(--pale-yellow);
+            background: var(--pale-purple);
             padding: 20px;
             border-radius: 12px;
-            border: 2px solid var(--niue-yellow);
+            border: 2px solid var(--ravens-gold);
         }
 
         .summary-stat-value {
             font-family: 'Bebas Neue', sans-serif;
             font-size: 36px;
-            color: var(--niue-blue);
+            color: var(--ravens-purple);
             margin-bottom: 4px;
             letter-spacing: 1px;
         }
 
         .summary-stat-label {
             font-size: 12px;
-            color: var(--light-blue);
+            color: var(--light-purple);
             font-weight: 600;
             text-transform: uppercase;
         }
@@ -1080,21 +1081,30 @@
             transform: translateY(-2px);
             box-shadow: 0 6px 30px rgba(34, 197, 94, 0.4);
         }
+
+        /* Power-to-Weight Tier Badge Colors */
+        .pw-ratio-tier.rookie { background: #e0e0e0; color: #666; }
+        .pw-ratio-tier.built { background: #d4edda; color: #155724; }
+        .pw-ratio-tier.strong { background: #cce5ff; color: #004085; }
+        .pw-ratio-tier.veteran { background: #d1ecf1; color: #0c5460; }
+        .pw-ratio-tier.elite { background: #f8d7da; color: #721c24; }
     </style>
 </head>
 <body>
     <div class="header">
         <div class="flag-accent"></div>
         <div class="header-content">
-            <button id="backToHome" onclick="goHome()" style="background: rgba(255, 205, 0, 0.2); border: none; color: var(--niue-yellow); padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px; display: none; transition: all 0.3s ease;">
+            <button id="backToHome" onclick="goHome()" style="background: rgba(158, 124, 12, 0.2); border: none; color: var(--ravens-gold); padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px; display: none; transition: all 0.3s ease;">
                 ← Home
             </button>
-            <div class="app-title">Rugby Strength</div>
+            <div class="app-title">Dad Strength</div>
             <div class="session-timer" id="sessionTimer">00:00</div>
         </div>
         <div class="tab-navigation" id="tabNavigation" style="display: none;">
             <button class="tab-btn" onclick="switchTab('dayA')">Day A</button>
             <button class="tab-btn" onclick="switchTab('dayB')">Day B</button>
+            <button class="tab-btn" onclick="switchTab('dayC')">Day C</button>
+            <button class="tab-btn" onclick="switchTab('stats')">Stats</button>
             <button class="tab-btn" onclick="switchTab('history')">History</button>
         </div>
     </div>
@@ -1103,68 +1113,59 @@
     <div id="homeTab" class="tab-content">
         <div style="padding: 20px;">
             <!-- Hero Section -->
-            <div style="background: linear-gradient(135deg, var(--niue-blue) 0%, var(--light-blue) 100%); border-radius: 16px; padding: 40px 24px; text-align: center; margin-bottom: 24px; box-shadow: 0 4px 20px var(--shadow); position: relative; overflow: hidden;">
-                <div style="font-size: 64px; margin-bottom: 16px;">🏉</div>
-                <div style="font-family: 'Bebas Neue', sans-serif; font-size: 42px; color: white; letter-spacing: 2px; margin-bottom: 8px;">Rugby Strength</div>
-                <div style="color: var(--niue-yellow); font-weight: 600; font-size: 14px; letter-spacing: 1px;">TRACK • TRAIN • DOMINATE</div>
-            </div>
-
-            <!-- Quick Stats -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px;">
-                <button onclick="showWeeklyBreakdown()" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 12px var(--shadow); text-align: center; border: 2px solid var(--niue-yellow); cursor: pointer; transition: all 0.3s ease;">
-                    <div style="font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--niue-blue);" id="homeWeeklyWorkouts">0</div>
-                    <div style="font-size: 11px; color: var(--light-blue); font-weight: 600; text-transform: uppercase; margin-bottom: 4px;">Workouts This Week</div>
-                    <div style="font-size: 10px; color: #888;">Tap to view</div>
-                </button>
-                <button onclick="showPRList()" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 12px var(--shadow); text-align: center; border: 2px solid var(--niue-yellow); cursor: pointer; transition: all 0.3s ease;">
-                    <div style="font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--niue-blue);" id="homeTotalPRs">0</div>
-                    <div style="font-size: 11px; color: var(--light-blue); font-weight: 600; text-transform: uppercase; margin-bottom: 4px;">Personal Records</div>
-                    <div style="font-size: 10px; color: #888;">Tap to view</div>
-                </button>
-                <button onclick="showBestLifts()" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 12px var(--shadow); text-align: center; border: 2px solid var(--niue-blue); cursor: pointer; transition: all 0.3s ease;">
-                    <div style="font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--niue-blue);" id="homeBestLifts">0</div>
-                    <div style="font-size: 11px; color: var(--light-blue); font-weight: 600; text-transform: uppercase; margin-bottom: 4px;">Best Lifts (1RM)</div>
-                    <div style="font-size: 10px; color: #888;">Tap to view</div>
-                </button>
-                <button onclick="showStrengthScore()" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 12px var(--shadow); text-align: center; border: 2px solid var(--niue-blue); cursor: pointer; transition: all 0.3s ease;">
-                    <div style="font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--niue-blue);" id="homeStrengthScore">0</div>
-                    <div style="font-size: 11px; color: var(--light-blue); font-weight: 600; text-transform: uppercase; margin-bottom: 4px;">Strength Score</div>
-                    <div style="font-size: 11px; color: #888; margin-top: 4px;" id="homeScoreTrend"></div>
-                    <div style="font-size: 10px; color: #888; margin-top: 4px;">Tap to learn</div>
-                </button>
+            <div style="background: linear-gradient(135deg, var(--ravens-purple) 0%, var(--light-purple) 100%); border-radius: 16px; padding: 40px 24px; text-align: center; margin-bottom: 24px; box-shadow: 0 4px 20px var(--shadow); position: relative; overflow: hidden;">
+                <div style="font-size: 64px; margin-bottom: 16px;">🏋🏾</div>
+                <div style="font-family: 'Bebas Neue', sans-serif; font-size: 42px; color: white; letter-spacing: 2px; margin-bottom: 8px;">Dad Strength</div>
+                <div style="color: var(--ravens-gold); font-weight: 600; font-size: 14px; letter-spacing: 1px;">STOP BEING A BITCH AND COME ON!</div>
             </div>
 
             <!-- Navigation Cards -->
             <div style="display: grid; gap: 12px; margin-bottom: 24px;">
-                <button onclick="goToDay('A')" style="padding: 20px; background: white; border: 2px solid var(--niue-yellow); border-radius: 12px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 12px var(--shadow); display: flex; justify-content: space-between; align-items: center;">
+                <button onclick="goToDay('A')" style="padding: 20px; background: white; border: 2px solid var(--ravens-gold); border-radius: 12px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 12px var(--shadow); display: flex; justify-content: space-between; align-items: center;">
                     <div style="text-align: left;">
-                        <div style="font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--niue-blue); letter-spacing: 1px;">Day A Workout</div>
-                        <div style="font-size: 13px; color: var(--light-blue); font-weight: 500;">Leg-heavy • 8 exercises</div>
+                        <div style="font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--ravens-purple); letter-spacing: 1px;">Day A</div>
+                        <div style="font-size: 13px; color: var(--light-purple); font-weight: 500;">Upper + Hinge • 5 exercises</div>
                     </div>
                     <div style="font-size: 40px;">💪</div>
                 </button>
 
-                <button onclick="goToDay('B')" style="padding: 20px; background: white; border: 2px solid var(--niue-blue); border-radius: 12px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 12px var(--shadow); display: flex; justify-content: space-between; align-items: center;">
+                <button onclick="goToDay('B')" style="padding: 20px; background: white; border: 2px solid var(--ravens-purple); border-radius: 12px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 12px var(--shadow); display: flex; justify-content: space-between; align-items: center;">
                     <div style="text-align: left;">
-                        <div style="font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--niue-blue); letter-spacing: 1px;">Day B Workout</div>
-                        <div style="font-size: 13px; color: var(--light-blue); font-weight: 500;">Upper body • 8 exercises</div>
+                        <div style="font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--ravens-purple); letter-spacing: 1px;">Day B</div>
+                        <div style="font-size: 13px; color: var(--light-purple); font-weight: 500;">Upper + Core • 6 exercises</div>
                     </div>
                     <div style="font-size: 40px;">🔥</div>
                 </button>
 
-                <button onclick="goToHistory()" style="padding: 20px; background: linear-gradient(135deg, var(--niue-blue) 0%, var(--light-blue) 100%); border: none; border-radius: 12px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 12px var(--shadow); display: flex; justify-content: space-between; align-items: center;">
+                <button onclick="goToDay('C')" style="padding: 20px; background: white; border: 2px solid var(--ravens-gold); border-radius: 12px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 12px var(--shadow); display: flex; justify-content: space-between; align-items: center;">
+                    <div style="text-align: left;">
+                        <div style="font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--ravens-purple); letter-spacing: 1px;">Day C</div>
+                        <div style="font-size: 13px; color: var(--light-purple); font-weight: 500;">Hinge + Upper • 6 exercises</div>
+                    </div>
+                    <div style="font-size: 40px;">⚡</div>
+                </button>
+
+                <button onclick="goToStats()" style="padding: 20px; background: linear-gradient(135deg, var(--ravens-gold) 0%, #c4961a 100%); border: none; border-radius: 12px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 12px var(--shadow); display: flex; justify-content: space-between; align-items: center;">
+                    <div style="text-align: left;">
+                        <div style="font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: white; letter-spacing: 1px;">View Stats</div>
+                        <div style="font-size: 13px; color: var(--ravens-purple); font-weight: 600;">Weight & P/W Ratios</div>
+                    </div>
+                    <div style="font-size: 40px;">📈</div>
+                </button>
+
+                <button onclick="goToHistory()" style="padding: 20px; background: linear-gradient(135deg, var(--ravens-purple) 0%, var(--light-purple) 100%); border: none; border-radius: 12px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 12px var(--shadow); display: flex; justify-content: space-between; align-items: center;">
                     <div style="text-align: left;">
                         <div style="font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: white; letter-spacing: 1px;">View History</div>
-                        <div style="font-size: 13px; color: var(--niue-yellow); font-weight: 600;">All workouts & stats</div>
+                        <div style="font-size: 13px; color: var(--ravens-gold); font-weight: 600;">All workouts & logs</div>
                     </div>
                     <div style="font-size: 40px;">📊</div>
                 </button>
             </div>
 
             <!-- Recent Activity -->
-            <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 12px var(--shadow); border-left: 5px solid var(--niue-yellow);">
-                <div style="font-family: 'Bebas Neue', sans-serif; font-size: 18px; color: var(--niue-blue); margin-bottom: 12px; letter-spacing: 0.5px;">Recent Activity</div>
-                <div id="homeRecentActivity" style="font-size: 14px; color: var(--light-blue);"></div>
+            <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 12px var(--shadow); border-left: 5px solid var(--ravens-gold);">
+                <div style="font-family: 'Bebas Neue', sans-serif; font-size: 18px; color: var(--ravens-purple); margin-bottom: 12px; letter-spacing: 0.5px;">Recent Activity</div>
+                <div id="homeRecentActivity" style="font-size: 14px; color: var(--light-purple);"></div>
             </div>
         </div>
     </div>
@@ -1205,24 +1206,24 @@
         <div class="history-container">
             <!-- Stats Dashboard -->
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 20px 24px;">
-                <button onclick="showWeeklyBreakdown()" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 12px var(--shadow); text-align: center; border: 2px solid var(--niue-yellow); cursor: pointer; transition: all 0.3s ease;">
-                    <div style="font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--niue-blue);" id="historyWeeklyWorkouts">0</div>
-                    <div style="font-size: 11px; color: var(--light-blue); font-weight: 600; text-transform: uppercase; margin-bottom: 4px;">Workouts This Week</div>
+                <button onclick="showWeeklyBreakdown()" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 12px var(--shadow); text-align: center; border: 2px solid var(--ravens-gold); cursor: pointer; transition: all 0.3s ease;">
+                    <div style="font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--ravens-purple);" id="historyWeeklyWorkouts">0</div>
+                    <div style="font-size: 11px; color: var(--light-purple); font-weight: 600; text-transform: uppercase; margin-bottom: 4px;">Workouts This Week</div>
                     <div style="font-size: 10px; color: #888;">Tap to view</div>
                 </button>
-                <button onclick="showPRList()" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 12px var(--shadow); text-align: center; border: 2px solid var(--niue-yellow); cursor: pointer; transition: all 0.3s ease;">
-                    <div style="font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--niue-blue);" id="historyTotalPRs">0</div>
-                    <div style="font-size: 11px; color: var(--light-blue); font-weight: 600; text-transform: uppercase; margin-bottom: 4px;">Personal Records</div>
+                <button onclick="showPRList()" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 12px var(--shadow); text-align: center; border: 2px solid var(--ravens-gold); cursor: pointer; transition: all 0.3s ease;">
+                    <div style="font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--ravens-purple);" id="historyTotalPRs">0</div>
+                    <div style="font-size: 11px; color: var(--light-purple); font-weight: 600; text-transform: uppercase; margin-bottom: 4px;">Personal Records</div>
                     <div style="font-size: 10px; color: #888;">Tap to view</div>
                 </button>
-                <button onclick="showBestLifts()" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 12px var(--shadow); text-align: center; border: 2px solid var(--niue-blue); cursor: pointer; transition: all 0.3s ease;">
-                    <div style="font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--niue-blue);" id="historyBestLifts">0</div>
-                    <div style="font-size: 11px; color: var(--light-blue); font-weight: 600; text-transform: uppercase; margin-bottom: 4px;">Best Lifts (1RM)</div>
+                <button onclick="showBestLifts()" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 12px var(--shadow); text-align: center; border: 2px solid var(--ravens-purple); cursor: pointer; transition: all 0.3s ease;">
+                    <div style="font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--ravens-purple);" id="historyBestLifts">0</div>
+                    <div style="font-size: 11px; color: var(--light-purple); font-weight: 600; text-transform: uppercase; margin-bottom: 4px;">Best Lifts (1RM)</div>
                     <div style="font-size: 10px; color: #888;">Tap to view</div>
                 </button>
-                <button onclick="showStrengthScore()" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 12px var(--shadow); text-align: center; border: 2px solid var(--niue-blue); cursor: pointer; transition: all 0.3s ease;">
-                    <div style="font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--niue-blue);" id="historyStrengthScore">0</div>
-                    <div style="font-size: 11px; color: var(--light-blue); font-weight: 600; text-transform: uppercase; margin-bottom: 4px;">Strength Score</div>
+                <button onclick="showStrengthScore()" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 12px var(--shadow); text-align: center; border: 2px solid var(--ravens-purple); cursor: pointer; transition: all 0.3s ease;">
+                    <div style="font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--ravens-purple);" id="historyStrengthScore">0</div>
+                    <div style="font-size: 11px; color: var(--light-purple); font-weight: 600; text-transform: uppercase; margin-bottom: 4px;">Strength Score</div>
                     <div style="font-size: 11px; color: #888; margin-top: 4px;" id="historyScoreTrend"></div>
                     <div style="font-size: 10px; color: #888; margin-top: 4px;">Tap to learn</div>
                 </button>
@@ -1257,17 +1258,75 @@
                         <button class="filter-btn active" onclick="filterLog('all')">All</button>
                         <button class="filter-btn" onclick="filterLog('dayA')">Day A</button>
                         <button class="filter-btn" onclick="filterLog('dayB')">Day B</button>
+                        <button class="filter-btn" onclick="filterLog('dayC')">Day C</button>
                     </div>
                 </div>
                 <div style="display: flex; gap: 8px; margin-bottom: 16px;">
-                    <button onclick="exportData()" style="flex: 1; padding: 12px; background: var(--niue-blue); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                    <button onclick="exportData()" style="flex: 1; padding: 12px; background: var(--ravens-purple); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
                         📥 Export Data
                     </button>
-                    <button onclick="importData()" style="flex: 1; padding: 12px; background: var(--light-blue); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                    <button onclick="importData()" style="flex: 1; padding: 12px; background: var(--light-purple); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
                         📤 Import Data
                     </button>
                 </div>
                 <div id="exerciseLogContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Tab -->
+    <div id="statsTab" class="tab-content" style="display: none;">
+        <div style="padding: 20px;">
+            <!-- Quick Stats Grid -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px;">
+                <button onclick="showWeeklyBreakdown()" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 12px var(--shadow); text-align: center; border: 2px solid var(--ravens-gold); cursor: pointer; transition: all 0.3s ease;">
+                    <div style="font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--ravens-purple);" id="statsWeeklyWorkouts">0</div>
+                    <div style="font-size: 11px; color: var(--light-purple); font-weight: 600; text-transform: uppercase; margin-bottom: 4px;">Workouts This Week</div>
+                    <div style="font-size: 10px; color: #888;">Tap to view</div>
+                </button>
+                <button onclick="showPRList()" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 12px var(--shadow); text-align: center; border: 2px solid var(--ravens-gold); cursor: pointer; transition: all 0.3s ease;">
+                    <div style="font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--ravens-purple);" id="statsTotalPRs">0</div>
+                    <div style="font-size: 11px; color: var(--light-purple); font-weight: 600; text-transform: uppercase; margin-bottom: 4px;">Personal Records</div>
+                    <div style="font-size: 10px; color: #888;">Tap to view</div>
+                </button>
+                <button onclick="showBestLifts()" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 12px var(--shadow); text-align: center; border: 2px solid var(--ravens-purple); cursor: pointer; transition: all 0.3s ease;">
+                    <div style="font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--ravens-purple);" id="statsBestLifts">0</div>
+                    <div style="font-size: 11px; color: var(--light-purple); font-weight: 600; text-transform: uppercase; margin-bottom: 4px;">Best Lifts (1RM)</div>
+                    <div style="font-size: 10px; color: #888;">Tap to view</div>
+                </button>
+                <button onclick="showStrengthScore()" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 12px var(--shadow); text-align: center; border: 2px solid var(--ravens-purple); cursor: pointer; transition: all 0.3s ease;">
+                    <div style="font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--ravens-purple);" id="statsStrengthScore">0</div>
+                    <div style="font-size: 11px; color: var(--light-purple); font-weight: 600; text-transform: uppercase; margin-bottom: 4px;">Strength Score</div>
+                    <div style="font-size: 11px; color: #888; margin-top: 4px;" id="statsScoreTrend"></div>
+                    <div style="font-size: 10px; color: #888; margin-top: 4px;">Tap to learn</div>
+                </button>
+            </div>
+
+            <!-- Weight Tracker -->
+            <div class="weight-tracker-card">
+                <div style="font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--ravens-purple); margin-bottom: 12px; letter-spacing: 0.5px;">⚖️ Body Weight Tracker</div>
+                <div id="statsCurrentWeightDisplay" style="text-align: center; padding: 16px; background: var(--pale-purple); border-radius: 10px; margin-bottom: 16px;">
+                    <div style="font-size: 12px; color: var(--light-purple); font-weight: 600; margin-bottom: 4px;">CURRENT WEIGHT</div>
+                    <div style="font-family: 'Bebas Neue', sans-serif; font-size: 48px; color: var(--ravens-purple);" id="statsCurrentWeightValue">—</div>
+                    <div style="font-size: 12px; color: #888;" id="statsCurrentWeightDate">No weight logged yet</div>
+                </div>
+                <div class="weight-input-section">
+                    <div class="weight-input-group">
+                        <div class="weight-input-label">New Weight (kg)</div>
+                        <input type="number" step="0.1" class="weight-input" id="statsWeightInput" placeholder="75.5">
+                    </div>
+                    <button class="weight-save-btn" onclick="saveWeight()">Log Weight</button>
+                </div>
+                <div style="margin-top: 16px;">
+                    <button onclick="toggleWeightHistory()" style="width: 100%; padding: 10px; background: transparent; border: 2px solid var(--ravens-gold); color: var(--ravens-gold); border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">View History</button>
+                    <div id="weightHistoryList" style="margin-top: 12px; display: none;"></div>
+                </div>
+            </div>
+
+            <!-- Power-to-Weight Ratios -->
+            <div class="weight-tracker-card" id="powerToWeightCard" style="display: none;">
+                <div style="font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--ravens-purple); margin-bottom: 16px; letter-spacing: 0.5px;">💪 Power-to-Weight Ratios</div>
+                <div id="powerToWeightGrid" class="pw-ratio-grid"></div>
             </div>
         </div>
     </div>
@@ -1379,33 +1438,42 @@
     <script>
         const workoutData = {
             A: {
-    title: "Day A",
-    description: "Leg-heavy day to allow recovery over the week",
-    mobility: "Elevated Pigeon + Couch Stretch (2 × 45s each)",
-    exercises: [
-        { name: "Zercher Squat", sets: 3, reps: "8" },
-        { name: "Romanian Deadlift", sets: 3, reps: "8" },
-        { name: "Zercher Lateral Lunge", sets: 2, reps: "8/side" },
-        { name: "Lat Pulldown", sets: 3, reps: "10–12" },
-        { name: "Incline DB Bench Press", sets: 3, reps: "10" },
-        { name: "Rear Delt Flys", sets: 3, reps: "12" },  // ← Fixed: removed note field
-        { name: "Hanging Knee Raises", sets: 2, reps: "10" },
-        { name: "4-Way Neck", sets: 3, reps: "12–15/direction" }  // ← Good format!
-    ]
-}
+                title: "Day A",
+                description: "Upper + Hinge Focus",
+                mobility: "Elevated Pigeon 2×45s/side, Elephant Walks 2×8",
+                exercises: [
+                    { name: "Barbell Bench Press", sets: 4, reps: "6–8" },
+                    { name: "Lat Pulldown", sets: 4, reps: "8–10" },
+                    { name: "Seated Cable Row", sets: 3, reps: "8–12" },
+                    { name: "Deadlift", sets: 3, reps: "6–8" },
+                    { name: "Single-Leg RDL", sets: 3, reps: "8–10/side" }
+                    { name: "4-Way Neck", sets: 3, reps: "12–15/direction" }  
+                ]
+            },
             B: {
                 title: "Day B",
-                description: "Lighter leg day, more upper body focus before weekend sport",
-                mobility: "Elephant Walks (2 × 10/side) + Weighted Butterfly (2 × 45s)",
+                description: "Upper + Core Focus",
+                mobility: "90/90 Rotations 2×8/side, Weighted Butterfly 2×45s",
                 exercises: [
-                    { name: "Deadlift", sets: 3, reps: 5 },
-                    { name: "Zercher Step-Ups", sets: 3, reps: "6/side" },
-                    { name: "Barbell Bench Press", sets: 3, reps: "6–8" },
-                    { name: "Barbell Shoulder Press", sets: 3, reps: 8 },
-                    { name: "Bent-Over Barbell Row", sets: 3, reps: 8 },
-                    { name: "Face Pulls (band)", sets: 2, reps: 15, note: "Light" },
-                    { name: "Plank Pull-Through", sets: 2, reps: "8/side" },
-                    { name: "4-Way Neck", sets: 3, reps: "12–15 each direction" }
+                    { name: "Incline DB Bench Press", sets: 3, reps: "8–12" },
+                    { name: "Seated DB Shoulder Press", sets: 3, reps: "8–10" },
+                    { name: "Lat Pulldown", sets: 3, reps: "8–10" },
+                    { name: "Face Pulls", sets: 3, reps: "15–20" },
+                    { name: "Cable Hip Flexor Raise", sets: 3, reps: "12–15" },
+                    { name: "Dead Bug", sets: 3, reps: "8/side" }
+                ]
+            },
+            C: {
+                title: "Day C",
+                description: "Hinge + Upper Balance",
+                mobility: "Couch Stretch 2×45s/side, Elevated Pigeon 2×45s/side",
+                exercises: [
+                    { name: "Romanian Deadlift", sets: 3, reps: "8–10" },
+                    { name: "Good Mornings", sets: 3, reps: "10" },
+                    { name: "Barbell Shoulder Press", sets: 3, reps: "6–10" },
+                    { name: "Rear-Delt Fly", sets: 3, reps: "15–20" },
+                    { name: "DB Row", sets: 3, reps: "8–12/side" },
+                    { name: "Plank Pull-Throughs", sets: 3, reps: "8–10/side" }
                 ]
             }
         };
@@ -1425,6 +1493,245 @@
         let mobilityTimerActive = false;
         let currentLogFilter = 'all';
 
+        // ============================================
+        // SESSION PERSISTENCE & BROWSER HISTORY
+        // ============================================
+        
+        // Save workout session state to localStorage
+        function saveSessionState() {
+            if (!workoutActive) return;
+            const state = {
+                workoutActive,
+                currentDay,
+                sessionStartTime,
+                lastUpdate: Date.now()
+            };
+            localStorage.setItem('activeSession', JSON.stringify(state));
+        }
+
+        // Restore session on page load
+        function restoreSessionState() {
+            const saved = localStorage.getItem('activeSession');
+            if (!saved) return false;
+            
+            const state = JSON.parse(saved);
+            const timeSinceUpdate = Date.now() - state.lastUpdate;
+            
+            // If session was less than 4 hours ago, offer to resume
+            if (timeSinceUpdate < 4 * 60 * 60 * 1000) {
+                if (confirm('You have an active workout session. Resume it?')) {
+                    workoutActive = state.workoutActive;
+                    currentDay = state.currentDay;
+                    sessionStartTime = state.sessionStartTime;
+                    
+                    const btn = document.getElementById('startWorkoutBtn');
+                    const timer = document.getElementById('sessionTimer');
+                    const progress = document.getElementById('workoutProgress');
+                    
+                    btn.textContent = 'End Workout';
+                    btn.classList.add('active');
+                    timer.classList.add('active');
+                    progress.style.display = 'block';
+                    sessionInterval = setInterval(updateSessionTimer, 1000);
+                    
+                    goToDay(currentDay);
+                    updateProgress();
+                    return true;
+                }
+            }
+            
+            localStorage.removeItem('activeSession');
+            return false;
+        }
+
+        function clearSessionState() {
+            localStorage.removeItem('activeSession');
+        }
+
+        // Auto-save session every 5 seconds when active
+        setInterval(() => {
+            if (workoutActive) saveSessionState();
+        }, 5000);
+
+        // Browser history management for Android back button
+        function pushHistoryState(page, data = {}) {
+            const state = { page, ...data };
+            history.pushState(state, '', '');
+        }
+
+        window.addEventListener('popstate', function(event) {
+            if (event.state) {
+                const page = event.state.page;
+                
+                if (page === 'home') {
+                    document.getElementById('homeTab').style.display = 'block';
+                    document.getElementById('workoutTab').style.display = 'none';
+                    document.getElementById('statsTab').style.display = 'none';
+                    document.getElementById('historyTab').style.display = 'none';
+                    document.getElementById('tabNavigation').style.display = 'none';
+                    document.getElementById('backToHome').style.display = 'none';
+                    renderHome();
+                } else if (page === 'workout') {
+                    currentDay = event.state.day;
+                    document.getElementById('homeTab').style.display = 'none';
+                    document.getElementById('workoutTab').style.display = 'block';
+                    document.getElementById('statsTab').style.display = 'none';
+                    document.getElementById('historyTab').style.display = 'none';
+                    renderDay();
+                } else if (page === 'stats') {
+                    document.getElementById('homeTab').style.display = 'none';
+                    document.getElementById('workoutTab').style.display = 'none';
+                    document.getElementById('statsTab').style.display = 'block';
+                    document.getElementById('historyTab').style.display = 'none';
+                    renderStats();
+                } else if (page === 'history') {
+                    document.getElementById('homeTab').style.display = 'none';
+                    document.getElementById('workoutTab').style.display = 'none';
+                    document.getElementById('statsTab').style.display = 'none';
+                    document.getElementById('historyTab').style.display = 'block';
+                    renderHistory();
+                } else if (page === 'modal-close') {
+                    closeModal();
+                }
+            } else {
+                if (document.getElementById('exerciseModal').classList.contains('active')) {
+                    closeModal();
+                } else if (document.getElementById('summaryModal').classList.contains('active')) {
+                    closeSummary();
+                }
+            }
+        });
+
+        // Weight Tracking Functions
+        function saveWeight() {
+            const weightInput = document.getElementById('statsWeightInput');
+            const weight = parseFloat(weightInput.value);
+            if (!weight || weight <= 0) { alert('Please enter a valid weight!'); return; }
+            let weightHistory = JSON.parse(localStorage.getItem('weightHistory') || '[]');
+            weightHistory.push({ weight: weight, date: new Date().toISOString(), id: Date.now().toString() });
+            localStorage.setItem('weightHistory', JSON.stringify(weightHistory));
+            weightInput.value = '';
+            displayCurrentWeight();
+            calculatePowerToWeight();
+            alert('✅ Weight logged!');
+        }
+
+        function displayCurrentWeight() {
+            const weightHistory = JSON.parse(localStorage.getItem('weightHistory') || '[]');
+            if (weightHistory.length === 0) {
+                document.getElementById('statsCurrentWeightValue').textContent = '—';
+                document.getElementById('statsCurrentWeightDate').textContent = 'No weight logged yet';
+                return;
+            }
+            const current = weightHistory.sort((a, b) => new Date(b.date) - new Date(a.date))[0];
+            document.getElementById('statsCurrentWeightValue').textContent = current.weight.toFixed(1) + 'kg';
+            const daysAgo = Math.floor((Date.now() - new Date(current.date).getTime()) / (1000 * 60 * 60 * 24));
+            let dateText = daysAgo === 0 ? 'Logged today' : daysAgo === 1 ? 'Logged yesterday' : daysAgo < 7 ? `Logged ${daysAgo} days ago` : `Logged ${new Date(current.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
+            document.getElementById('statsCurrentWeightDate').textContent = dateText;
+        }
+
+        function toggleWeightHistory() {
+            const historyList = document.getElementById('weightHistoryList');
+            if (historyList.style.display !== 'none') { historyList.style.display = 'none'; return; }
+            const weightHistory = JSON.parse(localStorage.getItem('weightHistory') || '[]');
+            if (weightHistory.length === 0) { historyList.innerHTML = '<div style="text-align: center; color: #888; padding: 20px;">No weight entries yet</div>'; historyList.style.display = 'block'; return; }
+            const recent = weightHistory.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 10);
+            historyList.innerHTML = recent.map(entry => {
+                const dateStr = new Date(entry.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: new Date(entry.date).getFullYear() !== new Date().getFullYear() ? 'numeric' : undefined });
+                return `<div class="weight-history-item"><div class="weight-history-date">${dateStr}</div><div class="weight-history-value">${entry.weight.toFixed(1)}kg</div></div>`;
+            }).join('');
+            historyList.style.display = 'block';
+        }
+
+        function calculatePowerToWeight() {
+            const weightHistory = JSON.parse(localStorage.getItem('weightHistory') || '[]');
+            const workoutHistory = JSON.parse(localStorage.getItem('workoutHistory') || '[]');
+            
+            if (weightHistory.length === 0) {
+                document.getElementById('powerToWeightCard').style.display = 'none';
+                return;
+            }
+            
+            const currentWeight = weightHistory.sort((a, b) => new Date(b.date) - new Date(a.date))[0].weight;
+            
+            const mainLifts = [
+                { name: 'Deadlift', searchKey: 'deadlift', standardKey: 'deadlift' },
+                { name: 'Bench Press', searchKey: 'bench', standardKey: 'barbell bench press' },
+                { name: 'Shoulder Press', searchKey: 'shoulder press', standardKey: 'barbell shoulder press' },
+                { name: 'DB Row', searchKey: 'row', standardKey: 'db row' }
+            ];
+            
+            const ratios = [];
+            
+            mainLifts.forEach(lift => {
+                // Find workouts matching this lift
+                const liftWorkouts = workoutHistory.filter(w => 
+                    w.exercise.toLowerCase().includes(lift.searchKey)
+                );
+                
+                if (liftWorkouts.length === 0) return;
+                
+                // Find max 1RM across all workouts
+                let max1RM = 0;
+                liftWorkouts.forEach(workout => {
+                    const workout1RM = Math.max(...workout.sets.map(s => calculate1RM(s.weight, s.reps)));
+                    if (workout1RM > max1RM) max1RM = workout1RM;
+                });
+                
+                // Calculate ratio and determine tier
+                const ratio = max1RM / currentWeight;
+                const tier = getPowerToWeightTier(lift.standardKey, ratio);
+                
+                ratios.push({ 
+                    name: lift.name, 
+                    ratio: ratio.toFixed(2), 
+                    tier: tier, 
+                    rm: Math.round(max1RM) 
+                });
+            });
+            
+            if (ratios.length === 0) {
+                document.getElementById('powerToWeightCard').style.display = 'none';
+                return;
+            }
+            
+            // Render ratio cards
+            document.getElementById('powerToWeightGrid').innerHTML = ratios.map(r => 
+                `<div class="pw-ratio-card">
+                    <div class="pw-ratio-value">${r.ratio}x</div>
+                    <div class="pw-ratio-label">${r.name}</div>
+                    <div class="pw-ratio-tier ${r.tier.toLowerCase()}">${r.tier}</div>
+                    <div style="font-size: 11px; color: #888; margin-top: 4px;">${r.rm}kg 1RM</div>
+                </div>`
+            ).join('');
+            
+            document.getElementById('powerToWeightCard').style.display = 'block';
+        }
+
+        function getPowerToWeightTier(liftKey, ratio) {
+            const standards = { 
+                'barbell bench press': { built: 0.75, strong: 1.0, veteran: 1.4, elite: 1.75 },
+                'barbell shoulder press': { built: 0.5, strong: 0.7, veteran: 0.9, elite: 1.1 },
+                'db row': { built: 0.30, strong: 0.45, veteran: 0.60, elite: 0.75 },
+                'deadlift': { built: 1.25, strong: 1.75, veteran: 2.25, elite: 2.75 }
+            };
+            
+            // Normalize key to lowercase for matching
+            const normalizedKey = liftKey.toLowerCase();
+            const standard = standards[normalizedKey];
+            
+            if (!standard) {
+                console.warn(`Lift "${liftKey}" not found in standards. Defaulting to deadlift.`);
+                return getPowerToWeightTier('deadlift', ratio);
+            }
+            
+            if (ratio < standard.built) return 'Rookie';
+            if (ratio < standard.strong) return 'Built';
+            if (ratio < standard.veteran) return 'Strong';
+            if (ratio < standard.elite) return 'Veteran';
+            return 'Elite';
+        }
+
         function goHome() {
             // Stop workout if active
             if (workoutActive) {
@@ -1435,6 +1742,7 @@
             // Hide all tabs except home
             document.getElementById('homeTab').style.display = 'block';
             document.getElementById('workoutTab').style.display = 'none';
+            document.getElementById('statsTab').style.display = 'none';
             document.getElementById('historyTab').style.display = 'none';
             
             // Hide ribbon and back button
@@ -1443,6 +1751,7 @@
             
             // Update home screen
             renderHome();
+            pushHistoryState('home');
         }
 
         function goToDay(day) {
@@ -1451,6 +1760,7 @@
             // Show workout tab
             document.getElementById('homeTab').style.display = 'none';
             document.getElementById('workoutTab').style.display = 'block';
+            document.getElementById('statsTab').style.display = 'none';
             document.getElementById('historyTab').style.display = 'none';
             
             // Show ribbon and back button
@@ -1461,35 +1771,57 @@
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             if (day === 'A') {
                 document.querySelectorAll('.tab-btn')[0].classList.add('active');
-            } else {
+            } else if (day === 'B') {
                 document.querySelectorAll('.tab-btn')[1].classList.add('active');
+            } else if (day === 'C') {
+                document.querySelectorAll('.tab-btn')[2].classList.add('active');
             }
             
             renderDay();
+            pushHistoryState('workout', { day });
+        }
+
+        function goToStats() {
+            document.getElementById('homeTab').style.display = 'none';
+            document.getElementById('workoutTab').style.display = 'none';
+            document.getElementById('statsTab').style.display = 'block';
+            document.getElementById('historyTab').style.display = 'none';
+            
+            document.getElementById('tabNavigation').style.display = 'flex';
+            document.getElementById('backToHome').style.display = 'block';
+            
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-btn')[3].classList.add('active');
+            
+            renderStats();
+            pushHistoryState('stats');
         }
 
         function goToHistory() {
             // Show history tab
             document.getElementById('homeTab').style.display = 'none';
             document.getElementById('workoutTab').style.display = 'none';
+            document.getElementById('statsTab').style.display = 'none';
             document.getElementById('historyTab').style.display = 'block';
             
             // Show ribbon and back button
             document.getElementById('tabNavigation').style.display = 'flex';
             document.getElementById('backToHome').style.display = 'block';
             
-            // Set active tab
+            // Set active tab (History is now the 5th button, index 4)
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.tab-btn')[2].classList.add('active');
+            document.querySelectorAll('.tab-btn')[4].classList.add('active');
             
             renderHistory();
+            pushHistoryState('history');
         }
 
         function switchTab(tab) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
 
-            document.getElementById('workoutTab').style.display = (tab === 'dayA' || tab === 'dayB') ? 'block' : 'none';
+            document.getElementById('workoutTab').style.display = (tab === 'dayA' || tab === 'dayB' || tab === 'dayC') ? 'block' : 'none';
+            document.getElementById('statsTab').style.display = tab === 'stats' ? 'block' : 'none';
             document.getElementById('historyTab').style.display = tab === 'history' ? 'block' : 'none';
 
             if (tab === 'dayA') {
@@ -1498,6 +1830,11 @@
             } else if (tab === 'dayB') {
                 currentDay = 'B';
                 renderDay();
+            } else if (tab === 'dayC') {
+                currentDay = 'C';
+                renderDay();
+            } else if (tab === 'stats') {
+                renderStats();
             } else if (tab === 'history') {
                 renderHistory();
             }
@@ -1506,34 +1843,7 @@
         function renderHome() {
             const history = JSON.parse(localStorage.getItem('workoutHistory') || '[]');
             
-            // Calculate stats
-            const thisWeek = getThisWeekWorkouts(history);
-            const lastWeek = getLastWeekWorkouts(history);
-            const allPRs = countPRs(history);
-            
-            const thisWeekCount = new Set(thisWeek.map(w => new Date(w.date).toDateString())).size;
-            const strengthScore = calculateStrengthScore(history);
-            const lastWeekScore = calculateStrengthScore(lastWeek);
-            const scoreChange = strengthScore - lastWeekScore;
-            
-            // Update stats
-            document.getElementById('homeWeeklyWorkouts').textContent = thisWeekCount;
-            document.getElementById('homeTotalPRs').textContent = allPRs;
-            
-            // Count unique exercises for Best Lifts
-            const uniqueExercises = new Set(history.map(w => w.exercise)).size;
-            document.getElementById('homeBestLifts').textContent = uniqueExercises;
-            
-            document.getElementById('homeStrengthScore').textContent = strengthScore;
-            
-            let trendText = '';
-            if (scoreChange > 0) trendText = `↑ ${scoreChange} from last week`;
-            else if (scoreChange < 0) trendText = `↓ ${Math.abs(scoreChange)} from last week`;
-            else trendText = 'Same as last week';
-            document.getElementById('homeScoreTrend').textContent = trendText;
-            document.getElementById('homeScoreTrend').style.color = scoreChange > 0 ? 'var(--green)' : scoreChange < 0 ? 'var(--red)' : '#888';
-            
-            // Recent activity
+            // Recent activity only (stats moved to Stats tab)
             const recentWorkouts = history
                 .sort((a, b) => new Date(b.date) - new Date(a.date))
                 .slice(0, 5);
@@ -1562,12 +1872,12 @@
                         const dateStr = isToday ? 'Today' : date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
                         
                         return `
-                            <div style="padding: 12px; background: var(--pale-yellow); border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+                            <div style="padding: 12px; background: var(--pale-purple); border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
                                 <div>
-                                    <div style="font-weight: 600; color: var(--niue-blue);">${dateStr}</div>
+                                    <div style="font-weight: 600; color: var(--ravens-purple);">${dateStr}</div>
                                     <div style="font-size: 13px; color: #888;">${session.count} exercises logged</div>
                                 </div>
-                                <div style="background: var(--niue-blue); color: white; padding: 4px 12px; border-radius: 6px; font-weight: 600; font-size: 12px;">
+                                <div style="background: var(--ravens-purple); color: white; padding: 4px 12px; border-radius: 6px; font-weight: 600; font-size: 12px;">
                                     Day ${session.day}
                                 </div>
                             </div>
@@ -1594,7 +1904,7 @@
             
             let content = `
                 <div style="padding: 24px;">
-                    <div style="font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--niue-blue); margin-bottom: 20px; letter-spacing: 1px;">This Week's Workouts</div>
+                    <div style="font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--ravens-purple); margin-bottom: 20px; letter-spacing: 1px;">This Week's Workouts</div>
             `;
             
             if (sortedSessions.length === 0) {
@@ -1606,12 +1916,12 @@
                         sum + ex.sets.reduce((s, set) => s + (set.weight * set.reps), 0), 0
                     );
                     content += `
-                        <div onclick="openSessionFromWeekly(${idx})" style="background: var(--pale-yellow); padding: 16px; border-radius: 10px; margin-bottom: 12px; border-left: 4px solid var(--niue-yellow); cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.transform='translateX(4px)'" onmouseout="this.style.transform='translateX(0)'">
+                        <div onclick="openSessionFromWeekly(${idx})" style="background: var(--pale-purple); padding: 16px; border-radius: 10px; margin-bottom: 12px; border-left: 4px solid var(--ravens-gold); cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.transform='translateX(4px)'" onmouseout="this.style.transform='translateX(0)'">
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                                <div style="font-weight: 700; color: var(--niue-blue);">${date} - Day ${session.day}</div>
+                                <div style="font-weight: 700; color: var(--ravens-purple);">${date} - Day ${session.day}</div>
                                 <div style="font-size: 20px;">→</div>
                             </div>
-                            <div style="font-size: 14px; color: var(--light-blue);">${session.exercises.length} exercises • ${Math.round(totalVolume)}kg volume</div>
+                            <div style="font-size: 14px; color: var(--light-purple);">${session.exercises.length} exercises • ${Math.round(totalVolume)}kg volume</div>
                         </div>
                     `;
                 });
@@ -1620,7 +1930,7 @@
                 window.tempWeeklySessions = sortedSessions;
             }
             
-            content += '<button onclick="closeModal()" style="width: 100%; padding: 16px; background: var(--niue-blue); color: white; border: none; border-radius: 10px; font-family: \'Bebas Neue\', sans-serif; font-size: 18px; cursor: pointer; margin-top: 20px;">Close</button></div>';
+            content += '<button onclick="closeModal()" style="width: 100%; padding: 16px; background: var(--ravens-purple); color: white; border: none; border-radius: 10px; font-family: \'Bebas Neue\', sans-serif; font-size: 18px; cursor: pointer; margin-top: 20px;">Close</button></div>';
             
             hideWorkoutElements();
             
@@ -1683,7 +1993,7 @@
             
             let content = `
                 <div style="padding: 24px;">
-                    <div style="font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--niue-blue); margin-bottom: 20px; letter-spacing: 1px;">Personal Records</div>
+                    <div style="font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--ravens-purple); margin-bottom: 20px; letter-spacing: 1px;">Personal Records</div>
             `;
             
             if (prs.length === 0) {
@@ -1695,16 +2005,16 @@
                     
                     content += `
                         <div style="background: linear-gradient(135deg, #fff9e6 0%, #fffbf0 100%); padding: 16px; border-radius: 10px; margin-bottom: 16px; border-left: 4px solid #ffd700;">
-                            <div style="font-weight: 700; color: var(--niue-blue); font-size: 18px; margin-bottom: 12px;">${pr.exercise}</div>
+                            <div style="font-weight: 700; color: var(--ravens-purple); font-size: 18px; margin-bottom: 12px;">${pr.exercise}</div>
                             <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
                                 <div>
                                     <div style="font-size: 12px; color: #888; margin-bottom: 4px;">🏆 HEAVIEST</div>
-                                    <div style="font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: var(--niue-blue);">${pr.heaviest.weight}kg × ${pr.heaviest.reps}</div>
+                                    <div style="font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: var(--ravens-purple);">${pr.heaviest.weight}kg × ${pr.heaviest.reps}</div>
                                     <div style="font-size: 11px; color: #888;">${heaviestDate}</div>
                                 </div>
                                 <div style="text-align: right;">
                                     <div style="font-size: 12px; color: #888; margin-bottom: 4px;">💪 BEST SET</div>
-                                    <div style="font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: var(--niue-blue);">${pr.bestVolume.weight}kg × ${pr.bestVolume.reps}</div>
+                                    <div style="font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: var(--ravens-purple);">${pr.bestVolume.weight}kg × ${pr.bestVolume.reps}</div>
                                     <div style="font-size: 11px; color: #888;">${Math.round(pr.bestVolume.volume)}kg volume • ${volumeDate}</div>
                                 </div>
                             </div>
@@ -1713,7 +2023,7 @@
                 });
             }
             
-            content += '<button onclick="closeModal()" style="width: 100%; padding: 16px; background: var(--niue-blue); color: white; border: none; border-radius: 10px; font-family: \'Bebas Neue\', sans-serif; font-size: 18px; cursor: pointer; margin-top: 20px;">Close</button></div>';
+            content += '<button onclick="closeModal()" style="width: 100%; padding: 16px; background: var(--ravens-purple); color: white; border: none; border-radius: 10px; font-family: \'Bebas Neue\', sans-serif; font-size: 18px; cursor: pointer; margin-top: 20px;">Close</button></div>';
             
             hideWorkoutElements();
             
@@ -1742,9 +2052,9 @@
             
             let content = `
                 <div style="padding: 24px;">
-                    <div style="font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--niue-blue); margin-bottom: 12px; letter-spacing: 1px;">Best Lifts (Est. 1RM)</div>
-                    <div style="background: var(--pale-yellow); padding: 16px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid var(--niue-yellow);">
-                        <div style="font-size: 14px; color: var(--light-blue); line-height: 1.6;">
+                    <div style="font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--ravens-purple); margin-bottom: 12px; letter-spacing: 1px;">Best Lifts (Est. 1RM)</div>
+                    <div style="background: var(--pale-purple); padding: 16px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid var(--ravens-gold);">
+                        <div style="font-size: 14px; color: var(--light-purple); line-height: 1.6;">
                             Your estimated one-rep max (1RM) for each exercise, calculated from your logged sets using the Brzycki formula.
                         </div>
                     </div>
@@ -1755,15 +2065,15 @@
             } else {
                 best1RMs.forEach(item => {
                     content += `
-                        <div style="background: white; padding: 16px; border-radius: 10px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid var(--niue-blue); box-shadow: 0 2px 8px var(--shadow);">
-                            <div style="font-weight: 600; color: var(--niue-blue); font-size: 16px;">${item.exercise}</div>
-                            <div style="font-family: 'Bebas Neue', sans-serif; font-size: 32px; color: var(--niue-blue);">${item.best1RM}<span style="font-size: 16px; color: var(--light-blue);">kg</span></div>
+                        <div style="background: white; padding: 16px; border-radius: 10px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid var(--ravens-purple); box-shadow: 0 2px 8px var(--shadow);">
+                            <div style="font-weight: 600; color: var(--ravens-purple); font-size: 16px;">${item.exercise}</div>
+                            <div style="font-family: 'Bebas Neue', sans-serif; font-size: 32px; color: var(--ravens-purple);">${item.best1RM}<span style="font-size: 16px; color: var(--light-purple);">kg</span></div>
                         </div>
                     `;
                 });
             }
             
-            content += '<button onclick="closeModal()" style="width: 100%; padding: 16px; background: var(--niue-blue); color: white; border: none; border-radius: 10px; font-family: \'Bebas Neue\', sans-serif; font-size: 18px; cursor: pointer; margin-top: 20px;">Close</button></div>';
+            content += '<button onclick="closeModal()" style="width: 100%; padding: 16px; background: var(--ravens-purple); color: white; border: none; border-radius: 10px; font-family: \'Bebas Neue\', sans-serif; font-size: 18px; cursor: pointer; margin-top: 20px;">Close</button></div>';
             
             hideWorkoutElements();
             
@@ -1793,15 +2103,15 @@
             
             let content = `
                 <div style="padding: 24px;">
-                    <div style="font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--niue-blue); margin-bottom: 12px; letter-spacing: 1px;">Strength Score</div>
-                    <div style="background: var(--pale-yellow); padding: 16px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid var(--niue-yellow);">
-                        <div style="font-weight: 600; color: var(--niue-blue); margin-bottom: 8px;">What is Strength Score?</div>
-                        <div style="font-size: 14px; color: var(--light-blue); line-height: 1.6;">
+                    <div style="font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--ravens-purple); margin-bottom: 12px; letter-spacing: 1px;">Strength Score</div>
+                    <div style="background: var(--pale-purple); padding: 16px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid var(--ravens-gold);">
+                        <div style="font-weight: 600; color: var(--ravens-purple); margin-bottom: 8px;">What is Strength Score?</div>
+                        <div style="font-size: 14px; color: var(--light-purple); line-height: 1.6;">
                             Sum of your best estimated 1RM for each exercise. It's a simple overall strength metric that increases as you get stronger across all lifts.
                         </div>
                     </div>
-                    <div style="font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--niue-blue); margin-bottom: 12px; letter-spacing: 0.5px;">Total: ${strengthScore} kg</div>
-                    <div style="font-size: 14px; color: var(--light-blue); margin-bottom: 16px;">Breakdown:</div>
+                    <div style="font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--ravens-purple); margin-bottom: 12px; letter-spacing: 0.5px;">Total: ${strengthScore} kg</div>
+                    <div style="font-size: 14px; color: var(--light-purple); margin-bottom: 16px;">Breakdown:</div>
             `;
             
             if (breakdown.length === 0) {
@@ -1810,10 +2120,10 @@
                 breakdown.forEach(item => {
                     const percentage = ((item.best1RM / strengthScore) * 100).toFixed(1);
                     content += `
-                        <div style="background: white; padding: 12px 16px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border-left: 3px solid var(--niue-yellow);">
-                            <div style="font-weight: 600; color: var(--niue-blue); font-size: 14px;">${item.exercise}</div>
+                        <div style="background: white; padding: 12px 16px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border-left: 3px solid var(--ravens-gold);">
+                            <div style="font-weight: 600; color: var(--ravens-purple); font-size: 14px;">${item.exercise}</div>
                             <div style="text-align: right;">
-                                <div style="font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: var(--niue-blue);">${item.best1RM}</div>
+                                <div style="font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: var(--ravens-purple);">${item.best1RM}</div>
                                 <div style="font-size: 11px; color: #888;">${percentage}%</div>
                             </div>
                         </div>
@@ -1821,7 +2131,7 @@
                 });
             }
             
-            content += '<button onclick="closeModal()" style="width: 100%; padding: 16px; background: var(--niue-blue); color: white; border: none; border-radius: 10px; font-family: \'Bebas Neue\', sans-serif; font-size: 18px; cursor: pointer; margin-top: 20px;">Close</button></div>';
+            content += '<button onclick="closeModal()" style="width: 100%; padding: 16px; background: var(--ravens-purple); color: white; border: none; border-radius: 10px; font-family: \'Bebas Neue\', sans-serif; font-size: 18px; cursor: pointer; margin-top: 20px;">Close</button></div>';
             
             hideWorkoutElements();
             
@@ -2450,6 +2760,30 @@
             
             closeSummary();
             renderDay();
+            clearSessionState();
+        }
+
+        function renderStats() {
+            const history = JSON.parse(localStorage.getItem('workoutHistory') || '[]');
+            const thisWeek = getThisWeekWorkouts(history);
+            const lastWeek = getLastWeekWorkouts(history);
+            const allPRs = countPRs(history);
+            const thisWeekCount = new Set(thisWeek.map(w => new Date(w.date).toDateString())).size;
+            const strengthScore = calculateStrengthScore(history);
+            const lastWeekScore = calculateStrengthScore(lastWeek);
+            const scoreChange = strengthScore - lastWeekScore;
+            
+            document.getElementById('statsWeeklyWorkouts').textContent = thisWeekCount;
+            document.getElementById('statsTotalPRs').textContent = allPRs;
+            document.getElementById('statsBestLifts').textContent = new Set(history.map(w => w.exercise)).size;
+            document.getElementById('statsStrengthScore').textContent = strengthScore;
+            
+            let trendText = scoreChange > 0 ? `↑ ${scoreChange} from last week` : scoreChange < 0 ? `↓ ${Math.abs(scoreChange)} from last week` : 'Same as last week';
+            document.getElementById('statsScoreTrend').textContent = trendText;
+            document.getElementById('statsScoreTrend').style.color = scoreChange > 0 ? 'var(--green)' : scoreChange < 0 ? 'var(--red)' : '#888';
+            
+            displayCurrentWeight();
+            calculatePowerToWeight();
         }
 
         function renderHistory() {
@@ -2578,7 +2912,7 @@
                             </div>
                             <div class="log-entry-date">Day ${session.day}</div>
                         </div>
-                        <div style="margin: 12px 0; font-size: 14px; color: var(--light-blue);">
+                        <div style="margin: 12px 0; font-size: 14px; color: var(--light-purple);">
                             ${session.exercises.map(ex => ex.exercise).join(' • ')}
                         </div>
                         <div class="log-entry-stats">
@@ -2634,19 +2968,19 @@
             
             // Create session detail content
             const sessionDetailHTML = `
-                <div style="background: var(--pale-yellow); padding: 20px; border-radius: 12px; margin-bottom: 24px;">
+                <div style="background: var(--pale-purple); padding: 20px; border-radius: 12px; margin-bottom: 24px;">
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
                         <div style="text-align: center;">
-                            <div style="font-family: 'Bebas Neue', sans-serif; font-size: 32px; color: var(--niue-blue);">${session.exercises.length}</div>
-                            <div style="font-size: 12px; color: var(--light-blue); font-weight: 600;">EXERCISES</div>
+                            <div style="font-family: 'Bebas Neue', sans-serif; font-size: 32px; color: var(--ravens-purple);">${session.exercises.length}</div>
+                            <div style="font-size: 12px; color: var(--light-purple); font-weight: 600;">EXERCISES</div>
                         </div>
                         <div style="text-align: center;">
-                            <div style="font-family: 'Bebas Neue', sans-serif; font-size: 32px; color: var(--niue-blue);">${totalSets}</div>
-                            <div style="font-size: 12px; color: var(--light-blue); font-weight: 600;">TOTAL SETS</div>
+                            <div style="font-family: 'Bebas Neue', sans-serif; font-size: 32px; color: var(--ravens-purple);">${totalSets}</div>
+                            <div style="font-size: 12px; color: var(--light-purple); font-weight: 600;">TOTAL SETS</div>
                         </div>
                         <div style="text-align: center; grid-column: 1 / -1;">
-                            <div style="font-family: 'Bebas Neue', sans-serif; font-size: 32px; color: var(--niue-blue);">${Math.round(totalVolume)}</div>
-                            <div style="font-size: 12px; color: var(--light-blue); font-weight: 600;">TOTAL VOLUME (KG)</div>
+                            <div style="font-family: 'Bebas Neue', sans-serif; font-size: 32px; color: var(--ravens-purple);">${Math.round(totalVolume)}</div>
+                            <div style="font-size: 12px; color: var(--light-purple); font-weight: 600;">TOTAL VOLUME (KG)</div>
                         </div>
                     </div>
                 </div>
@@ -2676,18 +3010,18 @@
                     }
                     
                     return `
-                        <div style="background: white; padding: 16px; border-radius: 10px; margin-bottom: 12px; border-left: 4px solid ${isPR ? '#ffd700' : 'var(--niue-yellow)'}; position: relative;">
+                        <div style="background: white; padding: 16px; border-radius: 10px; margin-bottom: 12px; border-left: 4px solid ${isPR ? '#ffd700' : 'var(--ravens-gold)'}; position: relative;">
                             <button class="delete-session-exercise" data-delete-id="${ex.id}" style="position: absolute; top: 12px; right: 12px; background: #fee; border: none; color: #c44; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; font-size: 16px; transition: all 0.3s ease;">×</button>
-                            <div style="font-weight: 700; color: var(--niue-blue); font-size: 18px; margin-bottom: 8px;">
+                            <div style="font-weight: 700; color: var(--ravens-purple); font-size: 18px; margin-bottom: 8px;">
                                 ${ex.exercise}
                                 ${isPR ? '<span class="pr-badge-inline">PR</span>' : ''}
                             </div>
                             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 8px; margin-bottom: 8px;">
                                 ${ex.sets.map((s, i) => `
-                                    <div style="background: var(--pale-yellow); padding: 8px; border-radius: 6px; text-align: center;">
+                                    <div style="background: var(--pale-purple); padding: 8px; border-radius: 6px; text-align: center;">
                                         <div style="font-size: 11px; color: #888; font-weight: 600;">SET ${i + 1}</div>
-                                        <div style="font-weight: 700; color: var(--niue-blue);">${s.weight}kg</div>
-                                        <div style="font-size: 13px; color: var(--light-blue);">× ${s.reps}</div>
+                                        <div style="font-weight: 700; color: var(--ravens-purple);">${s.weight}kg</div>
+                                        <div style="font-size: 13px; color: var(--light-purple);">× ${s.reps}</div>
                                     </div>
                                 `).join('')}
                             </div>
@@ -2761,6 +3095,7 @@
             if (filter === 'all') return history;
             if (filter === 'dayA') return history.filter(w => w.day === 'A');
             if (filter === 'dayB') return history.filter(w => w.day === 'B');
+            if (filter === 'dayC') return history.filter(w => w.day === 'C');
             return history;
         }
 
@@ -2887,7 +3222,7 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `rugby-strength-backup-${new Date().toISOString().split('T')[0]}.json`;
+            a.download = `dad-strength-backup-${new Date().toISOString().split('T')[0]}.json`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
@@ -2985,8 +3320,16 @@
 
         // Initialize
         migrateOldData();
-        renderHome();
-        renderDay();
+        
+        // Try to restore active session
+        if (!restoreSessionState()) {
+            // No active session, show home normally
+            renderHome();
+            renderDay();
+        }
+        
+        // Set initial history state
+        pushHistoryState('home');
     </script>
 </body>
 </html>
