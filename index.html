@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dad Strength Tracker v5.1 - Strength Matrix</title>
+    <title>Dad Strength Tracker v5.2 - Strength Matrix</title>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -1561,7 +1561,7 @@
             'Zercher Squat': { rookie: 60, built: 100, strong: 120, veteran: 140, elite: 160 },
             'Deadlift': { rookie: 80, built: 100, strong: 140, veteran: 200, elite: 240 },
             'Lat Pulldown': { rookie: 40, built: 60, strong: 80, veteran: 100, elite: 120 },
-            'Single Arm DB Row': { rookie: 15, built: 20, strong: 30, veteran: 40, elite: 50 }
+            'Single Arm DB Row': { rookie: 20, built: 30, strong: 40, veteran: 50, elite: 60 }
         };
 
         // Core lifts for strength score
@@ -1850,7 +1850,7 @@
                 standards = strengthMatrix['Deadlift'];
             } else if (exerciseName.includes('Lat Pulldown')) {
                 standards = strengthMatrix['Lat Pulldown'];
-            } else if (exerciseName.includes('Row')) {
+            } else if (exerciseName.includes('Single Arm DB Row')) {
                 standards = strengthMatrix['Single Arm DB Row'];
             } else if (exerciseName.includes('Zercher')) {
                 standards = strengthMatrix['Zercher Squat'];
@@ -1942,7 +1942,7 @@
                     coreExercise = 'Deadlift';
                 } else if (exercise.includes('Lat Pulldown')) {
                     coreExercise = 'Lat Pulldown';
-                } else if (exercise.includes('Row')) {
+                } else if (exercise.includes('Single Arm DB Row')) {
                     coreExercise = 'Single Arm DB Row';
                 } else if (exercise.includes('Zercher')) {
                     coreExercise = 'Zercher Squat';
@@ -1982,7 +1982,7 @@
                           exercise.includes('Shoulder Press') || 
                           exercise.includes('Deadlift') || 
                           exercise.includes('Lat Pulldown') || 
-                          exercise.includes('Row') || 
+                          exercise.includes('Single Arm DB Row') || 
                           exercise.includes('Zercher')) {
                     isCore = true;
                 }
@@ -2056,7 +2056,7 @@
                     coreExercise = 'Deadlift';
                 } else if (exercise.includes('Lat Pulldown')) {
                     coreExercise = 'Lat Pulldown';
-                } else if (exercise.includes('Row')) {
+                } else if (exercise.includes('Single Arm DB Row')) {
                     coreExercise = 'Single Arm DB Row';
                 } else if (exercise.includes('Zercher')) {
                     coreExercise = 'Zercher Squat';
