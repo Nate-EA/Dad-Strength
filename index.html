@@ -1293,7 +1293,7 @@
     <!-- Stats Tab -->
     <div id="statsTab" class="tab-content" style="display: none;">
         <div style="padding: 20px;">
-            <!-- Strength Score Card - NEW IMPROVED VERSION -->
+            <!-- Strength Score Card -->
             <div class="strength-score-card" id="strengthScoreCard">
                 <div class="strength-score-value" id="statsCoreScore">0</div>
                 <div class="strength-score-label">CORE STRENGTH SCORE</div>
@@ -1346,7 +1346,7 @@
                 </div>
             </div>
 
-            <!-- STRENGTH MATRIX (UPDATED STANDARDS) -->
+            <!-- STRENGTH MATRIX - ONLY 6 MAIN LIFTS -->
             <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 12px var(--shadow);">
                 <div style="font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--ravens-purple); margin-bottom: 16px; letter-spacing: 0.5px;">💪 STRENGTH MATRIX</div>
                 <div id="strengthMatrixGrid"></div>
@@ -1553,7 +1553,7 @@
         };
 
         // ============================================
-        // STRENGTH MATRIX - UPDATED STANDARDS
+        // STRENGTH MATRIX - ONLY 6 MAIN LIFTS
         // ============================================
         const strengthMatrix = {
             'Barbell Bench Press': { rookie: 40, built: 70, strong: 100, veteran: 120, elite: 140 },
@@ -1561,10 +1561,10 @@
             'Zercher Squat': { rookie: 60, built: 100, strong: 120, veteran: 140, elite: 160 },
             'Deadlift': { rookie: 80, built: 100, strong: 140, veteran: 200, elite: 240 },
             'Lat Pulldown': { rookie: 40, built: 60, strong: 80, veteran: 100, elite: 120 },
-            'Single Arm DB Row': { rookie: 15, built: 20, strong: 30, veteran: 40, elite: 50 }
+            'Single Arm DB Row': { rookie: 20, built: 30, strong: 40, veteran: 50, elite: 60 }
         };
 
-        // Core lifts for strength score
+        // Core lifts for strength score - ONLY these 6
         const coreLifts = [
             'Barbell Bench Press',
             'Barbell Shoulder Press',
@@ -1834,31 +1834,113 @@
         }
 
         // ============================================
-        // STRENGTH MATRIX FUNCTIONS
+        // UTILITY FUNCTIONS
         // ============================================
-        function getTierAndProgress(currentWeight, exerciseName) {
+        function showToast(message, type = 'info', duration = 3000) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast show ' + type;
+            
+            setTimeout(() => {
+                toast.className = 'toast';
+            }, duration);
+        }
+
+        function calculate1RM(weight, reps) {
+            if (reps <= 1) return weight;
+            if (reps > 10) return 0;
+            return Math.round(weight * (36 / (37 - reps)));
+        }
+
+        function validateWorkoutInputs(sets) {
+            for (const set of sets) {
+                if (set.weight <= 0) {
+                    throw new Error('Weight must be positive');
+                }
+                if (set.reps <= 0 || set.reps > 100) {
+                    throw new Error('Reps must be between 1-100');
+                }
+                if (!Number.isInteger(set.reps)) {
+                    throw new Error('Reps must be whole numbers');
+                }
+            }
+        }
+
+        function showUndo(data) {
+            const undoContainer = document.getElementById('undoContainer');
+            lastDeletedWorkout = data;
+            
+            undoContainer.innerHTML = `
+                <button class="undo-btn" onclick="undoDelete()">
+                    ↺ Undo Delete
+                </button>
+            `;
+            
+            if (undoTimeout) clearTimeout(undoTimeout);
+            
+            undoTimeout = setTimeout(() => {
+                undoContainer.innerHTML = '';
+                lastDeletedWorkout = null;
+            }, 10000);
+        }
+
+        function undoDelete() {
+            if (lastDeletedWorkout) {
+                let history = JSON.parse(localStorage.getItem('workoutHistory') || '[]');
+                history.push(lastDeletedWorkout);
+                localStorage.setItem('workoutHistory', JSON.stringify(history));
+                
+                document.getElementById('undoContainer').innerHTML = '';
+                showToast('✅ Delete undone', 'success');
+                lastDeletedWorkout = null;
+                
+                if (undoTimeout) clearTimeout(undoTimeout);
+                
+                renderHistory();
+                renderDay();
+                if (document.getElementById('statsTab').style.display !== 'none') {
+                    renderStats();
+                }
+            }
+        }
+
+        // ============================================
+        // STRENGTH MATRIX FUNCTIONS - FIXED TO ONLY USE 1RM
+        // ============================================
+        function getTierAndProgress(estimated1RM, exerciseName) {
             let standards = null;
             
-            // Match exercises to matrix
+            // ONLY match the 6 main lifts
             if (strengthMatrix[exerciseName]) {
                 standards = strengthMatrix[exerciseName];
-            } else if (exerciseName.includes('Bench Press')) {
+            } 
+            // Bench Press variations
+            else if (exerciseName.includes('Bench Press')) {
                 standards = strengthMatrix['Barbell Bench Press'];
-            } else if (exerciseName.includes('Shoulder Press')) {
+            } 
+            // Shoulder Press variations
+            else if (exerciseName.includes('Shoulder Press')) {
                 standards = strengthMatrix['Barbell Shoulder Press'];
-            } else if (exerciseName.includes('Deadlift')) {
+            } 
+            // Deadlift ONLY (not Romanian)
+            else if (exerciseName === 'Deadlift') {
                 standards = strengthMatrix['Deadlift'];
-            } else if (exerciseName.includes('Lat Pulldown')) {
+            }
+            // Lat Pulldown
+            else if (exerciseName.includes('Lat Pulldown')) {
                 standards = strengthMatrix['Lat Pulldown'];
-            } else if (exerciseName.includes('Row')) {
+            } 
+            // Single Arm DB Row ONLY - NOT any other row
+            else if (exerciseName === 'Single Arm DB Row') {
                 standards = strengthMatrix['Single Arm DB Row'];
-            } else if (exerciseName.includes('Zercher')) {
+            }
+            else if (exerciseName.includes('Zercher')) {
                 standards = strengthMatrix['Zercher Squat'];
             }
             
             if (!standards) return null;
             
-            if (currentWeight >= standards.elite) {
+            if (estimated1RM >= standards.elite) {
                 return { 
                     tier: 'ELITE', 
                     progress: 100, 
@@ -1869,8 +1951,8 @@
                     textColor: '#721c24'
                 };
             }
-            if (currentWeight >= standards.veteran) {
-                const progress = ((currentWeight - standards.veteran) / (standards.elite - standards.veteran)) * 100;
+            if (estimated1RM >= standards.veteran) {
+                const progress = ((estimated1RM - standards.veteran) / (standards.elite - standards.veteran)) * 100;
                 return { 
                     tier: 'VETERAN', 
                     progress: Math.min(progress, 100), 
@@ -1881,8 +1963,8 @@
                     textColor: '#0c5460'
                 };
             }
-            if (currentWeight >= standards.strong) {
-                const progress = ((currentWeight - standards.strong) / (standards.veteran - standards.strong)) * 100;
+            if (estimated1RM >= standards.strong) {
+                const progress = ((estimated1RM - standards.strong) / (standards.veteran - standards.strong)) * 100;
                 return { 
                     tier: 'STRONG', 
                     progress: Math.min(progress, 100), 
@@ -1893,8 +1975,8 @@
                     textColor: '#004085'
                 };
             }
-            if (currentWeight >= standards.built) {
-                const progress = ((currentWeight - standards.built) / (standards.strong - standards.built)) * 100;
+            if (estimated1RM >= standards.built) {
+                const progress = ((estimated1RM - standards.built) / (standards.strong - standards.built)) * 100;
                 return { 
                     tier: 'BUILT', 
                     progress: Math.min(progress, 100), 
@@ -1906,7 +1988,7 @@
                 };
             }
             
-            const progress = (currentWeight / standards.built) * 100;
+            const progress = (estimated1RM / standards.built) * 100;
             return { 
                 tier: 'ROOKIE', 
                 progress: Math.min(progress, 100), 
@@ -1930,24 +2012,38 @@
                 const exercise = workout.exercise;
                 const max1RM = Math.max(...workout.sets.map(s => calculate1RM(s.weight, s.reps)));
                 
-                // Map to core lifts
+                // ONLY map to core lifts if it's one of the 6 main lifts
                 let coreExercise = null;
+                
+                // Check if it's EXACTLY one of the core lifts
                 if (coreLifts.includes(exercise)) {
                     coreExercise = exercise;
-                } else if (exercise.includes('Bench Press')) {
+                } 
+                // Bench Press variations
+                else if (exercise.includes('Bench Press') && exercise !== 'Incline DB Bench Press') {
                     coreExercise = 'Barbell Bench Press';
-                } else if (exercise.includes('Shoulder Press')) {
+                } 
+                // Shoulder Press variations - only barbell
+                else if (exercise === 'Barbell Shoulder Press') {
                     coreExercise = 'Barbell Shoulder Press';
-                } else if (exercise.includes('Deadlift')) {
+                } 
+                // ONLY exact Deadlift, not Romanian
+                else if (exercise === 'Deadlift') {
                     coreExercise = 'Deadlift';
-                } else if (exercise.includes('Lat Pulldown')) {
+                }
+                // Lat Pulldown
+                else if (exercise.includes('Lat Pulldown')) {
                     coreExercise = 'Lat Pulldown';
-                } else if (exercise.includes('Row')) {
+                } 
+                // ONLY Single Arm DB Row, NOT Seated Cable Row
+                else if (exercise === 'Single Arm DB Row') {
                     coreExercise = 'Single Arm DB Row';
-                } else if (exercise.includes('Zercher')) {
+                }
+                else if (exercise.includes('Zercher')) {
                     coreExercise = 'Zercher Squat';
                 }
                 
+                // Only add if it's a core lift
                 if (coreExercise && coreLifts.includes(coreExercise)) {
                     if (!exerciseBest[coreExercise] || max1RM > exerciseBest[coreExercise]) {
                         exerciseBest[coreExercise] = max1RM;
@@ -1974,19 +2070,26 @@
                 const exercise = workout.exercise;
                 const max1RM = Math.max(...workout.sets.map(s => calculate1RM(s.weight, s.reps)));
                 
-                // Check if it's NOT a core lift
+                // Check if it's NOT one of the 6 core lifts
                 let isCore = false;
+                
+                // Check against the 6 main lifts only
                 if (coreLifts.includes(exercise)) {
                     isCore = true;
-                } else if (exercise.includes('Bench Press') || 
-                          exercise.includes('Shoulder Press') || 
-                          exercise.includes('Deadlift') || 
-                          exercise.includes('Lat Pulldown') || 
-                          exercise.includes('Row') || 
-                          exercise.includes('Zercher')) {
+                } else if (exercise === 'Barbell Bench Press' || 
+                          exercise === 'Barbell Shoulder Press' || 
+                          exercise === 'Deadlift' || 
+                          exercise === 'Lat Pulldown' || 
+                          exercise === 'Single Arm DB Row' || 
+                          exercise === 'Zercher Squat') {
+                    isCore = true;
+                }
+                // Also check for variations that map to core lifts
+                else if (exercise.includes('Bench Press') && exercise !== 'Incline DB Bench Press') {
                     isCore = true;
                 }
                 
+                // If it's NOT a core lift, add to accessories
                 if (!isCore) {
                     if (!accessoryBest[exercise] || max1RM > accessoryBest[exercise]) {
                         accessoryBest[exercise] = max1RM;
@@ -2037,34 +2140,59 @@
             const workoutHistory = JSON.parse(localStorage.getItem('workoutHistory') || '[]');
             const container = document.getElementById('strengthMatrixGrid');
             
-            // Get best 1RM for each core lift
+            // Get best estimated 1RM for each core lift
             const exerciseBest = {};
+            const exerciseWorkingData = {}; // Store working weight for display
             
             workoutHistory.forEach(workout => {
                 const exercise = workout.exercise;
-                const max1RM = Math.max(...workout.sets.map(s => calculate1RM(s.weight, s.reps)));
                 
-                // Map to core lifts
+                // Find the best set (by 1RM)
+                let bestSet = { weight: 0, reps: 0, 1RM: 0 };
+                workout.sets.forEach(set => {
+                    const estimated1RM = calculate1RM(set.weight, set.reps);
+                    if (estimated1RM > bestSet.1RM) {
+                        bestSet = {
+                            weight: set.weight,
+                            reps: set.reps,
+                            1RM: estimated1RM
+                        };
+                    }
+                });
+                
+                // Map to core lifts - ONLY the 6 main lifts
                 let coreExercise = null;
+                
                 if (coreLifts.includes(exercise)) {
                     coreExercise = exercise;
-                } else if (exercise.includes('Bench Press')) {
+                } 
+                else if (exercise.includes('Bench Press') && exercise !== 'Incline DB Bench Press') {
                     coreExercise = 'Barbell Bench Press';
-                } else if (exercise.includes('Shoulder Press')) {
+                } 
+                else if (exercise === 'Barbell Shoulder Press') {
                     coreExercise = 'Barbell Shoulder Press';
-                } else if (exercise.includes('Deadlift')) {
+                } 
+                else if (exercise === 'Deadlift') {
                     coreExercise = 'Deadlift';
-                } else if (exercise.includes('Lat Pulldown')) {
+                }
+                else if (exercise.includes('Lat Pulldown')) {
                     coreExercise = 'Lat Pulldown';
-                } else if (exercise.includes('Row')) {
+                } 
+                else if (exercise === 'Single Arm DB Row') {
                     coreExercise = 'Single Arm DB Row';
-                } else if (exercise.includes('Zercher')) {
+                }
+                else if (exercise.includes('Zercher')) {
                     coreExercise = 'Zercher Squat';
                 }
                 
+                // Only store if it's a core lift
                 if (coreExercise && coreLifts.includes(coreExercise)) {
-                    if (!exerciseBest[coreExercise] || max1RM > exerciseBest[coreExercise]) {
-                        exerciseBest[coreExercise] = max1RM;
+                    if (!exerciseBest[coreExercise] || bestSet.1RM > exerciseBest[coreExercise]) {
+                        exerciseBest[coreExercise] = bestSet.1RM;
+                        exerciseWorkingData[coreExercise] = {
+                            weight: bestSet.weight,
+                            reps: bestSet.reps
+                        };
                     }
                 }
             });
@@ -2107,14 +2235,15 @@
             };
             
             coreLifts.forEach(lift => {
-                const best = exerciseBest[lift] || 0;
-                if (best === 0) return;
+                const estimated1RM = exerciseBest[lift] || 0;
+                if (estimated1RM === 0) return;
                 
-                const result = getTierAndProgress(best, lift);
+                const result = getTierAndProgress(estimated1RM, lift);
                 if (!result) return;
                 
                 const standards = strengthMatrix[lift];
                 const icon = liftIcons[lift] || '🏋️';
+                const workingData = exerciseWorkingData[lift] || { weight: 0, reps: 0 };
                 
                 html += `
                     <div style="background: white; border-radius: 12px; padding: 16px; margin-bottom: 12px; border-left: 4px solid ${result.color}; box-shadow: 0 2px 8px var(--shadow);">
@@ -2124,15 +2253,24 @@
                                 <span style="font-weight: 600; color: var(--ravens-purple);">${lift}</span>
                             </div>
                             <div style="display: flex; align-items: center; gap: 8px;">
-                                <span style="font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: var(--ravens-purple);">${best}kg</span>
+                                <div style="text-align: right;">
+                                    <span style="font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: var(--ravens-purple);">${estimated1RM}kg</span>
+                                    <span style="font-size: 10px; color: #888; display: block;">est. 1RM</span>
+                                </div>
                                 <span style="background: ${result.color}; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; color: ${result.textColor};">${result.tier}</span>
                             </div>
                         </div>
                         
+                        ${workingData.weight > 0 ? `
+                            <div style="font-size: 12px; color: #888; margin-bottom: 8px;">
+                                Best set: ${workingData.weight}kg × ${workingData.reps} reps
+                            </div>
+                        ` : ''}
+                        
                         ${result.next ? `
                             <div class="progress-section">
                                 <div class="progress-label">
-                                    <span style="font-size: 11px;">Need ${Math.max(0, (result.next - best)).toFixed(1)}kg more</span>
+                                    <span style="font-size: 11px;">Need ${Math.max(0, (result.next - estimated1RM)).toFixed(1)}kg more</span>
                                     <span style="font-size: 11px;">Next: ${result.nextTier} (${result.next}kg)</span>
                                 </div>
                                 <div class="progress-bar-bg">
@@ -2203,7 +2341,6 @@
             // Weekly workout count
             const thisWeekCount = new Set(thisWeek.map(w => new Date(w.date).toDateString())).size;
             const lastWeekCount = new Set(lastWeek.map(w => new Date(w.date).toDateString())).size;
-            const weekChange = thisWeekCount - lastWeekCount;
             
             // PR count
             const allPRs = countPRs(history);
@@ -2237,77 +2374,6 @@
             displayCurrentWeight();
             renderStrengthMatrix();
             renderAccessoryBreakdown(history);
-        }
-
-        // ============================================
-        // UTILITY FUNCTIONS
-        // ============================================
-        function showToast(message, type = 'info', duration = 3000) {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.className = 'toast show ' + type;
-            
-            setTimeout(() => {
-                toast.className = 'toast';
-            }, duration);
-        }
-
-        function calculate1RM(weight, reps) {
-            if (reps <= 1) return weight;
-            if (reps > 10) return 0;
-            return Math.round(weight * (36 / (37 - reps)));
-        }
-
-        function validateWorkoutInputs(sets) {
-            for (const set of sets) {
-                if (set.weight <= 0) {
-                    throw new Error('Weight must be positive');
-                }
-                if (set.reps <= 0 || set.reps > 100) {
-                    throw new Error('Reps must be between 1-100');
-                }
-                if (!Number.isInteger(set.reps)) {
-                    throw new Error('Reps must be whole numbers');
-                }
-            }
-        }
-
-        function showUndo(data) {
-            const undoContainer = document.getElementById('undoContainer');
-            lastDeletedWorkout = data;
-            
-            undoContainer.innerHTML = `
-                <button class="undo-btn" onclick="undoDelete()">
-                    ↺ Undo Delete
-                </button>
-            `;
-            
-            if (undoTimeout) clearTimeout(undoTimeout);
-            
-            undoTimeout = setTimeout(() => {
-                undoContainer.innerHTML = '';
-                lastDeletedWorkout = null;
-            }, 10000);
-        }
-
-        function undoDelete() {
-            if (lastDeletedWorkout) {
-                let history = JSON.parse(localStorage.getItem('workoutHistory') || '[]');
-                history.push(lastDeletedWorkout);
-                localStorage.setItem('workoutHistory', JSON.stringify(history));
-                
-                document.getElementById('undoContainer').innerHTML = '';
-                showToast('✅ Delete undone', 'success');
-                lastDeletedWorkout = null;
-                
-                if (undoTimeout) clearTimeout(undoTimeout);
-                
-                renderHistory();
-                renderDay();
-                if (document.getElementById('statsTab').style.display !== 'none') {
-                    renderStats();
-                }
-            }
         }
 
         // ============================================
