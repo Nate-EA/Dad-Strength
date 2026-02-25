@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dad Strength Tracker v5.4 - Strength Matrix</title>
+    <title>Dad Strength Tracker v5.5 - Strength Matrix</title>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -1293,7 +1293,7 @@
     <!-- Stats Tab -->
     <div id="statsTab" class="tab-content" style="display: none;">
         <div style="padding: 20px;">
-            <!-- Strength Score Card - NEW IMPROVED VERSION -->
+            <!-- Strength Score Card -->
             <div class="strength-score-card" id="strengthScoreCard">
                 <div class="strength-score-value" id="statsCoreScore">0</div>
                 <div class="strength-score-label">CORE STRENGTH SCORE</div>
@@ -1346,7 +1346,7 @@
                 </div>
             </div>
 
-            <!-- STRENGTH MATRIX (UPDATED STANDARDS) -->
+            <!-- STRENGTH MATRIX -->
             <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 12px var(--shadow);">
                 <div style="font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--ravens-purple); margin-bottom: 16px; letter-spacing: 0.5px;">💪 STRENGTH MATRIX</div>
                 <div id="strengthMatrixGrid"></div>
@@ -1631,16 +1631,22 @@
         let lastDeletedWorkout = null;
         let undoTimeout = null;
         let autoSaveInterval = null;
+        let isNavigating = false; // FIX: Prevents back button during exercise transitions
 
         // Session persistence constants
         const SESSION_STORAGE_KEY = 'activeWorkoutSession';
         const SESSION_TIMEOUT = 4 * 60 * 60 * 1000;
 
         // ============================================
-        // ANDROID BACK BUTTON HANDLER
+        // ANDROID BACK BUTTON HANDLER - FIXED
         // ============================================
         window.addEventListener('popstate', function(event) {
             event.preventDefault();
+            
+            // FIX: Don't process back button during navigation
+            if (isNavigating) {
+                return;
+            }
             
             const exerciseModal = document.getElementById('exerciseModal');
             const summaryModal = document.getElementById('summaryModal');
@@ -3050,14 +3056,25 @@
             }
         }
 
+        // ============================================
+        // FIXED SAVE & NEXT FUNCTION
+        // ============================================
         function saveAndNext() {
+            // Set navigating flag to prevent back button interference
+            isNavigating = true;
+            
+            // Save the workout
             saveWorkout();
             
             const nextIndex = currentExerciseIndex + 1;
             if (nextIndex < workoutData[currentDay].exercises.length) {
-                setTimeout(() => openExercise(nextIndex), 300);
+                setTimeout(() => {
+                    openExercise(nextIndex);
+                    isNavigating = false; // Clear flag when done
+                }, 300);
             } else {
                 showToast('All exercises complete! Great work! 🎉', 'success');
+                isNavigating = false; // Clear flag if no next exercise
             }
         }
 
@@ -3928,7 +3945,7 @@
             const history = localStorage.getItem('workoutHistory') || '[]';
             const weightHistory = localStorage.getItem('weightHistory') || '[]';
             const data = {
-                version: '5.1',
+                version: '5.5',
                 exportDate: new Date().toISOString(),
                 workouts: JSON.parse(history),
                 weightHistory: JSON.parse(weightHistory)
