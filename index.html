@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dad Strength Tracker v5.6 - Strength Matrix</title>
+    <title>Dad Strength Tracker v5.7 - Strength Matrix</title>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -3396,8 +3396,9 @@
 
             document.getElementById('summaryModal').classList.add('active');
             
-            history.pushState({ page: 'summary', timestamp: Date.now() }, '', '');
-            historyStack.push('summary');
+            // Push 'modal' not 'summary'
+            history.pushState({ page: 'modal', type: 'summary', timestamp: Date.now() }, '', '');
+            historyStack.push('modal');
         }
 
         function closeSummary() {
@@ -3690,8 +3691,9 @@
             
             document.getElementById('exerciseModal').classList.add('active');
             
-            history.pushState({ page: 'session-detail', timestamp: Date.now() }, '', '');
-            historyStack.push('session-detail');
+            // Push 'modal' not 'session-detail'
+            history.pushState({ page: 'modal', type: 'session-detail', timestamp: Date.now() }, '', '');
+            historyStack.push('modal');
         }
 
         function filterLog(filter) {
@@ -3809,8 +3811,9 @@
             
             document.getElementById('exerciseModal').classList.add('active');
             
-            history.pushState({ page: 'weekly-breakdown', timestamp: Date.now() }, '', '');
-            historyStack.push('weekly-breakdown');
+            // Push 'modal' not a page name - modals are not pages!
+            history.pushState({ page: 'modal', type: 'weekly-breakdown', timestamp: Date.now() }, '', '');
+            historyStack.push('modal');
         }
 
         function openSessionFromWeekly(index) {
@@ -3901,8 +3904,9 @@
             
             document.getElementById('exerciseModal').classList.add('active');
             
-            history.pushState({ page: 'pr-list', timestamp: Date.now() }, '', '');
-            historyStack.push('pr-list');
+            // Push 'modal' not a page name - modals are not pages!
+            history.pushState({ page: 'modal', type: 'pr-list', timestamp: Date.now() }, '', '');
+            historyStack.push('modal');
         }
 
         function showBestLifts() {
@@ -3954,8 +3958,9 @@
             
             document.getElementById('exerciseModal').classList.add('active');
             
-            history.pushState({ page: 'best-lifts', timestamp: Date.now() }, '', '');
-            historyStack.push('best-lifts');
+            // Push 'modal' not a page name - modals are not pages!
+            history.pushState({ page: 'modal', type: 'best-lifts', timestamp: Date.now() }, '', '');
+            historyStack.push('modal');
         }
 
         function showAccessoryBreakdown() {
@@ -3996,8 +4001,9 @@
             
             document.getElementById('exerciseModal').classList.add('active');
             
-            history.pushState({ page: 'accessory-breakdown', timestamp: Date.now() }, '', '');
-            historyStack.push('accessory-breakdown');
+            // Push 'modal' not 'accessory-breakdown'
+            history.pushState({ page: 'modal', type: 'accessory-breakdown', timestamp: Date.now() }, '', '');
+            historyStack.push('modal');
         }
 
         function hideWorkoutElements() {
