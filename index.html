@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dad Strength Tracker v5.9 - FINALLY Fixed Back Button</title>
+    <title>Dad Strength Tracker v6.0 - FINALLY Fixed Back Button</title>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -1180,7 +1180,7 @@
             <button id="backToHome" onclick="goHome()" style="background: rgba(158, 124, 12, 0.2); border: none; color: var(--ravens-gold); padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px; display: none; transition: all 0.3s ease;">
                 ← Home
             </button>
-            <div class="app-title">Dad Strength v5.9</div>
+            <div class="app-title">Dad Strength v6.0</div>
             <div class="session-timer" id="sessionTimer">00:00</div>
         </div>
         <div class="tab-navigation" id="tabNavigation" style="display: none;">
@@ -1409,7 +1409,7 @@
     <div id="exerciseModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <button class="close-btn" onclick="closeModal()">×</button>
+                <button class="close-btn" onclick="closeCurrentModal()">×</button>
                 <div class="modal-title" id="modalExerciseName"></div>
                 <div class="modal-subtitle" id="modalExerciseTarget"></div>
             </div>
@@ -1475,7 +1475,7 @@
     <div id="summaryModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <button class="close-btn" onclick="closeSummary()">×</button>
+                <button class="close-btn" onclick="closeCurrentModal()">×</button>
                 <div class="modal-title">Workout Complete!</div>
             </div>
             <div class="modal-body">
@@ -1575,194 +1575,180 @@
         ];
 
         // ============================================
-        // HISTORY STACK FOR BACK BUTTON
+        // SIMPLE BACK BUTTON HANDLER - v6.0 FINAL
         // ============================================
-        const historyStack = {
-            stack: ['home'],
-            currentIndex: 0,
+
+        // Global state - single source of truth
+        let currentPage = 'home';           // 'home', 'workout', 'stats', 'history'
+        let currentModal = null;            // 'exercise', 'pr-list', 'summary', 'session-detail', etc.
+
+        // Initialize
+        history.replaceState({ page: 'home' }, '', '');
+        currentPage = 'home';
+
+        // ONE handler to rule them all
+        window.addEventListener('popstate', function(event) {
+            console.log('Back pressed - Current state:', { page: currentPage, modal: currentModal });
             
-            push(state) {
-                if (this.currentIndex < this.stack.length - 1) {
-                    this.stack = this.stack.slice(0, this.currentIndex + 1);
-                }
-                this.stack.push(state);
-                this.currentIndex = this.stack.length - 1;
-            },
-            
-            replace(state) {
-                this.stack[this.currentIndex] = state;
-            },
-            
-            back() {
-                if (this.currentIndex > 0) {
-                    this.currentIndex--;
-                    return this.stack[this.currentIndex];
-                }
-                return null;
-            },
-            
-            getCurrent() {
-                return this.stack[this.currentIndex];
-            },
-            
-            canGoBack() {
-                return this.currentIndex > 0;
+            // CASE 1: Modal is open → close it, stay on same page
+            if (currentModal) {
+                console.log('Closing modal:', currentModal);
+                closeCurrentModal();
+                return;
             }
-        };
+            
+            // CASE 2: On home page → show exit confirmation
+            if (currentPage === 'home') {
+                console.log('On home - showing exit confirmation');
+                if (confirm('Exit Dad Strength Tracker?')) {
+                    // User confirmed - let app close
+                    return;
+                } else {
+                    // User cancelled - push home back to stay in app
+                    history.pushState({ page: 'home' }, '', '');
+                    return;
+                }
+            }
+            
+            // CASE 3: On any other page → go home
+            console.log('Navigating from', currentPage, 'to home');
+            navigateToPage('home');
+        }, false);
 
-        // ============================================
-        // GLOBAL VARIABLES
-        // ============================================
-        let currentDay = 'A';
-        let currentExercise = null;
-        let currentExerciseIndex = 0;
-        let currentSetCount = 0;
-        let workoutActive = false;
-        let sessionStartTime = null;
-        let sessionInterval = null;
-        let restTimerInterval = null;
-        let restTimerSeconds = 90;
-        let restTimerActive = false;
-        let mobilityTimerInterval = null;
-        let mobilityTimerSeconds = 45;
-        let mobilityTimerActive = false;
-        let currentLogFilter = 'all';
-        let currentEditWorkoutId = null;
-        let lastDeletedWorkout = null;
-        let undoTimeout = null;
-        let autoSaveInterval = null;
+        // Navigate to a page
+        function navigateToPage(page) {
+            console.log('Navigating to:', page);
+            
+            // Update UI
+            document.getElementById('homeTab').style.display = page === 'home' ? 'block' : 'none';
+            document.getElementById('workoutTab').style.display = page === 'workout' ? 'block' : 'none';
+            document.getElementById('statsTab').style.display = page === 'stats' ? 'block' : 'none';
+            document.getElementById('historyTab').style.display = page === 'history' ? 'block' : 'none';
+            
+            // Update navigation visibility
+            document.getElementById('tabNavigation').style.display = page === 'home' ? 'none' : 'flex';
+            document.getElementById('backToHome').style.display = page === 'home' ? 'none' : 'block';
+            
+            // Update tab buttons
+            updateTabButtons(page);
+            
+            // Render appropriate content
+            if (page === 'home') renderHome();
+            if (page === 'workout') renderDay();
+            if (page === 'stats') renderStats();
+            if (page === 'history') renderHistory();
+            
+            // Update global state
+            currentPage = page;
+            currentModal = null;  // Ensure no modal is tracked when on a page
+            
+            // Update browser history
+            history.pushState({ page: page }, '', '');
+        }
 
-        // Session persistence constants
-        const SESSION_STORAGE_KEY = 'activeWorkoutSession';
-        const SESSION_TIMEOUT = 4 * 60 * 60 * 1000;
-
-        // ============================================
-        // ANDROID BACK BUTTON HANDLER
-        // ============================================
-        
-        // Helper function to check and close any open modals
-        function checkAndCloseModals() {
+        // Close whatever modal is currently open
+        function closeCurrentModal() {
+            console.log('Closing current modal:', currentModal);
+            
+            // Check which modal is open and close it
             const exerciseModal = document.getElementById('exerciseModal');
             const summaryModal = document.getElementById('summaryModal');
+            const sessionDetail = document.getElementById('sessionDetailContent');
             
             if (exerciseModal && exerciseModal.classList.contains('active')) {
-                closeModal();
-                return true;
+                exerciseModal.classList.remove('active');
+                stopRestTimer();
+                restTimerSeconds = 90;
+                updateRestTimerDisplay();
+                currentEditWorkoutId = null;
+                
+                // Restore normal workout view
+                document.querySelectorAll('.section-title').forEach(title => title.style.display = 'block');
+                document.getElementById('setsContainer').style.display = 'block';
+                document.getElementById('addSetBtn').style.display = 'block';
+                document.querySelector('.stats-grid').style.display = 'grid';
+                document.querySelector('.notes-section').style.display = 'block';
+                document.getElementById('actionButtons').style.display = 'grid';
+                document.querySelector('.history-section').style.display = 'block';
+                
+                // Remove in-progress highlight
+                document.querySelectorAll('.exercise-card').forEach(card => {
+                    card.classList.remove('in-progress');
+                });
             }
             
             if (summaryModal && summaryModal.classList.contains('active')) {
-                closeSummary();
-                return true;
+                summaryModal.classList.remove('active');
             }
             
-            return false;
-        }
-        
-        window.addEventListener('popstate', function(event) {
-            // Let browser history work naturally - don't preventDefault
-            
-            // Priority 1: Close any open modals
-            if (checkAndCloseModals()) {
-                return; // Modal closed - we're done this cycle
-            }
-            
-            // Priority 2: Close session detail views
-            const sessionDetail = document.getElementById('sessionDetailContent');
             if (sessionDetail) {
                 sessionDetail.remove();
-                const closeBtn = document.querySelector('.close-btn');
-                if (closeBtn) closeBtn.style.display = 'block';
-                const sectionTitles = document.querySelectorAll('.section-title');
-                sectionTitles.forEach(title => title.style.display = 'block');
-                const setsContainer = document.getElementById('setsContainer');
-                if (setsContainer) setsContainer.style.display = 'block';
-                const historySection = document.querySelector('.history-section');
-                if (historySection) historySection.style.display = 'block';
-                historyStack.back();
-                return;
+                // Restore normal history view
+                document.querySelector('.history-section').style.display = 'block';
+                document.getElementById('setsContainer').style.display = 'block';
+                document.querySelectorAll('.section-title').forEach(title => title.style.display = 'block');
             }
             
-            // Priority 3: Navigate back in history stack
-            const previousState = historyStack.back();
-            
-            if (!previousState) {
-                // At root of history - check for active workout before allowing app exit
-                if (workoutActive) {
-                    // Save workout first
-                    saveSessionState();
-                    
-                    // Ask user to confirm exit
-                    if (!confirm('Exit app? Your workout is saved and you can resume later.')) {
-                        // User cancelled exit - push state back to stay in app
-                        const currentPage = getCurrentPage();
-                        history.pushState({ page: currentPage, timestamp: Date.now() }, '', '');
-                        historyStack.push(currentPage);
-                        return;
-                    }
-                    // User confirmed - let app close (do nothing, let default happen)
-                }
-                // No workout or user confirmed exit - let Android close the app
-                return;
+            // Clear modal state
+            currentModal = null;
+        }
+
+        // Open a modal
+        function openModal(type) {
+            console.log('Opening modal:', type);
+            currentModal = type;
+            history.pushState({ modal: type }, '', '');  // Add to browser history
+        }
+
+        // Navigation functions
+        function goHome() {
+            if (workoutActive) {
+                if (!confirm('End your current workout and return to home?')) return;
+                finishWorkout();
             }
-            
-            // Navigate to the previous state
-            navigateToPage(previousState);
-        }, false);
+            navigateToPage('home');
+        }
 
-        // Initialize history
-        history.replaceState({ page: 'home', timestamp: Date.now() }, '', '');
-        historyStack.replace('home');
+        function goToDay(day) {
+            currentDay = day;
+            navigateToPage('workout');
+        }
 
-        // ============================================
-        // NAVIGATION FUNCTIONS
-        // ============================================
-        function navigateToPage(page) {
-            const sessionDetail = document.getElementById('sessionDetailContent');
-            if (sessionDetail) sessionDetail.remove();
-            
-            switch(page) {
-                case 'home':
-                    document.getElementById('homeTab').style.display = 'block';
-                    document.getElementById('workoutTab').style.display = 'none';
-                    document.getElementById('statsTab').style.display = 'none';
-                    document.getElementById('historyTab').style.display = 'none';
-                    document.getElementById('tabNavigation').style.display = 'none';
-                    document.getElementById('backToHome').style.display = 'none';
-                    renderHome();
-                    break;
-                    
-                case 'workout':
-                    document.getElementById('homeTab').style.display = 'none';
-                    document.getElementById('workoutTab').style.display = 'block';
-                    document.getElementById('statsTab').style.display = 'none';
-                    document.getElementById('historyTab').style.display = 'none';
-                    document.getElementById('tabNavigation').style.display = 'flex';
-                    document.getElementById('backToHome').style.display = 'block';
+        function goToStats() {
+            navigateToPage('stats');
+        }
+
+        function goToHistory() {
+            navigateToPage('history');
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            if (tab === 'dayA' || tab === 'dayB' || tab === 'dayC') {
+                if (tab === 'dayA') currentDay = 'A';
+                else if (tab === 'dayB') currentDay = 'B';
+                else if (tab === 'dayC') currentDay = 'C';
+                
+                if (currentPage !== 'workout') {
+                    navigateToPage('workout');
+                } else {
                     renderDay();
-                    break;
-                    
-                case 'stats':
-                    document.getElementById('homeTab').style.display = 'none';
-                    document.getElementById('workoutTab').style.display = 'none';
-                    document.getElementById('statsTab').style.display = 'block';
-                    document.getElementById('historyTab').style.display = 'none';
-                    document.getElementById('tabNavigation').style.display = 'flex';
-                    document.getElementById('backToHome').style.display = 'block';
+                }
+            } else if (tab === 'stats') {
+                if (currentPage !== 'stats') {
+                    navigateToPage('stats');
+                } else {
                     renderStats();
-                    break;
-                    
-                case 'history':
-                    document.getElementById('homeTab').style.display = 'none';
-                    document.getElementById('workoutTab').style.display = 'none';
-                    document.getElementById('statsTab').style.display = 'none';
-                    document.getElementById('historyTab').style.display = 'block';
-                    document.getElementById('tabNavigation').style.display = 'flex';
-                    document.getElementById('backToHome').style.display = 'block';
+                }
+            } else if (tab === 'history') {
+                if (currentPage !== 'history') {
+                    navigateToPage('history');
+                } else {
                     renderHistory();
-                    break;
+                }
             }
-            
-            updateTabButtons(page);
         }
 
         function updateTabButtons(page) {
@@ -1780,73 +1766,6 @@
                 document.querySelectorAll('.tab-btn')[3]?.classList.add('active');
             } else if (page === 'history') {
                 document.querySelectorAll('.tab-btn')[4]?.classList.add('active');
-            }
-        }
-
-        function getCurrentPage() {
-            if (document.getElementById('homeTab').style.display === 'block') return 'home';
-            if (document.getElementById('workoutTab').style.display === 'block') return 'workout';
-            if (document.getElementById('statsTab').style.display === 'block') return 'stats';
-            if (document.getElementById('historyTab').style.display === 'block') return 'history';
-            return 'home';
-        }
-
-        function goHome() {
-            if (workoutActive) {
-                if (!confirm('End your current workout and return to home?')) return;
-                finishWorkout();
-            }
-            
-            history.pushState({ page: 'home', timestamp: Date.now() }, '', '');
-            historyStack.push('home');
-            navigateToPage('home');
-        }
-
-        function goToDay(day) {
-            currentDay = day;
-            history.pushState({ page: 'workout', day: day, timestamp: Date.now() }, '', '');
-            historyStack.push('workout');
-            navigateToPage('workout');
-        }
-
-        function goToStats() {
-            history.pushState({ page: 'stats', timestamp: Date.now() }, '', '');
-            historyStack.push('stats');
-            navigateToPage('stats');
-        }
-
-        function goToHistory() {
-            history.pushState({ page: 'history', timestamp: Date.now() }, '', '');
-            historyStack.push('history');
-            navigateToPage('history');
-        }
-
-        function switchTab(tab) {
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-
-            if (tab === 'dayA' || tab === 'dayB' || tab === 'dayC') {
-                if (tab === 'dayA') currentDay = 'A';
-                else if (tab === 'dayB') currentDay = 'B';
-                else if (tab === 'dayC') currentDay = 'C';
-                
-                if (getCurrentPage() !== 'workout') {
-                    goToDay(currentDay);
-                } else {
-                    renderDay();
-                }
-            } else if (tab === 'stats') {
-                if (getCurrentPage() !== 'stats') {
-                    goToStats();
-                } else {
-                    renderStats();
-                }
-            } else if (tab === 'history') {
-                if (getCurrentPage() !== 'history') {
-                    goToHistory();
-                } else {
-                    renderHistory();
-                }
             }
         }
 
@@ -2547,6 +2466,25 @@
             return new Set(todayWorkouts.map(w => w.exercise)).size;
         }
 
+        let workoutActive = false;
+        let sessionStartTime = null;
+        let sessionInterval = null;
+        let restTimerInterval = null;
+        let restTimerSeconds = 90;
+        let restTimerActive = false;
+        let mobilityTimerInterval = null;
+        let mobilityTimerSeconds = 45;
+        let mobilityTimerActive = false;
+        let currentLogFilter = 'all';
+        let currentEditWorkoutId = null;
+        let lastDeletedWorkout = null;
+        let undoTimeout = null;
+        let autoSaveInterval = null;
+
+        // Session persistence constants
+        const SESSION_STORAGE_KEY = 'activeWorkoutSession';
+        const SESSION_TIMEOUT = 4 * 60 * 60 * 1000;
+
         function toggleWorkout() {
             workoutActive = !workoutActive;
             const btn = document.getElementById('startWorkoutBtn');
@@ -2592,14 +2530,12 @@
         }
 
         function saveSessionState() {
-            if (!workoutActive) return; // Don't save if no workout active
+            if (!workoutActive) return;
             
-            // Get today's completed workouts from history
             const history = JSON.parse(localStorage.getItem('workoutHistory') || '[]');
             const today = new Date().toDateString();
             const todayWorkouts = history.filter(w => new Date(w.date).toDateString() === today);
             
-            // Get current exercise data if modal is open
             let currentExerciseData = null;
             const modal = document.getElementById('exerciseModal');
             if (modal && modal.classList.contains('active') && currentExercise) {
@@ -2629,8 +2565,8 @@
                 day: currentDay,
                 startTime: sessionStartTime,
                 currentExerciseIndex: currentExerciseIndex,
-                todayWorkouts: todayWorkouts, // Completed exercises
-                currentExerciseData: currentExerciseData, // In-progress exercise
+                todayWorkouts: todayWorkouts,
+                currentExerciseData: currentExerciseData,
                 timestamp: Date.now()
             };
             
@@ -2682,31 +2618,26 @@
             startAutoSave();
             updateProgress();
             
-            // RESTORE IN-PROGRESS EXERCISE if it exists
             if (state.currentExerciseData && state.currentExerciseData.exercise) {
                 const exerciseData = state.currentExerciseData;
                 
-                // Set current exercise state
                 currentExercise = exerciseData.exercise;
                 currentExerciseIndex = exerciseData.exerciseIndex;
                 currentSetCount = exerciseData.setCount;
                 
-                // Open the exercise modal
                 document.getElementById('exerciseModal').classList.add('active');
+                openModal('exercise');
                 document.getElementById('modalExerciseName').textContent = currentExercise.name;
                 document.getElementById('modalExerciseTarget').textContent = `Target: ${currentExercise.sets} × ${currentExercise.reps}`;
                 
-                // Show all sections
                 document.getElementById('viewOnlyNotice').style.display = 'none';
                 document.getElementById('restTimer').style.display = 'block';
                 document.getElementById('prefillSection').style.display = 'block';
                 document.getElementById('addSetBtn').style.display = 'block';
                 document.getElementById('actionButtons').style.display = 'grid';
                 
-                // Render the sets
                 renderSets(false);
                 
-                // Restore the input values
                 exerciseData.sets.forEach((set, idx) => {
                     const setNum = idx + 1;
                     const weightInput = document.querySelector(`[data-set="${setNum}"][data-type="weight"]`);
@@ -2715,12 +2646,10 @@
                     if (repsInput) repsInput.value = set.reps || '';
                 });
                 
-                // Restore notes
                 if (exerciseData.notes) {
                     document.getElementById('exerciseNotes').value = exerciseData.notes;
                 }
                 
-                // Load history and calculate stats
                 loadExerciseHistory();
                 calculateStatsWithComparison();
                 
@@ -2742,8 +2671,12 @@
         }
 
         // ============================================
-        // EXERCISE MODAL FUNCTIONS - FIXED
+        // EXERCISE MODAL FUNCTIONS
         // ============================================
+        let currentExercise = null;
+        let currentExerciseIndex = 0;
+        let currentSetCount = 0;
+
         function openExercise(idx) {
             currentExercise = workoutData[currentDay].exercises[idx];
             currentExerciseIndex = idx;
@@ -2773,10 +2706,7 @@
             loadExerciseHistory();
             calculateStatsWithComparison();
             document.getElementById('exerciseModal').classList.add('active');
-            
-            // Push to history stack
-            history.pushState({ page: 'modal', type: 'exercise', timestamp: Date.now() }, '', '');
-            historyStack.push('modal');
+            openModal('exercise');
 
             if (workoutActive) {
                 document.querySelectorAll('.exercise-card').forEach(card => {
@@ -2784,37 +2714,6 @@
                 });
                 document.querySelectorAll('.exercise-card')[idx].classList.add('in-progress');
             }
-        }
-
-        function closeModal() {
-            document.getElementById('exerciseModal').classList.remove('active');
-            stopRestTimer();
-            restTimerSeconds = 90;
-            updateRestTimerDisplay();
-            
-            currentEditWorkoutId = null;
-            const saveBtn = document.querySelector('.save-btn');
-            if (saveBtn) saveBtn.textContent = 'Save';
-            
-            const sessionDetail = document.getElementById('sessionDetailContent');
-            if (sessionDetail) {
-                sessionDetail.remove();
-            }
-            
-            document.getElementById('restTimer').style.display = 'block';
-            const historySection = document.querySelector('.history-section');
-            if (historySection) historySection.style.display = 'block';
-            document.getElementById('setsContainer').style.display = 'block';
-            document.getElementById('addSetBtn').style.display = 'block';
-            document.querySelector('.stats-grid').style.display = 'grid';
-            document.querySelector('.notes-section').style.display = 'block';
-            document.getElementById('actionButtons').style.display = 'grid';
-            const sectionTitles = document.getElementById('setsContainer').parentElement.querySelectorAll('.section-title');
-            if (sectionTitles[0]) sectionTitles[0].style.display = 'block';
-            
-            // FIXED: Only update historyStack, don't call history.back()
-            historyStack.back();
-            // REMOVED: history.back(); - This was causing the app to close!
         }
 
         function getLastWorkoutData(day, exerciseName) {
@@ -3139,7 +3038,7 @@
             stopRestTimer();
             restTimerSeconds = 90;
 
-            closeModal();
+            closeCurrentModal();  // Use the unified close function
             renderDay();
             
             if (document.getElementById('statsTab').style.display !== 'none') {
@@ -3152,7 +3051,6 @@
             
             const nextIndex = currentExerciseIndex + 1;
             if (nextIndex < workoutData[currentDay].exercises.length) {
-                // Open next exercise immediately - no delay
                 openExercise(nextIndex);
             } else {
                 showToast('All exercises complete! Great work! 🎉', 'success');
@@ -3269,8 +3167,7 @@
             loadExerciseHistory();
             calculateStatsWithComparison();
             document.getElementById('exerciseModal').classList.add('active');
-            history.pushState({ page: 'modal', type: 'editExercise', timestamp: Date.now() }, '', '');
-            historyStack.push('modal');
+            openModal('edit-exercise');
         }
 
         function updateWorkout(workoutId) {
@@ -3312,7 +3209,7 @@
             localStorage.setItem('workoutHistory', JSON.stringify(history));
             
             showToast('✅ Workout updated!', 'success');
-            closeModal();
+            closeCurrentModal();
             renderHistory();
             renderDay();
         }
@@ -3320,7 +3217,7 @@
         function deleteAndClose(workoutId) {
             if (confirm('Delete this workout?')) {
                 deleteLogEntry(workoutId);
-                closeModal();
+                closeCurrentModal();
             }
         }
 
@@ -3395,16 +3292,7 @@
             document.getElementById('summarySets').textContent = totalSets;
 
             document.getElementById('summaryModal').classList.add('active');
-            
-            // Push 'modal' not 'summary'
-            history.pushState({ page: 'modal', type: 'summary', timestamp: Date.now() }, '', '');
-            historyStack.push('modal');
-        }
-
-        function closeSummary() {
-            document.getElementById('summaryModal').classList.remove('active');
-            historyStack.back();
-            // REMOVED: history.back(); - This was causing the app to close!
+            openModal('summary');
         }
 
         function finishWorkout() {
@@ -3423,7 +3311,7 @@
             progress.style.display = 'none';
             
             clearSessionState();
-            closeSummary();
+            closeCurrentModal();
             renderDay();
             showToast('Great work! Session saved! 💪', 'success');
         }
@@ -3440,10 +3328,6 @@
             
             const thisWeekCount = new Set(thisWeek.map(w => new Date(w.date).toDateString())).size;
             const lastWeekCount = new Set(lastWeek.map(w => new Date(w.date).toDateString())).size;
-            
-            const strengthScore = calculateCoreStrengthScore(history);
-            const lastWeekScore = calculateCoreStrengthScore(lastWeek);
-            const scoreChange = strengthScore - lastWeekScore;
             
             const uniqueExercises = new Set(history.map(w => w.exercise)).size;
             const accessoryData = calculateAccessoryScore(history);
@@ -3656,7 +3540,7 @@
                 btn.addEventListener('click', function(e) {
                     e.stopPropagation();
                     const workoutId = this.dataset.editId;
-                    closeModal();
+                    closeCurrentModal();
                     setTimeout(() => editWorkout(workoutId), 100);
                 });
             });
@@ -3667,7 +3551,7 @@
                     const workoutId = this.dataset.deleteId;
                     if (confirm('Delete this exercise from the session?')) {
                         deleteLogEntry(workoutId);
-                        closeModal();
+                        closeCurrentModal();
                     }
                 });
             });
@@ -3682,7 +3566,7 @@
                         localStorage.setItem('workoutHistory', JSON.stringify(history));
                         
                         showToast('✅ Session deleted!', 'success');
-                        closeModal();
+                        closeCurrentModal();
                         renderHistory();
                         renderDay();
                     }
@@ -3690,10 +3574,7 @@
             }
             
             document.getElementById('exerciseModal').classList.add('active');
-            
-            // Push 'modal' not 'session-detail'
-            history.pushState({ page: 'modal', type: 'session-detail', timestamp: Date.now() }, '', '');
-            historyStack.push('modal');
+            openModal('session-detail');
         }
 
         function filterLog(filter) {
@@ -3757,7 +3638,7 @@
         }
 
         // ============================================
-        // MODAL DISPLAY FUNCTIONS - FIXED v5.9
+        // STATS POPUP FUNCTIONS
         // ============================================
         function showWeeklyBreakdown() {
             const allHistory = JSON.parse(localStorage.getItem('workoutHistory') || '[]');
@@ -3802,7 +3683,7 @@
                 window.tempWeeklySessions = sortedSessions;
             }
             
-            content += '<button onclick="closeModal()" style="width: 100%; padding: 16px; background: var(--ravens-purple); color: white; border: none; border-radius: 10px; font-family: \'Bebas Neue\', sans-serif; font-size: 18px; cursor: pointer; margin-top: 20px;">Close</button></div>';
+            content += '<button onclick="closeCurrentModal()" style="width: 100%; padding: 16px; background: var(--ravens-purple); color: white; border: none; border-radius: 10px; font-family: \'Bebas Neue\', sans-serif; font-size: 18px; cursor: pointer; margin-top: 20px;">Close</button></div>';
             
             hideWorkoutElements();
             
@@ -3810,10 +3691,7 @@
             historySection.insertAdjacentHTML('beforebegin', `<div id="sessionDetailContent">${content}</div>`);
             
             document.getElementById('exerciseModal').classList.add('active');
-            
-            // FIXED: Push 'modal' not 'weekly-breakdown'
-            history.pushState({ page: 'modal', type: 'weekly-breakdown', timestamp: Date.now() }, '', '');
-            historyStack.push('modal');
+            openModal('weekly-breakdown');
         }
 
         function openSessionFromWeekly(index) {
@@ -3895,7 +3773,7 @@
                 });
             }
             
-            content += '<button onclick="closeModal()" style="width: 100%; padding: 16px; background: var(--ravens-purple); color: white; border: none; border-radius: 10px; font-family: \'Bebas Neue\', sans-serif; font-size: 18px; cursor: pointer; margin-top: 20px;">Close</button></div>';
+            content += '<button onclick="closeCurrentModal()" style="width: 100%; padding: 16px; background: var(--ravens-purple); color: white; border: none; border-radius: 10px; font-family: \'Bebas Neue\', sans-serif; font-size: 18px; cursor: pointer; margin-top: 20px;">Close</button></div>';
             
             hideWorkoutElements();
             
@@ -3903,10 +3781,7 @@
             historySection.insertAdjacentHTML('beforebegin', `<div id="sessionDetailContent">${content}</div>`);
             
             document.getElementById('exerciseModal').classList.add('active');
-            
-            // FIXED: Push 'modal' not 'pr-list'
-            history.pushState({ page: 'modal', type: 'pr-list', timestamp: Date.now() }, '', '');
-            historyStack.push('modal');
+            openModal('pr-list');
         }
 
         function showBestLifts() {
@@ -3949,7 +3824,7 @@
                 });
             }
             
-            content += '<button onclick="closeModal()" style="width: 100%; padding: 16px; background: var(--ravens-purple); color: white; border: none; border-radius: 10px; font-family: \'Bebas Neue\', sans-serif; font-size: 18px; cursor: pointer; margin-top: 20px;">Close</button></div>';
+            content += '<button onclick="closeCurrentModal()" style="width: 100%; padding: 16px; background: var(--ravens-purple); color: white; border: none; border-radius: 10px; font-family: \'Bebas Neue\', sans-serif; font-size: 18px; cursor: pointer; margin-top: 20px;">Close</button></div>';
             
             hideWorkoutElements();
             
@@ -3957,10 +3832,7 @@
             historySection.insertAdjacentHTML('beforebegin', `<div id="sessionDetailContent">${content}</div>`);
             
             document.getElementById('exerciseModal').classList.add('active');
-            
-            // FIXED: Push 'modal' not 'best-lifts'
-            history.pushState({ page: 'modal', type: 'best-lifts', timestamp: Date.now() }, '', '');
-            historyStack.push('modal');
+            openModal('best-lifts');
         }
 
         function showAccessoryBreakdown() {
@@ -3992,7 +3864,7 @@
                     });
             }
             
-            content += '<button onclick="closeModal()" style="width: 100%; padding: 16px; background: var(--ravens-purple); color: white; border: none; border-radius: 10px; font-family: \'Bebas Neue\', sans-serif; font-size: 18px; cursor: pointer; margin-top: 20px;">Close</button></div>';
+            content += '<button onclick="closeCurrentModal()" style="width: 100%; padding: 16px; background: var(--ravens-purple); color: white; border: none; border-radius: 10px; font-family: \'Bebas Neue\', sans-serif; font-size: 18px; cursor: pointer; margin-top: 20px;">Close</button></div>';
             
             hideWorkoutElements();
             
@@ -4000,10 +3872,7 @@
             historySection.insertAdjacentHTML('beforebegin', `<div id="sessionDetailContent">${content}</div>`);
             
             document.getElementById('exerciseModal').classList.add('active');
-            
-            // FIXED: Push 'modal' not 'accessory-breakdown'
-            history.pushState({ page: 'modal', type: 'accessory-breakdown', timestamp: Date.now() }, '', '');
-            historyStack.push('modal');
+            openModal('accessory-breakdown');
         }
 
         function hideWorkoutElements() {
@@ -4032,7 +3901,7 @@
             const history = localStorage.getItem('workoutHistory') || '[]';
             const weightHistory = localStorage.getItem('weightHistory') || '[]';
             const data = {
-                version: '5.9',
+                version: '6.0',
                 exportDate: new Date().toISOString(),
                 workouts: JSON.parse(history),
                 weightHistory: JSON.parse(weightHistory)
@@ -4170,11 +4039,11 @@
 
         // Modal click handlers
         document.getElementById('exerciseModal').addEventListener('click', function(e) {
-            if (e.target === this) closeModal();
+            if (e.target === this) closeCurrentModal();
         });
 
         document.getElementById('summaryModal').addEventListener('click', function(e) {
-            if (e.target === this) closeSummary();
+            if (e.target === this) closeCurrentModal();
         });
 
         document.addEventListener('keydown', function(e) {
@@ -4183,9 +4052,9 @@
                 const summaryModal = document.getElementById('summaryModal');
                 
                 if (exerciseModal.classList.contains('active')) {
-                    closeModal();
+                    closeCurrentModal();
                 } else if (summaryModal.classList.contains('active')) {
-                    closeSummary();
+                    closeCurrentModal();
                 }
             }
         });
@@ -4209,8 +4078,8 @@
         function initialize() {
             migrateOldData();
             
-            history.replaceState({ page: 'home', timestamp: Date.now() }, '', '');
-            historyStack.replace('home');
+            history.replaceState({ page: 'home' }, '', '');
+            currentPage = 'home';
             
             const savedState = loadSessionState();
             if (savedState && savedState.active) {
