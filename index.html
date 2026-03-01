@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dad Strength Tracker v5.8 - FINALLY Fixed Back Button</title>
+    <title>Dad Strength Tracker v5.9 - FINALLY Fixed Back Button</title>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -1180,7 +1180,7 @@
             <button id="backToHome" onclick="goHome()" style="background: rgba(158, 124, 12, 0.2); border: none; color: var(--ravens-gold); padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px; display: none; transition: all 0.3s ease;">
                 ← Home
             </button>
-            <div class="app-title">Dad Strength v5.8</div>
+            <div class="app-title">Dad Strength v5.9</div>
             <div class="session-timer" id="sessionTimer">00:00</div>
         </div>
         <div class="tab-navigation" id="tabNavigation" style="display: none;">
@@ -2742,7 +2742,7 @@
         }
 
         // ============================================
-        // EXERCISE MODAL FUNCTIONS
+        // EXERCISE MODAL FUNCTIONS - FIXED
         // ============================================
         function openExercise(idx) {
             currentExercise = workoutData[currentDay].exercises[idx];
@@ -2774,7 +2774,7 @@
             calculateStatsWithComparison();
             document.getElementById('exerciseModal').classList.add('active');
             
-            // Add to history - push 'modal' not 'exercise'
+            // Push to history stack
             history.pushState({ page: 'modal', type: 'exercise', timestamp: Date.now() }, '', '');
             historyStack.push('modal');
 
@@ -2812,9 +2812,9 @@
             const sectionTitles = document.getElementById('setsContainer').parentElement.querySelectorAll('.section-title');
             if (sectionTitles[0]) sectionTitles[0].style.display = 'block';
             
-            // Update history
+            // FIXED: Only update historyStack, don't call history.back()
             historyStack.back();
-            history.back();
+            // REMOVED: history.back(); - This was causing the app to close!
         }
 
         function getLastWorkoutData(day, exerciseName) {
@@ -3404,7 +3404,7 @@
         function closeSummary() {
             document.getElementById('summaryModal').classList.remove('active');
             historyStack.back();
-            history.back();
+            // REMOVED: history.back(); - This was causing the app to close!
         }
 
         function finishWorkout() {
@@ -3757,7 +3757,7 @@
         }
 
         // ============================================
-        // MODAL DISPLAY FUNCTIONS - FIXED v5.8
+        // MODAL DISPLAY FUNCTIONS - FIXED v5.9
         // ============================================
         function showWeeklyBreakdown() {
             const allHistory = JSON.parse(localStorage.getItem('workoutHistory') || '[]');
@@ -4032,7 +4032,7 @@
             const history = localStorage.getItem('workoutHistory') || '[]';
             const weightHistory = localStorage.getItem('weightHistory') || '[]';
             const data = {
-                version: '5.8',
+                version: '5.9',
                 exportDate: new Date().toISOString(),
                 workouts: JSON.parse(history),
                 weightHistory: JSON.parse(weightHistory)
