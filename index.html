@@ -1293,7 +1293,7 @@
     <!-- Stats Tab -->
     <div id="statsTab" class="tab-content" style="display: none;">
         <div style="padding: 20px;">
-            <!-- Strength Score Card -->
+            <!-- Strength Score Card - NEW IMPROVED VERSION -->
             <div class="strength-score-card" id="strengthScoreCard">
                 <div class="strength-score-value" id="statsCoreScore">0</div>
                 <div class="strength-score-label">CORE STRENGTH SCORE</div>
@@ -1346,7 +1346,7 @@
                 </div>
             </div>
 
-            <!-- STRENGTH MATRIX -->
+            <!-- STRENGTH MATRIX (UPDATED STANDARDS) -->
             <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 12px var(--shadow);">
                 <div style="font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--ravens-purple); margin-bottom: 16px; letter-spacing: 0.5px;">💪 STRENGTH MATRIX</div>
                 <div id="strengthMatrixGrid"></div>
@@ -1631,46 +1631,50 @@
         let lastDeletedWorkout = null;
         let undoTimeout = null;
         let autoSaveInterval = null;
-        let isNavigating = false; // FIX: Prevents back button during exercise transitions
 
         // Session persistence constants
         const SESSION_STORAGE_KEY = 'activeWorkoutSession';
         const SESSION_TIMEOUT = 4 * 60 * 60 * 1000;
 
         // ============================================
-        // ANDROID BACK BUTTON HANDLER - FIXED
+        // ANDROID BACK BUTTON HANDLER
         // ============================================
         window.addEventListener('popstate', function(event) {
             event.preventDefault();
             
-            // FIX: Don't process back button during navigation
-            if (isNavigating) {
-                return;
-            }
+            // Priority 1: Close ANY open modal (comprehensive check)
+            const allModals = [
+                document.getElementById('exerciseModal'),
+                document.getElementById('summaryModal'),
+                // Add any other modals that might be open
+            ];
             
-            const exerciseModal = document.getElementById('exerciseModal');
-            const summaryModal = document.getElementById('summaryModal');
-            
-            // Priority 1: Close open modals
-            if (exerciseModal && exerciseModal.classList.contains('active')) {
-                closeModal();
-                return;
-            }
-            
-            if (summaryModal && summaryModal.classList.contains('active')) {
-                closeSummary();
-                return;
+            for (const modal of allModals) {
+                if (modal && modal.classList.contains('active')) {
+                    // Close the specific modal
+                    if (modal.id === 'exerciseModal') {
+                        closeModal();
+                    } else if (modal.id === 'summaryModal') {
+                        closeSummary();
+                    } else {
+                        modal.classList.remove('active');
+                    }
+                    return;
+                }
             }
             
             // Priority 2: Close session detail views
             const sessionDetail = document.getElementById('sessionDetailContent');
             if (sessionDetail) {
                 sessionDetail.remove();
-                document.querySelector('.close-btn').style.display = 'block';
+                const closeBtn = document.querySelector('.close-btn');
+                if (closeBtn) closeBtn.style.display = 'block';
                 const sectionTitles = document.querySelectorAll('.section-title');
                 sectionTitles.forEach(title => title.style.display = 'block');
-                document.getElementById('setsContainer').style.display = 'block';
-                document.querySelector('.history-section').style.display = 'block';
+                const setsContainer = document.getElementById('setsContainer');
+                if (setsContainer) setsContainer.style.display = 'block';
+                const historySection = document.querySelector('.history-section');
+                if (historySection) historySection.style.display = 'block';
                 historyStack.back();
                 return;
             }
@@ -1681,10 +1685,14 @@
             if (!previousState) {
                 // No more history - check for active workout before letting Android close
                 if (workoutActive) {
-                    if (confirm('You have an active workout. Exit app?')) {
-                        finishWorkout();
+                    // SAVE workout before exiting
+                    saveSessionState();
+                    
+                    if (confirm('Exit app? Your workout will be saved and you can resume later.')) {
+                        // Let them exit - workout is saved
                         return;
                     } else {
+                        // They want to stay - push state back
                         history.pushState({ page: getCurrentPage(), timestamp: Date.now() }, '', '');
                         historyStack.push(getCurrentPage());
                         return;
@@ -2581,13 +2589,48 @@
         }
 
         function saveSessionState() {
+            if (!workoutActive) return; // Don't save if no workout active
+            
+            // Get today's completed workouts from history
+            const history = JSON.parse(localStorage.getItem('workoutHistory') || '[]');
+            const today = new Date().toDateString();
+            const todayWorkouts = history.filter(w => new Date(w.date).toDateString() === today);
+            
+            // Get current exercise data if modal is open
+            let currentExerciseData = null;
+            const modal = document.getElementById('exerciseModal');
+            if (modal && modal.classList.contains('active') && currentExercise) {
+                const sets = [];
+                for (let i = 1; i <= currentSetCount; i++) {
+                    const weightInput = document.querySelector(`[data-set="${i}"][data-type="weight"]`);
+                    const repsInput = document.querySelector(`[data-set="${i}"][data-type="reps"]`);
+                    if (weightInput && repsInput && (weightInput.value || repsInput.value)) {
+                        sets.push({
+                            weight: parseFloat(weightInput.value) || 0,
+                            reps: parseInt(repsInput.value) || 0
+                        });
+                    }
+                }
+                
+                currentExerciseData = {
+                    exercise: currentExercise,
+                    exerciseIndex: currentExerciseIndex,
+                    setCount: currentSetCount,
+                    sets: sets,
+                    notes: document.getElementById('exerciseNotes')?.value || ''
+                };
+            }
+            
             const sessionState = {
                 active: workoutActive,
                 day: currentDay,
                 startTime: sessionStartTime,
                 currentExerciseIndex: currentExerciseIndex,
+                todayWorkouts: todayWorkouts, // Completed exercises
+                currentExerciseData: currentExerciseData, // In-progress exercise
                 timestamp: Date.now()
             };
+            
             localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(sessionState));
         }
 
@@ -2635,6 +2678,51 @@
             sessionInterval = setInterval(updateSessionTimer, 1000);
             startAutoSave();
             updateProgress();
+            
+            // RESTORE IN-PROGRESS EXERCISE if it exists
+            if (state.currentExerciseData && state.currentExerciseData.exercise) {
+                const exerciseData = state.currentExerciseData;
+                
+                // Set current exercise state
+                currentExercise = exerciseData.exercise;
+                currentExerciseIndex = exerciseData.exerciseIndex;
+                currentSetCount = exerciseData.setCount;
+                
+                // Open the exercise modal
+                document.getElementById('exerciseModal').classList.add('active');
+                document.getElementById('modalExerciseName').textContent = currentExercise.name;
+                document.getElementById('modalExerciseTarget').textContent = `Target: ${currentExercise.sets} × ${currentExercise.reps}`;
+                
+                // Show all sections
+                document.getElementById('viewOnlyNotice').style.display = 'none';
+                document.getElementById('restTimer').style.display = 'block';
+                document.getElementById('prefillSection').style.display = 'block';
+                document.getElementById('addSetBtn').style.display = 'block';
+                document.getElementById('actionButtons').style.display = 'grid';
+                
+                // Render the sets
+                renderSets(false);
+                
+                // Restore the input values
+                exerciseData.sets.forEach((set, idx) => {
+                    const setNum = idx + 1;
+                    const weightInput = document.querySelector(`[data-set="${setNum}"][data-type="weight"]`);
+                    const repsInput = document.querySelector(`[data-set="${setNum}"][data-type="reps"]`);
+                    if (weightInput) weightInput.value = set.weight || '';
+                    if (repsInput) repsInput.value = set.reps || '';
+                });
+                
+                // Restore notes
+                if (exerciseData.notes) {
+                    document.getElementById('exerciseNotes').value = exerciseData.notes;
+                }
+                
+                // Load history and calculate stats
+                loadExerciseHistory();
+                calculateStatsWithComparison();
+                
+                showToast('Workout restored! Continue where you left off', 'success');
+            }
         }
 
         function showResumePrompt() {
@@ -2742,13 +2830,13 @@
                         <div class="set-label">Set ${i}</div>
                         <div class="input-group">
                             <input type="number" step="0.5" class="input-field" placeholder="0" 
-                                   ${disabled ? 'disabled' : ''} onchange="calculateStatsWithComparison(); autoStartRestTimer()" 
+                                   ${disabled ? 'disabled' : ''} onchange="calculateStatsWithComparison(); autoStartRestTimer(); saveSessionState()" 
                                    data-set="${i}" data-type="weight" id="weight-${i}">
                             <div class="input-label">Weight (kg)</div>
                         </div>
                         <div class="input-group">
                             <input type="number" class="input-field" placeholder="0" 
-                                   ${disabled ? 'disabled' : ''} onchange="calculateStatsWithComparison(); autoStartRestTimer()" 
+                                   ${disabled ? 'disabled' : ''} onchange="calculateStatsWithComparison(); autoStartRestTimer(); saveSessionState()" 
                                    data-set="${i}" data-type="reps" id="reps-${i}">
                             <div class="input-label">Reps</div>
                         </div>
@@ -3056,25 +3144,14 @@
             }
         }
 
-        // ============================================
-        // FIXED SAVE & NEXT FUNCTION
-        // ============================================
         function saveAndNext() {
-            // Set navigating flag to prevent back button interference
-            isNavigating = true;
-            
-            // Save the workout
             saveWorkout();
             
             const nextIndex = currentExerciseIndex + 1;
             if (nextIndex < workoutData[currentDay].exercises.length) {
-                setTimeout(() => {
-                    openExercise(nextIndex);
-                    isNavigating = false; // Clear flag when done
-                }, 300);
+                setTimeout(() => openExercise(nextIndex), 300);
             } else {
                 showToast('All exercises complete! Great work! 🎉', 'success');
-                isNavigating = false; // Clear flag if no next exercise
             }
         }
 
@@ -3945,7 +4022,7 @@
             const history = localStorage.getItem('workoutHistory') || '[]';
             const weightHistory = localStorage.getItem('weightHistory') || '[]';
             const data = {
-                version: '5.5',
+                version: '5.1',
                 exportDate: new Date().toISOString(),
                 workouts: JSON.parse(history),
                 weightHistory: JSON.parse(weightHistory)
@@ -4100,6 +4177,21 @@
                 } else if (summaryModal.classList.contains('active')) {
                     closeSummary();
                 }
+            }
+        });
+
+        // Save session when app goes to background
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden && workoutActive) {
+                saveSessionState();
+                console.log('App backgrounded - session saved');
+            }
+        });
+
+        // Save session before page unload
+        window.addEventListener('beforeunload', function() {
+            if (workoutActive) {
+                saveSessionState();
             }
         });
 
