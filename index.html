@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dad Strength Tracker v5.7 - Strength Matrix</title>
+    <title>Dad Strength Tracker v5.8 - FINALLY Fixed Back Button</title>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -1180,7 +1180,7 @@
             <button id="backToHome" onclick="goHome()" style="background: rgba(158, 124, 12, 0.2); border: none; color: var(--ravens-gold); padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px; display: none; transition: all 0.3s ease;">
                 ← Home
             </button>
-            <div class="app-title">Dad Strength</div>
+            <div class="app-title">Dad Strength v5.8</div>
             <div class="session-timer" id="sessionTimer">00:00</div>
         </div>
         <div class="tab-navigation" id="tabNavigation" style="display: none;">
@@ -1293,7 +1293,7 @@
     <!-- Stats Tab -->
     <div id="statsTab" class="tab-content" style="display: none;">
         <div style="padding: 20px;">
-            <!-- Strength Score Card - NEW IMPROVED VERSION -->
+            <!-- Strength Score Card -->
             <div class="strength-score-card" id="strengthScoreCard">
                 <div class="strength-score-value" id="statsCoreScore">0</div>
                 <div class="strength-score-label">CORE STRENGTH SCORE</div>
@@ -1346,7 +1346,7 @@
                 </div>
             </div>
 
-            <!-- STRENGTH MATRIX (UPDATED STANDARDS) -->
+            <!-- STRENGTH MATRIX -->
             <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 12px var(--shadow);">
                 <div style="font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--ravens-purple); margin-bottom: 16px; letter-spacing: 0.5px;">💪 STRENGTH MATRIX</div>
                 <div id="strengthMatrixGrid"></div>
@@ -2774,7 +2774,7 @@
             calculateStatsWithComparison();
             document.getElementById('exerciseModal').classList.add('active');
             
-            // Add to history
+            // Add to history - push 'modal' not 'exercise'
             history.pushState({ page: 'modal', type: 'exercise', timestamp: Date.now() }, '', '');
             historyStack.push('modal');
 
@@ -3757,7 +3757,7 @@
         }
 
         // ============================================
-        // MODAL DISPLAY FUNCTIONS
+        // MODAL DISPLAY FUNCTIONS - FIXED v5.8
         // ============================================
         function showWeeklyBreakdown() {
             const allHistory = JSON.parse(localStorage.getItem('workoutHistory') || '[]');
@@ -3811,7 +3811,7 @@
             
             document.getElementById('exerciseModal').classList.add('active');
             
-            // Push 'modal' not a page name - modals are not pages!
+            // FIXED: Push 'modal' not 'weekly-breakdown'
             history.pushState({ page: 'modal', type: 'weekly-breakdown', timestamp: Date.now() }, '', '');
             historyStack.push('modal');
         }
@@ -3904,7 +3904,7 @@
             
             document.getElementById('exerciseModal').classList.add('active');
             
-            // Push 'modal' not a page name - modals are not pages!
+            // FIXED: Push 'modal' not 'pr-list'
             history.pushState({ page: 'modal', type: 'pr-list', timestamp: Date.now() }, '', '');
             historyStack.push('modal');
         }
@@ -3958,7 +3958,7 @@
             
             document.getElementById('exerciseModal').classList.add('active');
             
-            // Push 'modal' not a page name - modals are not pages!
+            // FIXED: Push 'modal' not 'best-lifts'
             history.pushState({ page: 'modal', type: 'best-lifts', timestamp: Date.now() }, '', '');
             historyStack.push('modal');
         }
@@ -4001,7 +4001,7 @@
             
             document.getElementById('exerciseModal').classList.add('active');
             
-            // Push 'modal' not 'accessory-breakdown'
+            // FIXED: Push 'modal' not 'accessory-breakdown'
             history.pushState({ page: 'modal', type: 'accessory-breakdown', timestamp: Date.now() }, '', '');
             historyStack.push('modal');
         }
@@ -4032,7 +4032,7 @@
             const history = localStorage.getItem('workoutHistory') || '[]';
             const weightHistory = localStorage.getItem('weightHistory') || '[]';
             const data = {
-                version: '5.1',
+                version: '5.8',
                 exportDate: new Date().toISOString(),
                 workouts: JSON.parse(history),
                 weightHistory: JSON.parse(weightHistory)
