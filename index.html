@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dad Strength Tracker v5.5 - Strength Matrix</title>
+    <title>Dad Strength Tracker v5.6 - Strength Matrix</title>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -1639,28 +1639,31 @@
         // ============================================
         // ANDROID BACK BUTTON HANDLER
         // ============================================
+        
+        // Helper function to check and close any open modals
+        function checkAndCloseModals() {
+            const exerciseModal = document.getElementById('exerciseModal');
+            const summaryModal = document.getElementById('summaryModal');
+            
+            if (exerciseModal && exerciseModal.classList.contains('active')) {
+                closeModal();
+                return true;
+            }
+            
+            if (summaryModal && summaryModal.classList.contains('active')) {
+                closeSummary();
+                return true;
+            }
+            
+            return false;
+        }
+        
         window.addEventListener('popstate', function(event) {
-            event.preventDefault();
+            // Let browser history work naturally - don't preventDefault
             
-            // Priority 1: Close ANY open modal (comprehensive check)
-            const allModals = [
-                document.getElementById('exerciseModal'),
-                document.getElementById('summaryModal'),
-                // Add any other modals that might be open
-            ];
-            
-            for (const modal of allModals) {
-                if (modal && modal.classList.contains('active')) {
-                    // Close the specific modal
-                    if (modal.id === 'exerciseModal') {
-                        closeModal();
-                    } else if (modal.id === 'summaryModal') {
-                        closeSummary();
-                    } else {
-                        modal.classList.remove('active');
-                    }
-                    return;
-                }
+            // Priority 1: Close any open modals
+            if (checkAndCloseModals()) {
+                return; // Modal closed - we're done this cycle
             }
             
             // Priority 2: Close session detail views
@@ -1679,31 +1682,31 @@
                 return;
             }
             
-            // Priority 3: Navigate back in history
+            // Priority 3: Navigate back in history stack
             const previousState = historyStack.back();
             
             if (!previousState) {
-                // No more history - check for active workout before letting Android close
+                // At root of history - check for active workout before allowing app exit
                 if (workoutActive) {
-                    // SAVE workout before exiting
+                    // Save workout first
                     saveSessionState();
                     
-                    if (confirm('Exit app? Your workout will be saved and you can resume later.')) {
-                        // Let them exit - workout is saved
-                        return;
-                    } else {
-                        // They want to stay - push state back
-                        history.pushState({ page: getCurrentPage(), timestamp: Date.now() }, '', '');
-                        historyStack.push(getCurrentPage());
+                    // Ask user to confirm exit
+                    if (!confirm('Exit app? Your workout is saved and you can resume later.')) {
+                        // User cancelled exit - push state back to stay in app
+                        const currentPage = getCurrentPage();
+                        history.pushState({ page: currentPage, timestamp: Date.now() }, '', '');
+                        historyStack.push(currentPage);
                         return;
                     }
+                    // User confirmed - let app close (do nothing, let default happen)
                 }
-                return; // Let Android close the app
+                // No workout or user confirmed exit - let Android close the app
+                return;
             }
             
-            // Navigate to previous state
+            // Navigate to the previous state
             navigateToPage(previousState);
-            return false;
         }, false);
 
         // Initialize history
@@ -3149,7 +3152,8 @@
             
             const nextIndex = currentExerciseIndex + 1;
             if (nextIndex < workoutData[currentDay].exercises.length) {
-                setTimeout(() => openExercise(nextIndex), 300);
+                // Open next exercise immediately - no delay
+                openExercise(nextIndex);
             } else {
                 showToast('All exercises complete! Great work! 🎉', 'success');
             }
