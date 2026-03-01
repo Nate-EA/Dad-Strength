@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dad Strength Tracker v6.0 - FINALLY Fixed Back Button</title>
+    <title>Dad Strength Tracker v6.1 - PERFECT Back Button</title>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -1180,7 +1180,7 @@
             <button id="backToHome" onclick="goHome()" style="background: rgba(158, 124, 12, 0.2); border: none; color: var(--ravens-gold); padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px; display: none; transition: all 0.3s ease;">
                 ← Home
             </button>
-            <div class="app-title">Dad Strength v6.0</div>
+            <div class="app-title">Dad Strength v6.1</div>
             <div class="session-timer" id="sessionTimer">00:00</div>
         </div>
         <div class="tab-navigation" id="tabNavigation" style="display: none;">
@@ -1575,7 +1575,7 @@
         ];
 
         // ============================================
-        // SIMPLE BACK BUTTON HANDLER - v6.0 FINAL
+        // SIMPLE BACK BUTTON HANDLER - v6.1 FINAL
         // ============================================
 
         // Global state - single source of truth
@@ -1590,10 +1590,15 @@
         window.addEventListener('popstate', function(event) {
             console.log('Back pressed - Current state:', { page: currentPage, modal: currentModal });
             
+            // PREVENT DEFAULT EXIT BEHAVIOR - we'll handle it manually
+            event.preventDefault();
+            
             // CASE 1: Modal is open → close it, stay on same page
             if (currentModal) {
                 console.log('Closing modal:', currentModal);
                 closeCurrentModal();
+                // Push the current page back to history so we don't exit
+                history.pushState({ page: currentPage }, '', '');
                 return;
             }
             
@@ -1601,7 +1606,7 @@
             if (currentPage === 'home') {
                 console.log('On home - showing exit confirmation');
                 if (confirm('Exit Dad Strength Tracker?')) {
-                    // User confirmed - let app close
+                    // User confirmed - let app close (do nothing, browser will exit)
                     return;
                 } else {
                     // User cancelled - push home back to stay in app
@@ -1642,8 +1647,8 @@
             currentPage = page;
             currentModal = null;  // Ensure no modal is tracked when on a page
             
-            // Update browser history
-            history.pushState({ page: page }, '', '');
+            // Use replaceState instead of pushState to avoid history bloat
+            history.replaceState({ page: page }, '', '');
         }
 
         // Close whatever modal is currently open
@@ -1697,7 +1702,8 @@
         function openModal(type) {
             console.log('Opening modal:', type);
             currentModal = type;
-            history.pushState({ modal: type }, '', '');  // Add to browser history
+            // Push modal state so back button knows to close it
+            history.pushState({ page: currentPage, modal: type }, '', '');
         }
 
         // Navigation functions
@@ -3038,7 +3044,7 @@
             stopRestTimer();
             restTimerSeconds = 90;
 
-            closeCurrentModal();  // Use the unified close function
+            closeCurrentModal();
             renderDay();
             
             if (document.getElementById('statsTab').style.display !== 'none') {
@@ -3901,7 +3907,7 @@
             const history = localStorage.getItem('workoutHistory') || '[]';
             const weightHistory = localStorage.getItem('weightHistory') || '[]';
             const data = {
-                version: '6.0',
+                version: '6.1',
                 exportDate: new Date().toISOString(),
                 workouts: JSON.parse(history),
                 weightHistory: JSON.parse(weightHistory)
