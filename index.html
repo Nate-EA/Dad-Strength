@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dad Strength Tracker v5.9 - FINALLY Fixed Back Button</title>
+    <title>Dad Strength Tracker v5.10 - Band Support</title>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -1532,7 +1532,7 @@
                     { name: "Incline DB Bench Press", sets: 3, reps: "8–12" },
                     { name: "Seated DB Shoulder Press", sets: 3, reps: "8–10" },
                     { name: "Lat Pulldown", sets: 3, reps: "8–10" },
-                    { name: "Face Pulls", sets: 3, reps: "15–20" },
+                    { name: "Face Pulls", sets: 3, reps: "15–20", resistanceType: "band" },
                     { name: "Cable Hip Flexor Raise", sets: 3, reps: "12–15" },
                     { name: "Dead Bug", sets: 3, reps: "8/side" }
                 ]
@@ -2827,37 +2827,82 @@
             const container = document.getElementById('setsContainer');
             container.innerHTML = '';
             
+            const isBandExercise = currentExercise && currentExercise.resistanceType === 'band';
+            
             for (let i = 1; i <= currentSetCount; i++) {
-                container.innerHTML += `
-                    <div class="set-row" id="set-row-${i}">
-                        <div class="set-label">Set ${i}</div>
-                        <div class="input-group">
-                            <input type="number" step="0.5" class="input-field" placeholder="0" 
-                                   ${disabled ? 'disabled' : ''} onchange="calculateStatsWithComparison(); autoStartRestTimer(); saveSessionState()" 
-                                   data-set="${i}" data-type="weight" id="weight-${i}">
-                            <div class="input-label">Weight (kg)</div>
+                if (isBandExercise) {
+                    // Band resistance selector
+                    container.innerHTML += `
+                        <div class="set-row" id="set-row-${i}">
+                            <div class="set-label">Set ${i}</div>
+                            <div class="input-group">
+                                <select class="input-field" ${disabled ? 'disabled' : ''} 
+                                        onchange="calculateStatsWithComparison(); autoStartRestTimer(); saveSessionState()"
+                                        data-set="${i}" data-type="band" id="band-${i}">
+                                    <option value="">Select Band</option>
+                                    <option value="yellow">🟡 Yellow (2-7kg)</option>
+                                    <option value="red">🔴 Red (7-14kg)</option>
+                                    <option value="black">⚫ Black (14-27kg)</option>
+                                    <option value="purple">🟣 Purple (27-45kg)</option>
+                                    <option value="green">🟢 Green (29-57kg)</option>
+                                    <option value="blue">🔵 Blue (34-79kg)</option>
+                                    <option value="orange">🟠 Orange (39-104kg)</option>
+                                </select>
+                                <div class="input-label">Band</div>
+                            </div>
+                            <div class="input-group">
+                                <input type="number" class="input-field" placeholder="0" 
+                                       ${disabled ? 'disabled' : ''} onchange="calculateStatsWithComparison(); autoStartRestTimer(); saveSessionState()" 
+                                       data-set="${i}" data-type="reps" id="reps-${i}">
+                                <div class="input-label">Reps</div>
+                            </div>
+                            ${i > 1 && !disabled ? '<button class="remove-set" onclick="removeSet(' + i + ')">×</button>' : '<div></div>'}
                         </div>
-                        <div class="input-group">
-                            <input type="number" class="input-field" placeholder="0" 
-                                   ${disabled ? 'disabled' : ''} onchange="calculateStatsWithComparison(); autoStartRestTimer(); saveSessionState()" 
-                                   data-set="${i}" data-type="reps" id="reps-${i}">
-                            <div class="input-label">Reps</div>
+                    `;
+                } else {
+                    // Normal weight input
+                    container.innerHTML += `
+                        <div class="set-row" id="set-row-${i}">
+                            <div class="set-label">Set ${i}</div>
+                            <div class="input-group">
+                                <input type="number" step="0.5" class="input-field" placeholder="0" 
+                                       ${disabled ? 'disabled' : ''} onchange="calculateStatsWithComparison(); autoStartRestTimer(); saveSessionState()" 
+                                       data-set="${i}" data-type="weight" id="weight-${i}">
+                                <div class="input-label">Weight (kg)</div>
+                            </div>
+                            <div class="input-group">
+                                <input type="number" class="input-field" placeholder="0" 
+                                       ${disabled ? 'disabled' : ''} onchange="calculateStatsWithComparison(); autoStartRestTimer(); saveSessionState()" 
+                                       data-set="${i}" data-type="reps" id="reps-${i}">
+                                <div class="input-label">Reps</div>
+                            </div>
+                            ${i > 1 && !disabled ? '<button class="remove-set" onclick="removeSet(' + i + ')">×</button>' : '<div></div>'}
                         </div>
-                        ${i > 1 && !disabled ? '<button class="remove-set" onclick="removeSet(' + i + ')">×</button>' : '<div></div>'}
-                    </div>
-                `;
+                    `;
+                }
             }
         }
 
         function addSet() {
             const existingValues = [];
+            const isBandExercise = currentExercise && currentExercise.resistanceType === 'band';
+            
             for (let i = 1; i <= currentSetCount; i++) {
-                const weight = document.querySelector(`[data-set="${i}"][data-type="weight"]`)?.value;
-                const reps = document.querySelector(`[data-set="${i}"][data-type="reps"]`)?.value;
-                existingValues.push({ 
-                    weight: weight || '', 
-                    reps: reps || '' 
-                });
+                if (isBandExercise) {
+                    const band = document.querySelector(`[data-set="${i}"][data-type="band"]`)?.value;
+                    const reps = document.querySelector(`[data-set="${i}"][data-type="reps"]`)?.value;
+                    existingValues.push({ 
+                        band: band || '', 
+                        reps: reps || '' 
+                    });
+                } else {
+                    const weight = document.querySelector(`[data-set="${i}"][data-type="weight"]`)?.value;
+                    const reps = document.querySelector(`[data-set="${i}"][data-type="reps"]`)?.value;
+                    existingValues.push({ 
+                        weight: weight || '', 
+                        reps: reps || '' 
+                    });
+                }
             }
             
             currentSetCount++;
@@ -2865,10 +2910,17 @@
             
             setTimeout(() => {
                 existingValues.forEach((set, idx) => {
-                    const weightInput = document.querySelector(`[data-set="${idx + 1}"][data-type="weight"]`);
-                    const repsInput = document.querySelector(`[data-set="${idx + 1}"][data-type="reps"]`);
-                    if (weightInput && set.weight) weightInput.value = set.weight;
-                    if (repsInput && set.reps) repsInput.value = set.reps;
+                    if (isBandExercise) {
+                        const bandInput = document.querySelector(`[data-set="${idx + 1}"][data-type="band"]`);
+                        const repsInput = document.querySelector(`[data-set="${idx + 1}"][data-type="reps"]`);
+                        if (bandInput && set.band) bandInput.value = set.band;
+                        if (repsInput && set.reps) repsInput.value = set.reps;
+                    } else {
+                        const weightInput = document.querySelector(`[data-set="${idx + 1}"][data-type="weight"]`);
+                        const repsInput = document.querySelector(`[data-set="${idx + 1}"][data-type="reps"]`);
+                        if (weightInput && set.weight) weightInput.value = set.weight;
+                        if (repsInput && set.reps) repsInput.value = set.reps;
+                    }
                 });
                 calculateStatsWithComparison();
             }, 10);
@@ -3079,12 +3131,21 @@
         function saveWorkout() {
             const inputs = document.querySelectorAll('.input-field');
             const sets = [];
+            const isBandExercise = currentExercise && currentExercise.resistanceType === 'band';
 
             for (let i = 1; i <= currentSetCount; i++) {
-                const weight = document.querySelector(`[data-set="${i}"][data-type="weight"]`)?.value;
-                const reps = document.querySelector(`[data-set="${i}"][data-type="reps"]`)?.value;
-                if (weight && reps) {
-                    sets.push({ weight: parseFloat(weight), reps: parseInt(reps) });
+                if (isBandExercise) {
+                    const band = document.querySelector(`[data-set="${i}"][data-type="band"]`)?.value;
+                    const reps = document.querySelector(`[data-set="${i}"][data-type="reps"]`)?.value;
+                    if (band && reps) {
+                        sets.push({ band: band, reps: parseInt(reps) });
+                    }
+                } else {
+                    const weight = document.querySelector(`[data-set="${i}"][data-type="weight"]`)?.value;
+                    const reps = document.querySelector(`[data-set="${i}"][data-type="reps"]`)?.value;
+                    if (weight && reps) {
+                        sets.push({ weight: parseFloat(weight), reps: parseInt(reps) });
+                    }
                 }
             }
 
@@ -3093,11 +3154,14 @@
                 return;
             }
 
-            try {
-                validateWorkoutInputs(sets);
-            } catch (error) {
-                showToast(error.message, 'error');
-                return;
+            // Skip validation for band exercises
+            if (!isBandExercise) {
+                try {
+                    validateWorkoutInputs(sets);
+                } catch (error) {
+                    showToast(error.message, 'error');
+                    return;
+                }
             }
 
             let duration = null;
@@ -3181,12 +3245,36 @@
 
             container.innerHTML = exerciseHistory.map(workout => {
                 const date = new Date(workout.date).toLocaleDateString();
-                const setsText = workout.sets.map(s => `${s.weight}kg × ${s.reps}`).join(', ');
-                const max1RM = Math.max(...workout.sets.map(s => calculate1RM(s.weight, s.reps)));
+                const setsText = workout.sets.map(s => {
+                    if (s.band) {
+                        // Band exercise - show band color
+                        const bandEmoji = {
+                            'yellow': '🟡',
+                            'red': '🔴',
+                            'black': '⚫',
+                            'purple': '🟣',
+                            'green': '🟢',
+                            'blue': '🔵',
+                            'orange': '🟠'
+                        }[s.band] || '';
+                        return `${bandEmoji} ${s.band} × ${s.reps}`;
+                    } else {
+                        // Weight exercise
+                        return `${s.weight}kg × ${s.reps}`;
+                    }
+                }).join(', ');
                 
-                const allWorkouts = history.filter(w => w.exercise === currentExercise.name && w.day === currentDay);
-                const all1RMs = allWorkouts.map(w => Math.max(...w.sets.map(s => calculate1RM(s.weight, s.reps))));
-                const isPR = max1RM === Math.max(...all1RMs);
+                // Skip 1RM calculation for band exercises
+                const isBandExercise = workout.sets.length > 0 && workout.sets[0].band;
+                let max1RM = 0;
+                let isPR = false;
+                
+                if (!isBandExercise) {
+                    max1RM = Math.max(...workout.sets.map(s => calculate1RM(s.weight, s.reps)));
+                    const allWorkouts = history.filter(w => w.exercise === currentExercise.name && w.day === currentDay);
+                    const all1RMs = allWorkouts.map(w => Math.max(...w.sets.map(s => calculate1RM(s.weight || 0, s.reps))));
+                    isPR = max1RM === Math.max(...all1RMs);
+                }
                 
                 return `
                     <div class="history-item ${isPR ? 'pr-session' : ''}">
@@ -3253,10 +3341,19 @@
             renderSets(false);
             
             workout.sets.forEach((set, i) => {
-                const weightInput = document.querySelector(`[data-set="${i + 1}"][data-type="weight"]`);
-                const repsInput = document.querySelector(`[data-set="${i + 1}"][data-type="reps"]`);
-                if (weightInput) weightInput.value = set.weight;
-                if (repsInput) repsInput.value = set.reps;
+                if (set.band) {
+                    // Band exercise
+                    const bandInput = document.querySelector(`[data-set="${i + 1}"][data-type="band"]`);
+                    const repsInput = document.querySelector(`[data-set="${i + 1}"][data-type="reps"]`);
+                    if (bandInput) bandInput.value = set.band;
+                    if (repsInput) repsInput.value = set.reps;
+                } else {
+                    // Weight exercise
+                    const weightInput = document.querySelector(`[data-set="${i + 1}"][data-type="weight"]`);
+                    const repsInput = document.querySelector(`[data-set="${i + 1}"][data-type="reps"]`);
+                    if (weightInput) weightInput.value = set.weight;
+                    if (repsInput) repsInput.value = set.reps;
+                }
             });
             
             document.getElementById('exerciseNotes').value = workout.notes || '';
@@ -3275,12 +3372,23 @@
 
         function updateWorkout(workoutId) {
             const sets = [];
+            const isBandExercise = currentExercise && currentExercise.resistanceType === 'band';
+            
             for (let i = 1; i <= currentSetCount; i++) {
-                const weight = parseFloat(document.querySelector(`[data-set="${i}"][data-type="weight"]`)?.value);
-                const reps = parseInt(document.querySelector(`[data-set="${i}"][data-type="reps"]`)?.value);
-                
-                if (weight && reps) {
-                    sets.push({ weight, reps });
+                if (isBandExercise) {
+                    const band = document.querySelector(`[data-set="${i}"][data-type="band"]`)?.value;
+                    const reps = parseInt(document.querySelector(`[data-set="${i}"][data-type="reps"]`)?.value);
+                    
+                    if (band && reps) {
+                        sets.push({ band, reps });
+                    }
+                } else {
+                    const weight = parseFloat(document.querySelector(`[data-set="${i}"][data-type="weight"]`)?.value);
+                    const reps = parseInt(document.querySelector(`[data-set="${i}"][data-type="reps"]`)?.value);
+                    
+                    if (weight && reps) {
+                        sets.push({ weight, reps });
+                    }
                 }
             }
             
@@ -3289,11 +3397,14 @@
                 return;
             }
             
-            try {
-                validateWorkoutInputs(sets);
-            } catch (error) {
-                showToast(error.message, 'error');
-                return;
+            // Skip validation for band exercises
+            if (!isBandExercise) {
+                try {
+                    validateWorkoutInputs(sets);
+                } catch (error) {
+                    showToast(error.message, 'error');
+                    return;
+                }
             }
             
             const notes = document.getElementById('exerciseNotes').value;
