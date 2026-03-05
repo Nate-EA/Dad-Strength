@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dad Strength Tracker v5.10.1 - Band Support + Organized PRs</title>
+    <title>Dad Strength Tracker v5.15</title>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -1149,6 +1149,12 @@
             margin-bottom: 20px;
             text-align: center;
             color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .strength-score-card:active {
+            transform: scale(0.98);
         }
 
         .strength-score-value {
@@ -1171,6 +1177,163 @@
             font-size: 13px;
             font-weight: 500;
         }
+
+        .hero-hint {
+            font-size: 11px;
+            opacity: 0.7;
+            margin-top: 8px;
+            letter-spacing: 1px;
+        }
+
+        .hero-breakdown {
+            display: none;
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .hero-breakdown.open {
+            display: block;
+        }
+
+        .hero-section-label {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            opacity: 0.8;
+            margin-bottom: 8px;
+            margin-top: 16px;
+            text-transform: uppercase;
+        }
+
+        .hero-section-label:first-child {
+            margin-top: 0;
+        }
+
+        .hero-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 10px;
+            background: rgba(255,255,255,0.12);
+            border-radius: 8px;
+            margin-bottom: 4px;
+            font-size: 13px;
+        }
+
+        .hero-row-val {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 18px;
+            color: var(--ravens-gold);
+        }
+
+        .hero-divider {
+            border: none;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            margin: 12px 0;
+        }
+
+        .hero-acc-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 10px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+
+        .hero-acc-body {
+            display: none;
+            padding-top: 4px;
+        }
+
+        .hero-acc-body.open {
+            display: block;
+        }
+
+        /* Volume modal */
+        .vg-hdr {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--ravens-purple);
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 2px;
+            user-select: none;
+        }
+
+        .vg-body {
+            display: none;
+            background: white;
+            border: 2px solid var(--ravens-purple);
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+
+        .vg-body.open {
+            display: block;
+        }
+
+        .vex {
+            background: var(--pale-purple);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .vex-hdr {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .vex-name {
+            font-weight: 600;
+            color: var(--ravens-purple);
+            font-size: 14px;
+        }
+
+        .vex-peak {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 20px;
+            color: var(--ravens-purple);
+        }
+
+        /* PR/1RM collapsible groups */
+        .ex-group-hdr {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--pale-purple);
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--ravens-purple);
+            font-size: 14px;
+            margin-bottom: 2px;
+            user-select: none;
+        }
+
+        .ex-group-body {
+            display: none;
+            padding: 0 0 8px 0;
+        }
+
+        .ex-group-body.open {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -1180,7 +1343,7 @@
             <button id="backToHome" onclick="goHome()" style="background: rgba(158, 124, 12, 0.2); border: none; color: var(--ravens-gold); padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px; display: none; transition: all 0.3s ease;">
                 ← Home
             </button>
-            <div class="app-title">Dad Strength v5.10.1</div>
+            <div class="app-title">Dad Strength v5.15</div>
             <div class="session-timer" id="sessionTimer">00:00</div>
         </div>
         <div class="tab-navigation" id="tabNavigation" style="display: none;">
@@ -1294,11 +1457,23 @@
     <div id="statsTab" class="tab-content" style="display: none;">
         <div style="padding: 20px;">
             <!-- Strength Score Card -->
-            <div class="strength-score-card" id="strengthScoreCard">
+            <div class="strength-score-card" id="strengthScoreCard" onclick="toggleHeroBreakdown()">
                 <div class="strength-score-value" id="statsCoreScore">0</div>
                 <div class="strength-score-label">CORE STRENGTH SCORE</div>
                 <div class="strength-score-trend" id="statsScoreTrend">↑ 0 from last week</div>
                 <div style="font-size: 12px; margin-top: 8px; opacity: 0.8;" id="statsAccessoryInfo"></div>
+                <div class="hero-hint" id="heroHint">TAP TO EXPAND ▼</div>
+                <div class="hero-breakdown" id="heroBreakdown">
+                    <div class="hero-section-label">⭐ Core 6 Lifts — Est. 1RM</div>
+                    <div id="heroCore"></div>
+                    <hr class="hero-divider">
+                    <div class="hero-acc-header" onclick="toggleHeroAcc(event)">
+                        <span id="heroAccLabel">Accessories ▼</span>
+                    </div>
+                    <div class="hero-acc-body" id="heroAccBody">
+                        <div id="heroAcc" style="padding-top:4px;"></div>
+                    </div>
+                </div>
             </div>
 
             <!-- Quick Stats Grid -->
@@ -1318,9 +1493,9 @@
                     <div style="font-size: 11px; color: var(--light-purple); font-weight: 600; text-transform: uppercase; margin-bottom: 4px;">Best Lifts (1RM)</div>
                     <div style="font-size: 10px; color: #888;">Tap to view</div>
                 </button>
-                <button onclick="showAccessoryBreakdown()" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 12px var(--shadow); text-align: center; border: 2px solid var(--ravens-purple); cursor: pointer; transition: all 0.3s ease;">
-                    <div style="font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--ravens-purple);" id="statsAccessoryCount">0</div>
-                    <div style="font-size: 11px; color: var(--light-purple); font-weight: 600; text-transform: uppercase; margin-bottom: 4px;">Accessory Lifts</div>
+                <button onclick="showVolume()" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 12px var(--shadow); text-align: center; border: 2px solid var(--ravens-purple); cursor: pointer; transition: all 0.3s ease;">
+                    <div style="font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--ravens-purple);" id="statsWeightLifted">0</div>
+                    <div style="font-size: 11px; color: var(--light-purple); font-weight: 600; text-transform: uppercase; margin-bottom: 4px;">Weight Lifted</div>
                     <div style="font-size: 10px; color: #888;">Tap to view</div>
                 </button>
             </div>
@@ -1350,7 +1525,6 @@
             <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 12px var(--shadow);">
                 <div style="font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--ravens-purple); margin-bottom: 16px; letter-spacing: 0.5px;">💪🏾 STRENGTH MATRIX</div>
                 <div id="strengthMatrixGrid"></div>
-                <div id="accessoryBreakdown" style="margin-top: 20px;"></div>
             </div>
         </div>
     </div>
@@ -1375,9 +1549,9 @@
                     <div style="font-size: 11px; color: var(--light-purple); font-weight: 600; text-transform: uppercase; margin-bottom: 4px;">Best Lifts (1RM)</div>
                     <div style="font-size: 10px; color: #888;">Tap to view</div>
                 </button>
-                <button onclick="showAccessoryBreakdown()" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 12px var(--shadow); text-align: center; border: 2px solid var(--ravens-purple); cursor: pointer; transition: all 0.3s ease;">
-                    <div style="font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--ravens-purple);" id="historyAccessoryCount">0</div>
-                    <div style="font-size: 11px; color: var(--light-purple); font-weight: 600; text-transform: uppercase; margin-bottom: 4px;">Accessory Lifts</div>
+                <button onclick="showVolume()" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 12px var(--shadow); text-align: center; border: 2px solid var(--ravens-purple); cursor: pointer; transition: all 0.3s ease;">
+                    <div style="font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--ravens-purple);" id="historyWeightLifted">0</div>
+                    <div style="font-size: 11px; color: var(--light-purple); font-weight: 600; text-transform: uppercase; margin-bottom: 4px;">Weight Lifted</div>
                     <div style="font-size: 10px; color: #888;">Tap to view</div>
                 </button>
             </div>
@@ -1706,35 +1880,26 @@
         }
         
         window.addEventListener('popstate', function(event) {
-            // Priority 1: Close any open modals
-            if (checkAndCloseModals()) {
+            // Priority 1: Close modals (exercise/summary modal active)
+            const exerciseModal = document.getElementById('exerciseModal');
+            const summaryModal = document.getElementById('summaryModal');
+            
+            if (exerciseModal && exerciseModal.classList.contains('active')) {
+                closeCurrentModal();
+                return;
+            }
+            if (summaryModal && summaryModal.classList.contains('active')) {
+                closeCurrentModal();
                 return;
             }
             
-            // Priority 2: Close session detail views
-            const sessionDetail = document.getElementById('sessionDetailContent');
-            if (sessionDetail) {
-                sessionDetail.remove();
-                const closeBtn = document.querySelector('.close-btn');
-                if (closeBtn) closeBtn.style.display = 'block';
-                const sectionTitles = document.querySelectorAll('.section-title');
-                sectionTitles.forEach(title => title.style.display = 'block');
-                const setsContainer = document.getElementById('setsContainer');
-                if (setsContainer) setsContainer.style.display = 'block';
-                const historySection = document.querySelector('.history-section');
-                if (historySection) historySection.style.display = 'block';
-                historyStack.back();
-                return;
-            }
-            
-            // Priority 3: Navigate back in history stack
+            // Priority 2: Navigate back in history stack
             const previousState = historyStack.back();
             
             if (!previousState) {
-                // At root of history - check for active workout before allowing app exit
+                // At root - check for active workout before allowing app exit
                 if (workoutActive) {
                     saveSessionState();
-                    
                     if (!confirm('Exit app? Your workout is saved and you can resume later.')) {
                         const currentPage = getCurrentPage();
                         history.pushState({ page: currentPage, timestamp: Date.now() }, '', '');
@@ -1980,24 +2145,16 @@
             const exerciseBest = {};
             
             history.forEach(workout => {
+                // Skip band exercises — no weight data
+                if (workout.sets.length > 0 && workout.sets[0].band) return;
+                
                 const exercise = workout.exercise;
-                const max1RM = Math.max(...workout.sets.map(s => calculate1RM(s.weight, s.reps)));
+                const max1RM = Math.max(...workout.sets.map(s => calculate1RM(s.weight || 0, s.reps)));
+                if (max1RM <= 0) return;
                 
                 let coreExercise = null;
                 if (coreLifts.includes(exercise)) {
                     coreExercise = exercise;
-                } else if (exercise.includes('Bench Press')) {
-                    coreExercise = 'Barbell Bench Press';
-                } else if (exercise.includes('Shoulder Press')) {
-                    coreExercise = 'Barbell Shoulder Press';
-                } else if (exercise.includes('Deadlift')) {
-                    coreExercise = 'Deadlift';
-                } else if (exercise.includes('Lat Pulldown')) {
-                    coreExercise = 'Lat Pulldown';
-                } else if (exercise.includes('Single Arm DB Row')) {
-                    coreExercise = 'Single Arm DB Row';
-                } else if (exercise.includes('Zercher')) {
-                    coreExercise = 'Zercher Squat';
                 }
                 
                 if (coreExercise && coreLifts.includes(coreExercise)) {
@@ -2018,23 +2175,20 @@
         }
 
         function calculateAccessoryScore(history) {
-            if (history.length === 0) return 0;
+            if (history.length === 0) return { total: 0, count: 0, details: {} };
             
             const accessoryBest = {};
             
             history.forEach(workout => {
+                // Skip band exercises — no weight data
+                if (workout.sets.length > 0 && workout.sets[0].band) return;
+                
                 const exercise = workout.exercise;
-                const max1RM = Math.max(...workout.sets.map(s => calculate1RM(s.weight, s.reps)));
+                const max1RM = Math.max(...workout.sets.map(s => calculate1RM(s.weight || 0, s.reps)));
+                if (max1RM <= 0) return;
                 
                 let isCore = false;
                 if (coreLifts.includes(exercise)) {
-                    isCore = true;
-                } else if (exercise.includes('Bench Press') || 
-                          exercise.includes('Shoulder Press') || 
-                          exercise.includes('Deadlift') || 
-                          exercise.includes('Lat Pulldown') || 
-                          exercise.includes('Single Arm DB Row') || 
-                          exercise.includes('Zercher')) {
                     isCore = true;
                 }
                 
@@ -2084,6 +2238,50 @@
         // ============================================
         // RENDER FUNCTIONS
         // ============================================
+        // ============================================
+        // HERO CARD TOGGLE
+        // ============================================
+        function toggleHeroBreakdown() {
+            const bd = document.getElementById('heroBreakdown');
+            const hint = document.getElementById('heroHint');
+            if (!bd) return;
+            const isOpen = bd.classList.toggle('open');
+            if (hint) hint.textContent = isOpen ? 'TAP TO COLLAPSE ▲' : 'TAP TO EXPAND ▼';
+        }
+
+        function toggleHeroAcc(e) {
+            e.stopPropagation();
+            const body = document.getElementById('heroAccBody');
+            const label = document.getElementById('heroAccLabel');
+            if (!body) return;
+            const isOpen = body.classList.toggle('open');
+            if (label) {
+                const current = label.textContent;
+                label.textContent = current.replace(isOpen ? '▼' : '▲', isOpen ? '▲' : '▼');
+            }
+        }
+
+        // ============================================
+        // SPARKLINE HELPER (for Volume modal)
+        // ============================================
+        function sparkline(values) {
+            if (!values || values.length < 2) return '';
+            const w = 100, h = 30, pad = 2;
+            const min = Math.min(...values), max = Math.max(...values);
+            const range = max - min || 1;
+            const pts = values.map((v, i) => {
+                const x = pad + (i / (values.length - 1)) * (w - pad * 2);
+                const y = pad + (1 - (v - min) / range) * (h - pad * 2);
+                return `${x.toFixed(1)},${y.toFixed(1)}`;
+            }).join(' ');
+            return `<svg width="${w}" height="${h}" style="display:block;margin:4px 0;"><polyline points="${pts}" fill="none" stroke="var(--ravens-gold)" stroke-width="2" stroke-linejoin="round"/></svg>`;
+        }
+
+        function fmtDate(dateStr) {
+            const d = new Date(dateStr);
+            return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+
         function renderStrengthMatrix() {
             const workoutHistory = JSON.parse(localStorage.getItem('workoutHistory') || '[]');
             const container = document.getElementById('strengthMatrixGrid');
@@ -2092,23 +2290,11 @@
             
             workoutHistory.forEach(workout => {
                 const exercise = workout.exercise;
-                const max1RM = Math.max(...workout.sets.map(s => calculate1RM(s.weight, s.reps)));
+                const max1RM = Math.max(...workout.sets.map(s => calculate1RM(s.weight || 0, s.reps)));
                 
                 let coreExercise = null;
                 if (coreLifts.includes(exercise)) {
                     coreExercise = exercise;
-                } else if (exercise.includes('Bench Press')) {
-                    coreExercise = 'Barbell Bench Press';
-                } else if (exercise.includes('Shoulder Press')) {
-                    coreExercise = 'Barbell Shoulder Press';
-                } else if (exercise.includes('Deadlift')) {
-                    coreExercise = 'Deadlift';
-                } else if (exercise.includes('Lat Pulldown')) {
-                    coreExercise = 'Lat Pulldown';
-                } else if (exercise.includes('Single Arm DB Row')) {
-                    coreExercise = 'Single Arm DB Row';
-                } else if (exercise.includes('Zercher')) {
-                    coreExercise = 'Zercher Squat';
                 }
                 
                 if (coreExercise && coreLifts.includes(coreExercise)) {
@@ -2252,12 +2438,15 @@
             
             const uniqueExercises = new Set(history.map(w => w.exercise)).size;
             
+            // Weight lifted: total sessions logged
+            const totalSessions = new Set(history.map(w => new Date(w.date).toDateString())).size;
+
             document.getElementById('statsCoreScore').textContent = coreScore;
             document.getElementById('statsWeeklyWorkouts').textContent = thisWeekCount;
             document.getElementById('statsTotalPRs').textContent = allPRs;
             document.getElementById('statsBestLifts').textContent = uniqueExercises;
-            document.getElementById('statsAccessoryCount').textContent = accessoryData.count;
             document.getElementById('statsAccessoryInfo').textContent = `+${accessoryData.total}kg from ${accessoryData.count} accessories`;
+            document.getElementById('statsWeightLifted').textContent = totalSessions;
             
             let trendText = progress.weeklyChange > 0 
                 ? `↑ ${progress.weeklyChange} from last week` 
@@ -2270,11 +2459,62 @@
             document.getElementById('historyWeeklyWorkouts').textContent = thisWeekCount;
             document.getElementById('historyTotalPRs').textContent = allPRs;
             document.getElementById('historyBestLifts').textContent = uniqueExercises;
-            document.getElementById('historyAccessoryCount').textContent = accessoryData.count;
+            document.getElementById('historyWeightLifted').textContent = totalSessions;
+            
+            // Populate hero breakdown
+            renderHeroBreakdown(history);
             
             displayCurrentWeight();
             renderStrengthMatrix();
-            renderAccessoryBreakdown(history);
+        }
+
+        function renderHeroBreakdown(history) {
+            // Core 6 best 1RMs
+            const exerciseBest = {};
+            history.forEach(workout => {
+                if (workout.sets.length > 0 && workout.sets[0].band) return;
+                const max1RM = Math.max(...workout.sets.map(s => calculate1RM(s.weight || 0, s.reps)));
+                let coreExercise = null;
+                if (coreLifts.includes(workout.exercise)) {
+                    coreExercise = workout.exercise;
+                }
+                if (coreExercise && coreLifts.includes(coreExercise)) {
+                    if (!exerciseBest[coreExercise] || max1RM > exerciseBest[coreExercise]) {
+                        exerciseBest[coreExercise] = max1RM;
+                    }
+                }
+            });
+
+            const coreEl = document.getElementById('heroCore');
+            if (coreEl) {
+                const hasCore = coreLifts.some(l => exerciseBest[l]);
+                if (!hasCore) {
+                    coreEl.innerHTML = '<div style="opacity:0.6;font-size:13px;padding:6px 0;">No core lifts logged yet</div>';
+                } else {
+                    coreEl.innerHTML = coreLifts.map(lift => {
+                        const val = exerciseBest[lift];
+                        if (!val) return `<div class="hero-row"><span style="opacity:0.6;">${lift}</span><span class="hero-row-val" style="opacity:0.4;">—</span></div>`;
+                        return `<div class="hero-row"><span>${lift}</span><span class="hero-row-val">${val}kg</span></div>`;
+                    }).join('');
+                }
+            }
+
+            // Accessories
+            const accData = calculateAccessoryScore(history);
+            const accEl = document.getElementById('heroAcc');
+            const accLabel = document.getElementById('heroAccLabel');
+            if (accEl) {
+                const entries = Object.entries(accData.details).sort((a, b) => b[1] - a[1]);
+                if (entries.length === 0) {
+                    accEl.innerHTML = '<div style="opacity:0.6;font-size:13px;padding:6px 0;">No accessories logged yet</div>';
+                    if (accLabel) accLabel.textContent = 'Accessories ▼';
+                } else {
+                    accEl.innerHTML = entries.map(([name, weight]) =>
+                        `<div class="hero-row"><span>${name}</span><span class="hero-row-val">${weight}kg</span></div>`
+                    ).join('');
+                    if (accLabel) accLabel.textContent = `Accessories (${entries.length}) ▼`;
+                }
+            }
         }
 
         // ============================================
@@ -2291,9 +2531,11 @@
         }
 
         function calculate1RM(weight, reps) {
+            if (!weight || weight <= 0) return 0;
             if (reps <= 1) return weight;
-            if (reps > 10) return 0;
-            return Math.round(weight * (36 / (37 - reps)));
+            // Brzycki formula works well up to 10 reps; Epley for higher rep ranges
+            if (reps <= 10) return Math.round(weight * (36 / (37 - reps)));
+            return Math.round(weight * (1 + reps / 30));
         }
 
         function validateWorkoutInputs(sets) {
@@ -2770,7 +3012,11 @@
 
         function showResumePrompt() {
             const state = loadSessionState();
-            if (!state || !state.active) return;
+            if (!state || !state.active) {
+                navigateToPage('home');
+                renderDay();
+                return;
+            }
             
             const elapsed = Math.floor((Date.now() - state.startTime) / 60000);
             
@@ -2778,6 +3024,8 @@
                 resumeSession(state);
             } else {
                 clearSessionState();
+                navigateToPage('home');
+                renderDay();
             }
         }
 
@@ -3346,7 +3594,7 @@
                 let isPR = false;
                 
                 if (!isBandExercise) {
-                    max1RM = Math.max(...workout.sets.map(s => calculate1RM(s.weight, s.reps)));
+                    max1RM = Math.max(...workout.sets.map(s => calculate1RM(s.weight || 0, s.reps)));
                     const allWorkouts = history.filter(w => w.exercise === currentExercise.name && w.day === currentDay);
                     const all1RMs = allWorkouts.map(w => Math.max(...w.sets.map(s => calculate1RM(s.weight || 0, s.reps))));
                     isPR = max1RM === Math.max(...all1RMs);
@@ -3370,8 +3618,8 @@
         function editWorkout(workoutId, event) {
             if (event) event.stopPropagation();
             
-            const history = JSON.parse(localStorage.getItem('workoutHistory') || '[]');
-            const workout = history.find(w => w.id === workoutId);
+            const workoutData2 = JSON.parse(localStorage.getItem('workoutHistory') || '[]');
+            const workout = workoutData2.find(w => w.id === workoutId);
             
             if (!workout) {
                 showToast('Workout not found!', 'error');
@@ -3561,17 +3809,29 @@
             const duration = Math.floor((Date.now() - sessionStartTime) / 1000);
             const minutes = Math.floor(duration / 60);
             
-            const history = JSON.parse(localStorage.getItem('workoutHistory') || '[]');
+            const wh = JSON.parse(localStorage.getItem('workoutHistory') || '[]');
             const today = new Date().toDateString();
-            const todayWorkouts = history.filter(w => 
+            
+            // Write the real final session duration back to every exercise logged today
+            let updated = false;
+            wh.forEach(w => {
+                if (w.day === currentDay && new Date(w.date).toDateString() === today) {
+                    w.duration = minutes;
+                    updated = true;
+                }
+            });
+            if (updated) localStorage.setItem('workoutHistory', JSON.stringify(wh));
+            
+            const todayWorkouts = wh.filter(w => 
                 w.day === currentDay && 
                 new Date(w.date).toDateString() === today
             );
             
             const totalSets = todayWorkouts.reduce((sum, w) => sum + w.sets.length, 0);
-            const totalVolume = todayWorkouts.reduce((sum, w) => 
-                sum + w.sets.reduce((s, set) => s + (set.weight * set.reps), 0), 0
-            );
+            const totalVolume = todayWorkouts.reduce((sum, w) => {
+                if (w.sets.length > 0 && w.sets[0].band) return sum;
+                return sum + w.sets.reduce((s, set) => s + ((set.weight || 0) * set.reps), 0);
+            }, 0);
             const uniqueExercises = new Set(todayWorkouts.map(w => w.exercise)).size;
 
             document.getElementById('summaryDuration').textContent = minutes + 'm';
@@ -3613,19 +3873,16 @@
             const history = JSON.parse(localStorage.getItem('workoutHistory') || '[]');
             
             const thisWeek = getThisWeekWorkouts(history);
-            const lastWeek = getLastWeekWorkouts(history);
             const allPRs = countPRs(history);
             
             const thisWeekCount = new Set(thisWeek.map(w => new Date(w.date).toDateString())).size;
-            const lastWeekCount = new Set(lastWeek.map(w => new Date(w.date).toDateString())).size;
-            
             const uniqueExercises = new Set(history.map(w => w.exercise)).size;
-            const accessoryData = calculateAccessoryScore(history);
+            const totalSessions = new Set(history.map(w => new Date(w.date).toDateString())).size;
             
             document.getElementById('historyWeeklyWorkouts').textContent = thisWeekCount;
             document.getElementById('historyTotalPRs').textContent = allPRs;
             document.getElementById('historyBestLifts').textContent = uniqueExercises;
-            document.getElementById('historyAccessoryCount').textContent = accessoryData.count;
+            document.getElementById('historyWeightLifted').textContent = totalSessions;
             
             renderExerciseLog(history);
         }
@@ -3667,9 +3924,10 @@
                     year: 'numeric'
                 });
                 
-                const totalVolume = session.exercises.reduce((sum, ex) => 
-                    sum + ex.sets.reduce((s, set) => s + (set.weight * set.reps), 0), 0
-                );
+                const totalVolume = session.exercises.reduce((sum, ex) => {
+                    if (ex.sets.length > 0 && ex.sets[0].band) return sum;
+                    return sum + ex.sets.reduce((s, set) => s + ((set.weight || 0) * set.reps), 0);
+                }, 0);
                 const totalSets = session.exercises.reduce((sum, ex) => sum + ex.sets.length, 0);
                 const duration = session.exercises[0].duration;
                 
@@ -3678,8 +3936,8 @@
                     if (workout.sets.length > 0 && workout.sets[0].band) return false;
                     
                     const allWorkouts = history.filter(w => w.exercise === workout.exercise && w.day === workout.day);
-                    const all1RMs = allWorkouts.map(w => Math.max(...w.sets.map(s => calculate1RM(s.weight, s.reps))));
-                    const current1RM = Math.max(...workout.sets.map(s => calculate1RM(s.weight, s.reps)));
+                    const all1RMs = allWorkouts.map(w => Math.max(...w.sets.map(s => calculate1RM(s.weight || 0, s.reps))));
+                    const current1RM = Math.max(...workout.sets.map(s => calculate1RM(s.weight || 0, s.reps)));
                     return current1RM === Math.max(...all1RMs);
                 });
                 
@@ -3724,9 +3982,10 @@
                 year: 'numeric'
             });
             
-            const totalVolume = session.exercises.reduce((sum, ex) => 
-                sum + ex.sets.reduce((s, set) => s + (set.weight * set.reps), 0), 0
-            );
+            const totalVolume = session.exercises.reduce((sum, ex) => {
+                if (ex.sets.length > 0 && ex.sets[0].band) return sum;
+                return sum + ex.sets.reduce((s, set) => s + ((set.weight || 0) * set.reps), 0);
+            }, 0);
             const totalSets = session.exercises.reduce((sum, ex) => sum + ex.sets.length, 0);
             const duration = session.exercises[0].duration;
             const durationDisplay = duration ? `${duration}m` : '—';
@@ -3778,11 +4037,11 @@
                     let comparison = '';
                     
                     if (!isBandExercise) {
-                        max1RM = Math.max(...ex.sets.map(s => calculate1RM(s.weight, s.reps)));
-                        exVolume = ex.sets.reduce((sum, set) => sum + (set.weight * set.reps), 0);
+                        max1RM = Math.max(...ex.sets.map(s => calculate1RM(s.weight || 0, s.reps)));
+                        exVolume = ex.sets.reduce((sum, set) => sum + ((set.weight || 0) * set.reps), 0);
                         
                         const allWorkouts = allHistory.filter(w => w.exercise === ex.exercise && w.day === ex.day);
-                        const all1RMs = allWorkouts.map(w => Math.max(...w.sets.map(s => calculate1RM(s.weight, s.reps))));
+                        const all1RMs = allWorkouts.map(w => Math.max(...w.sets.map(s => calculate1RM(s.weight || 0, s.reps))));
                         isPR = max1RM === Math.max(...all1RMs);
                         
                         const prevWorkouts = allWorkouts.filter(w => new Date(w.date) < new Date(ex.date));
@@ -3949,7 +4208,7 @@
                 if (!exerciseGroups[key]) {
                     exerciseGroups[key] = [];
                 }
-                const max1RM = Math.max(...workout.sets.map(s => calculate1RM(s.weight, s.reps)));
+                const max1RM = Math.max(...workout.sets.map(s => calculate1RM(s.weight || 0, s.reps)));
                 exerciseGroups[key].push(max1RM);
             });
             
@@ -4011,13 +4270,13 @@
         // UPDATED PR LIST POPUP - v5.9.1 Feature
         // ============================================
         function showPRList() {
-            const history = JSON.parse(localStorage.getItem('workoutHistory') || '[]');
+            const wh = JSON.parse(localStorage.getItem('workoutHistory') || '[]');
             
             // Calculate PRs (heaviest set) for all exercises (skip band exercises)
             const exercisePRs = {};
             const exerciseHistory = {};
             
-            history.forEach(workout => {
+            wh.forEach(workout => {
                 // Skip band exercises
                 if (workout.sets.length > 0 && workout.sets[0].band) return;
                 
@@ -4032,7 +4291,10 @@
                 }
                 
                 workout.sets.forEach(set => {
-                    if (set.weight > exercisePRs[exercise].weight) {
+                    const cur = exercisePRs[exercise];
+                    // Update if: heavier weight, OR same weight with more reps
+                    if (set.weight > cur.weight ||
+                        (set.weight === cur.weight && set.reps > cur.reps)) {
                         exercisePRs[exercise] = {
                             weight: set.weight,
                             reps: set.reps,
@@ -4041,18 +4303,20 @@
                     }
                 });
                 
+                // Track best 1RM per session for trend arrow
+                const session1RM = Math.max(...workout.sets.map(s => calculate1RM(s.weight || 0, s.reps)));
                 exerciseHistory[exercise].push({
                     date: workout.date,
-                    maxWeight: Math.max(...workout.sets.map(s => s.weight))
+                    best1RM: session1RM
                 });
             });
             
-            // Sort history for each exercise to find previous PR
+            // Sort history for each exercise to find previous best 1RM for trend
             const previousPRs = {};
             Object.keys(exerciseHistory).forEach(exercise => {
                 const sorted = exerciseHistory[exercise].sort((a, b) => new Date(a.date) - new Date(b.date));
                 if (sorted.length > 1) {
-                    previousPRs[exercise] = sorted[sorted.length - 2].maxWeight;
+                    previousPRs[exercise] = sorted[sorted.length - 2].best1RM;
                 }
             });
             
@@ -4071,7 +4335,8 @@
             coreOrder.forEach(exercise => {
                 const pr = exercisePRs[exercise];
                 if (pr && pr.weight > 0) {
-                    const trend = getTrendForPR(pr.weight, previousPRs[exercise]);
+                    const current1RM = calculate1RM(pr.weight, pr.reps);
+                    const trend = getTrendForPR(current1RM, previousPRs[exercise]);
                     coreHTML += `
                         <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #eee;">
                             <div>
@@ -4114,33 +4379,38 @@
                 }
             });
             
-            // Build other sections
+            // Build other sections - each group individually collapsible
             let othersHTML = '';
-            groupOrder.forEach(group => {
+            groupOrder.forEach((group, gi) => {
                 const items = groupedOthers[group];
                 if (!items || items.length === 0) return;
                 
                 // Sort items by weight descending
                 items.sort((a, b) => b.weight - a.weight);
                 
+                const bodyId = `prGroup_${gi}`;
                 othersHTML += `
-                    <div style="margin-bottom: 16px;">
-                        <div style="font-weight: 600; color: var(--ravens-purple); margin-bottom: 8px; font-size: 14px; background: var(--pale-purple); padding: 6px 10px; border-radius: 6px;">
-                            ${group} (${items.length})
+                    <div style="margin-bottom: 8px;">
+                        <div class="ex-group-hdr" onclick="toggleExGroup('${bodyId}', this)">
+                            <span>${group} (${items.length})</span>
+                            <span>▼</span>
                         </div>
-                        ${items.map(item => {
-                            const trend = getTrendForPR(item.weight, item.previousPR);
-                            return `
-                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0 8px 12px; border-bottom: 1px dashed #eee; font-size: 13px;">
-                                    <span>${item.name}</span>
-                                    <div style="display: flex; align-items: center; gap: 8px;">
-                                        <span style="font-weight: 500;">${item.weight}kg × ${item.reps}</span>
-                                        ${trend}
-                                        <span style="font-size: 10px; color: #999;">${formatDate(item.date)}</span>
+                        <div class="ex-group-body" id="${bodyId}">
+                            ${items.map(item => {
+                                const current1RM = calculate1RM(item.weight, item.reps);
+                                const trend = getTrendForPR(current1RM, item.previousPR);
+                                return `
+                                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0 8px 12px; border-bottom: 1px dashed #eee; font-size: 13px;">
+                                        <span>${item.name}</span>
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <span style="font-weight: 500;">${item.weight}kg × ${item.reps}</span>
+                                            ${trend}
+                                            <span style="font-size: 10px; color: #999;">${formatDate(item.date)}</span>
+                                        </div>
                                     </div>
-                                </div>
-                            `;
-                        }).join('')}
+                                `;
+                            }).join('')}
+                        </div>
                     </div>
                 `;
             });
@@ -4161,15 +4431,12 @@
                         </div>
                     </div>
                     
-                    <!-- OTHER EXERCISES SECTION (COLLAPSIBLE) -->
+                    <!-- OTHER EXERCISES - each group collapsible -->
                     <div style="margin-bottom: 24px;">
-                        <div onclick="toggleOtherPRs()" style="background: var(--light-purple); color: white; padding: 12px; border-radius: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
-                            <span style="font-weight: 600;">▼ ALL OTHER EXERCISES</span>
-                            <span style="font-size: 20px;" id="otherPRsToggle">▼</span>
+                        <div style="background: var(--light-purple); color: white; padding: 12px; border-radius: 8px; font-weight: 600; font-size: 16px; margin-bottom: 8px;">
+                            ALL OTHER EXERCISES
                         </div>
-                        <div id="otherPRsContent" style="display: none; background: white; border: 2px solid var(--light-purple); border-top: none; border-radius: 0 0 8px 8px; padding: 16px;">
-                            ${othersHTML || '<div style="text-align: center; color: #999; padding: 20px;">No other exercises logged yet.</div>'}
-                        </div>
+                        ${othersHTML || '<div style="text-align: center; color: #999; padding: 20px;">No other exercises logged yet.</div>'}
                     </div>
                     
                     <button onclick="closeCurrentModal()" style="width: 100%; padding: 16px; background: var(--ravens-purple); color: white; border: none; border-radius: 10px; font-family: \'Bebas Neue\', sans-serif; font-size: 18px; cursor: pointer;">
@@ -4191,13 +4458,13 @@
         // UPDATED BEST LIFTS POPUP - v5.9.1 Feature
         // ============================================
         function showBestLifts() {
-            const history = JSON.parse(localStorage.getItem('workoutHistory') || '[]');
+            const wh = JSON.parse(localStorage.getItem('workoutHistory') || '[]');
             
             // Calculate 1RMs for all exercises (skip band exercises)
             const exercise1RMs = {};
             const exerciseHistory = {};
             
-            history.forEach(workout => {
+            wh.forEach(workout => {
                 // Skip band exercises
                 if (workout.sets.length > 0 && workout.sets[0].band) return;
                 
@@ -4222,7 +4489,7 @@
                     }
                 });
                 
-                const workoutMax1RM = Math.max(...workout.sets.map(s => calculate1RM(s.weight, s.reps)));
+                const workoutMax1RM = Math.max(...workout.sets.map(s => calculate1RM(s.weight || 0, s.reps)));
                 exerciseHistory[exercise].push({
                     date: workout.date,
                     value: workoutMax1RM
@@ -4297,33 +4564,37 @@
                 }
             });
             
-            // Build other sections
+            // Build other sections - each group individually collapsible
             let othersHTML = '';
-            groupOrder.forEach(group => {
+            groupOrder.forEach((group, gi) => {
                 const items = groupedOthers[group];
                 if (!items || items.length === 0) return;
                 
                 // Sort items by 1RM descending
                 items.sort((a, b) => b.value - a.value);
                 
+                const bodyId = `rmGroup_${gi}`;
                 othersHTML += `
-                    <div style="margin-bottom: 16px;">
-                        <div style="font-weight: 600; color: var(--ravens-purple); margin-bottom: 8px; font-size: 14px; background: var(--pale-purple); padding: 6px 10px; border-radius: 6px;">
-                            ${group} (${items.length})
+                    <div style="margin-bottom: 8px;">
+                        <div class="ex-group-hdr" onclick="toggleExGroup('${bodyId}', this)">
+                            <span>${group} (${items.length})</span>
+                            <span>▼</span>
                         </div>
-                        ${items.map(item => {
-                            const trend = getTrendFor1RM(item.value, item.previous1RM);
-                            return `
-                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0 8px 12px; border-bottom: 1px dashed #eee; font-size: 13px;">
-                                    <span>${item.name}</span>
-                                    <div style="display: flex; align-items: center; gap: 8px;">
-                                        <span style="font-weight: 500;">${item.value}kg</span>
-                                        ${trend}
-                                        <span style="font-size: 10px; color: #999;">${formatDate(item.date)}</span>
+                        <div class="ex-group-body" id="${bodyId}">
+                            ${items.map(item => {
+                                const trend = getTrendFor1RM(item.value, item.previous1RM);
+                                return `
+                                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0 8px 12px; border-bottom: 1px dashed #eee; font-size: 13px;">
+                                        <span>${item.name}</span>
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <span style="font-weight: 500;">${item.value}kg</span>
+                                            ${trend}
+                                            <span style="font-size: 10px; color: #999;">${formatDate(item.date)}</span>
+                                        </div>
                                     </div>
-                                </div>
-                            `;
-                        }).join('')}
+                                `;
+                            }).join('')}
+                        </div>
                     </div>
                 `;
             });
@@ -4347,15 +4618,12 @@
                         </div>
                     </div>
                     
-                    <!-- OTHER EXERCISES SECTION (COLLAPSIBLE) -->
+                    <!-- OTHER EXERCISES - each group collapsible -->
                     <div style="margin-bottom: 24px;">
-                        <div onclick="toggleOther1RMs()" style="background: var(--light-purple); color: white; padding: 12px; border-radius: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
-                            <span style="font-weight: 600;">▼ ALL OTHER EXERCISES</span>
-                            <span style="font-size: 20px;" id="other1RMsToggle">▼</span>
+                        <div style="background: var(--light-purple); color: white; padding: 12px; border-radius: 8px; font-weight: 600; font-size: 16px; margin-bottom: 8px;">
+                            ALL OTHER EXERCISES
                         </div>
-                        <div id="other1RMsContent" style="display: none; background: white; border: 2px solid var(--light-purple); border-top: none; border-radius: 0 0 8px 8px; padding: 16px;">
-                            ${othersHTML || '<div style="text-align: center; color: #999; padding: 20px;">No other exercises logged yet.</div>'}
-                        </div>
+                        ${othersHTML || '<div style="text-align: center; color: #999; padding: 20px;">No other exercises logged yet.</div>'}
                     </div>
                     
                     <button onclick="closeCurrentModal()" style="width: 100%; padding: 16px; background: var(--ravens-purple); color: white; border: none; border-radius: 10px; font-family: \'Bebas Neue\', sans-serif; font-size: 18px; cursor: pointer;">
@@ -4373,29 +4641,93 @@
             historyStack.push('modal');
         }
 
-        // Toggle functions for collapsible sections
-        function toggleOtherPRs() {
-            const content = document.getElementById('otherPRsContent');
-            const toggle = document.getElementById('otherPRsToggle');
-            if (content.style.display === 'none') {
-                content.style.display = 'block';
-                toggle.textContent = '▲';
-            } else {
-                content.style.display = 'none';
-                toggle.textContent = '▼';
-            }
+        // ============================================
+        // COLLAPSIBLE GROUP TOGGLE (PR & 1RM groups)
+        // ============================================
+        function toggleExGroup(bodyId, hdrEl) {
+            const body = document.getElementById(bodyId);
+            if (!body) return;
+            const isOpen = body.classList.toggle('open');
+            const arrow = hdrEl.lastElementChild;
+            if (arrow) arrow.textContent = isOpen ? '▲' : '▼';
         }
 
-        function toggleOther1RMs() {
-            const content = document.getElementById('other1RMsContent');
-            const toggle = document.getElementById('other1RMsToggle');
-            if (content.style.display === 'none') {
-                content.style.display = 'block';
-                toggle.textContent = '▲';
-            } else {
-                content.style.display = 'none';
-                toggle.textContent = '▼';
-            }
+        // ============================================
+        // WEIGHT LIFTED (VOLUME) MODAL
+        // ============================================
+        function showVolume() {
+            const allData = JSON.parse(localStorage.getItem('workoutHistory') || '[]');
+            // Build per-exercise session data: { exercise: [{date, mw}] }
+            const exSess = {};
+            allData.forEach(w => {
+                if (w.sets.length > 0 && w.sets[0].band) return;
+                const mw = Math.max(...w.sets.map(s => s.weight || 0));
+                if (mw <= 0) return;
+                if (!exSess[w.exercise]) exSess[w.exercise] = [];
+                exSess[w.exercise].push({ date: w.date, mw });
+            });
+            Object.keys(exSess).forEach(ex => exSess[ex].sort((a, b) => new Date(a.date) - new Date(b.date)));
+
+            // Group by muscle group
+            const grouped = {};
+            Object.keys(exSess).forEach(ex => {
+                const g = getMuscleGroup(ex);
+                if (!grouped[g]) grouped[g] = [];
+                grouped[g].push(ex);
+            });
+
+            const allGroups = [...groupOrder, 'OTHER'].filter(g => grouped[g]?.length);
+
+            let html = `<div style="padding:24px;">
+                <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--ravens-purple);margin-bottom:8px;">WEIGHT LIFTED</div>
+                <div style="font-size:13px;color:var(--light-purple);margin-bottom:20px;">Heaviest weight per session — tap group to expand</div>`;
+
+            allGroups.forEach((g, gi) => {
+                const exs = grouped[g];
+                const bodyId = `volGrp_${gi}`;
+                html += `<div style="margin-bottom:4px;">
+                    <div class="vg-hdr" onclick="toggleVolGroup('${bodyId}',this)">
+                        <span>${g} (${exs.length})</span><span>▼</span>
+                    </div>
+                    <div class="vg-body" id="${bodyId}">`;
+                exs.forEach(ex => {
+                    const sess = exSess[ex];
+                    const peak = Math.max(...sess.map(s => s.mw));
+                    const spark = sparkline(sess.map(s => s.mw));
+                    const last = fmtDate(sess[sess.length - 1].date);
+                    html += `<div class="vex">
+                        <div class="vex-hdr">
+                            <span class="vex-name">${ex}</span>
+                            <span class="vex-peak">${peak}kg</span>
+                        </div>
+                        ${spark}
+                        <div style="display:flex;justify-content:space-between;font-size:11px;color:#888;">
+                            <span>${sess.length} session${sess.length !== 1 ? 's' : ''}</span>
+                            <span>Last: ${last}</span>
+                        </div>
+                    </div>`;
+                });
+                html += `</div></div>`;
+            });
+
+            if (!allGroups.length) html += '<div style="text-align:center;color:#999;padding:40px;font-style:italic;">No weight data yet.</div>';
+            html += `<button onclick="closeCurrentModal()" style="width:100%;padding:16px;background:var(--ravens-purple);color:white;border:none;border-radius:10px;font-family:'Bebas Neue',sans-serif;font-size:18px;cursor:pointer;margin-top:20px;">Close</button></div>`;
+
+            hideWorkoutElements();
+            const historySection = document.querySelector('.history-section');
+            historySection.insertAdjacentHTML('beforebegin', `<div id="sessionDetailContent">${html}</div>`);
+            document.getElementById('exerciseModal').classList.add('active');
+            currentModal = 'volume';
+            history.pushState({ page: 'modal', type: 'volume', timestamp: Date.now() }, '', '');
+            historyStack.push('modal');
+        }
+
+        function toggleVolGroup(bodyId, hdrEl) {
+            const body = document.getElementById(bodyId);
+            if (!body) return;
+            const isOpen = body.classList.toggle('open');
+            const arrow = hdrEl.lastElementChild;
+            if (arrow) arrow.textContent = isOpen ? '▲' : '▼';
         }
 
         function showWeeklyBreakdown() {
@@ -4424,9 +4756,10 @@
             } else {
                 sortedSessions.forEach((session, idx) => {
                     const date = new Date(session.date).toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
-                    const totalVolume = session.exercises.reduce((sum, ex) => 
-                        sum + ex.sets.reduce((s, set) => s + (set.weight * set.reps), 0), 0
-                    );
+                    const totalVolume = session.exercises.reduce((sum, ex) => {
+                        if (ex.sets.length > 0 && ex.sets[0].band) return sum;
+                        return sum + ex.sets.reduce((s, set) => s + ((set.weight || 0) * set.reps), 0);
+                    }, 0);
                     content += `
                         <div onclick="openSessionFromWeekly(${idx})" style="background: var(--pale-purple); padding: 16px; border-radius: 10px; margin-bottom: 12px; border-left: 4px solid var(--ravens-gold); cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.transform='translateX(4px)'" onmouseout="this.style.transform='translateX(0)'">
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
@@ -4464,8 +4797,8 @@
         }
 
         function showAccessoryBreakdown() {
-            const history = JSON.parse(localStorage.getItem('workoutHistory') || '[]');
-            const accessoryData = calculateAccessoryScore(history);
+            const wh = JSON.parse(localStorage.getItem('workoutHistory') || '[]');
+            const accessoryData = calculateAccessoryScore(wh);
             
             let content = `
                 <div style="padding: 24px;">
@@ -4711,13 +5044,7 @@
             history.replaceState({ page: 'home', timestamp: Date.now() }, '', '');
             historyStack.replace('home');
             
-            const savedState = loadSessionState();
-            if (savedState && savedState.active) {
-                showResumePrompt();
-            } else {
-                navigateToPage('home');
-                renderDay();
-            }
+            showResumePrompt();
         }
 
         initialize();
