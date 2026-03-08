@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dad Strength Tracker v5.16</title>
+    <title>Dad Strength Tracker v5.17</title>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -1520,7 +1520,7 @@
             <button id="backToHome" onclick="goHome()" style="background: rgba(158, 124, 12, 0.2); border: none; color: var(--ravens-gold); padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px; display: none; transition: all 0.3s ease;">
                 ← Home
             </button>
-            <div class="app-title">Dad Strength v5.16β</div>
+            <div class="app-title">Dad Strength v5.17β</div>
             <div class="session-timer" id="sessionTimer">00:00</div>
         </div>
         <div class="tab-navigation" id="tabNavigation" style="display: none;">
@@ -1883,6 +1883,7 @@
                     { name: "Incline DB Bench Press", sets: 3, reps: "8–12" },
                     { name: "Seated DB Shoulder Press", sets: 3, reps: "8–10" },
                     { name: "Lat Pulldown", sets: 3, reps: "8–10" },
+                    { name: "Barbell Shrugs", sets: 3, reps: "10–15" },
                     { name: "Face Pulls", sets: 3, reps: "15–20", resistanceType: "band" },
                     { name: "Cable Hip Flexor Raise", sets: 3, reps: "12–15" },
                     { name: "Dead Bug", sets: 3, reps: "8/side" }
@@ -1898,6 +1899,7 @@
                     { name: "Barbell Shoulder Press", sets: 3, reps: "6–10" },
                     { name: "Rear-Delt Fly", sets: 3, reps: "15–20" },
                     { name: "Single Arm DB Row", sets: 3, reps: "8-12/side" },
+                    { name: "Incline Bicep Curls", sets: 3, reps: "10–12" },
                     { name: "Plank Pull-Throughs", sets: 3, reps: "8–10/side" }
                 ]
             }
@@ -1938,7 +1940,8 @@
             'BACK': [
                 'Seated Cable Row',
                 'Lat Pulldown',
-                'Single Arm DB Row'
+                'Single Arm DB Row',
+                'Barbell Shrugs'
             ],
             'CHEST': [
                 'Barbell Bench Press',
@@ -1955,6 +1958,7 @@
                 // Future: Barbell Squat, Leg Press, Leg Extension, Leg Curl, Calf Raise
             ],
             'ARMS': [
+                'Incline Bicep Curls'
                 // Future: Barbell Curl, Dumbbell Curl, Tricep Pushdown, Skull Crusher
             ],
             'CORE': [
