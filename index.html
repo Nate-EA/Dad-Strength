@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dad Strength Tracker v5.17</title>
+    <title>Dad Strength Tracker v5.18</title>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -1511,6 +1511,82 @@
             cursor: pointer;
             letter-spacing: 0.5px;
         }
+
+        /* Library & Custom Day styles */
+        .lib-cat-hdr {
+            display: flex; justify-content: space-between; align-items: center;
+            background: var(--ravens-purple); color: white;
+            padding: 12px 16px; border-radius: 10px;
+            cursor: pointer; margin-bottom: 4px; margin-top: 10px;
+            font-weight: 600; font-size: 14px; letter-spacing: 0.5px;
+            user-select: none; -webkit-tap-highlight-color: transparent;
+        }
+        .lib-cat-hdr:first-child { margin-top: 0; }
+        .lib-cat-body { display: none; padding: 4px 0 6px; }
+        .lib-cat-body.open { display: block; }
+        .lib-ex-row {
+            display: flex; align-items: center; background: white;
+            border-radius: 10px; padding: 12px 14px; margin-bottom: 6px;
+            box-shadow: 0 1px 4px var(--shadow); gap: 10px;
+        }
+        .lib-ex-info { flex: 1; }
+        .lib-ex-name { font-weight: 600; color: var(--ravens-purple); font-size: 15px; margin-bottom: 2px; }
+        .lib-ex-meta { font-size: 12px; color: var(--light-purple); font-weight: 500; }
+        .lib-equip-tag {
+            font-size: 10px; font-weight: 700; padding: 2px 7px;
+            border-radius: 8px; background: var(--pale-purple);
+            color: var(--light-purple); white-space: nowrap;
+        }
+        .lib-add-btn {
+            width: 34px; height: 34px; border-radius: 50%; border: none;
+            background: var(--ravens-purple); color: white; font-size: 22px;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; transition: all 0.2s; line-height: 1;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .lib-add-btn.added { background: var(--green); font-size: 16px; }
+        .custom-ex-card {
+            background: white; border-radius: 12px; padding: 14px 48px 14px 16px;
+            margin-bottom: 10px; box-shadow: 0 2px 8px var(--shadow);
+            display: flex; align-items: center; gap: 12px;
+            cursor: pointer; border: 2px solid transparent; transition: all 0.3s; position: relative;
+        }
+        .custom-ex-card:hover { border-color: var(--ravens-gold); transform: translateY(-1px); }
+        .custom-ex-card.logged { border-color: var(--green); padding-right: 80px; }
+        .custom-ex-card.logged::after {
+            content: '✓'; position: absolute; top: 10px; right: 10px;
+            width: 28px; height: 28px; background: var(--green); color: white;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 14px;
+        }
+        .cex-remove-btn {
+            position: absolute; top: 50%; right: 12px; transform: translateY(-50%);
+            width: 28px; height: 28px; border-radius: 50%; border: none;
+            background: #fee; color: #c44; font-size: 18px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+        }
+        .cex-remove-btn:hover { background: #c44; color: white; }
+        .open-library-btn {
+            width: 100%; padding: 18px; background: var(--ravens-gold);
+            color: white; border: none; border-radius: 12px;
+            font-family: 'Bebas Neue', sans-serif; font-size: 22px;
+            cursor: pointer; letter-spacing: 1px;
+            box-shadow: 0 4px 20px rgba(158,124,12,0.3); transition: all 0.3s;
+        }
+        .add-more-btn {
+            width: 100%; padding: 14px; background: transparent;
+            border: 2px dashed var(--ravens-gold); color: var(--ravens-gold);
+            border-radius: 12px; font-family: 'Bebas Neue', sans-serif; font-size: 18px;
+            cursor: pointer; margin: 8px 0 12px; letter-spacing: 0.5px; transition: all 0.3s;
+        }
+        .add-more-btn:hover { background: var(--ravens-gold); color: white; }
+        .clear-custom-btn {
+            width: 100%; padding: 12px; background: transparent;
+            border: 2px solid var(--red); color: var(--red); border-radius: 10px;
+            font-family: 'Bebas Neue', sans-serif; font-size: 16px; cursor: pointer;
+            letter-spacing: 0.5px; transition: all 0.3s;
+        }
+        .clear-custom-btn:hover { background: var(--red); color: white; }
     </style>
 </head>
 <body>
@@ -1520,13 +1596,14 @@
             <button id="backToHome" onclick="goHome()" style="background: rgba(158, 124, 12, 0.2); border: none; color: var(--ravens-gold); padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px; display: none; transition: all 0.3s ease;">
                 ← Home
             </button>
-            <div class="app-title">Dad Strength v5.17β</div>
+            <div class="app-title">Dad Strength v5.18</div>
             <div class="session-timer" id="sessionTimer">00:00</div>
         </div>
         <div class="tab-navigation" id="tabNavigation" style="display: none;">
             <button class="tab-btn" onclick="switchTab('dayA')">Day A</button>
             <button class="tab-btn" onclick="switchTab('dayB')">Day B</button>
             <button class="tab-btn" onclick="switchTab('dayC')">Day C</button>
+            <button class="tab-btn" onclick="switchTab('custom')">Custom</button>
             <button class="tab-btn" onclick="switchTab('stats')">Stats</button>
             <button class="tab-btn" onclick="switchTab('history')">History</button>
         </div>
@@ -1572,6 +1649,14 @@
                         <div style="font-size: 13px; color: var(--light-purple); font-weight: 500;">Hinge + Upper • 6 exercises</div>
                     </div>
                     <div style="font-size: 40px;">⚡</div>
+                </button>
+
+                <button onclick="goToCustomDay()" style="padding: 20px; background: white; border: 2px dashed var(--ravens-gold); border-radius: 12px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 12px var(--shadow); display: flex; justify-content: space-between; align-items: center;">
+                    <div style="text-align: left;">
+                        <div style="font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--ravens-purple); letter-spacing: 1px;">🛠️ Custom Day</div>
+                        <div style="font-size: 13px; color: var(--light-purple); font-weight: 500;" id="homeCustomSubtitle">Build your own workout</div>
+                    </div>
+                    <div style="font-size: 40px;">➕</div>
                 </button>
 
                 <button onclick="goToStats()" style="padding: 20px; background: linear-gradient(135deg, var(--ravens-gold) 0%, #c4961a 100%); border: none; border-radius: 12px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 12px var(--shadow); display: flex; justify-content: space-between; align-items: center;">
@@ -1741,6 +1826,7 @@
                         <button class="filter-btn" onclick="filterLog('dayA')">Day A</button>
                         <button class="filter-btn" onclick="filterLog('dayB')">Day B</button>
                         <button class="filter-btn" onclick="filterLog('dayC')">Day C</button>
+                        <button class="filter-btn" onclick="filterLog('custom')">Custom</button>
                     </div>
                 </div>
                 <div style="display: flex; gap: 8px; margin-bottom: 16px;">
@@ -1753,6 +1839,37 @@
                 </div>
                 <div id="exerciseLogContent"></div>
             </div>
+        </div>
+    </div>
+
+    <!-- Custom Day Tab -->
+    <div id="customDayTab" class="tab-content" style="display: none;">
+        <div class="session-control">
+            <button class="start-workout-btn" id="startCustomBtn" onclick="toggleCustomWorkout()">Start Workout</button>
+        </div>
+        <div class="workout-progress" id="customWorkoutProgress" style="display: none;">
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="customProgressBar" style="width: 0%"></div>
+            </div>
+            <div class="progress-text" id="customProgressText">0 / 0 exercises completed</div>
+        </div>
+        <div class="day-info">
+            <div class="day-title">🛠️ Custom Day</div>
+            <div class="day-description">Your personal workout — built from the library</div>
+        </div>
+        <div id="customExercisesList"></div>
+    </div>
+
+    <!-- Exercise Library Bottom Sheet -->
+    <div id="libraryOverlay" style="display:none; position:fixed; inset:0; background:rgba(1,33,105,0.65); z-index:1200; align-items:flex-end; justify-content:center;" onclick="if(event.target===this)closeLibrary()">
+        <div style="background:var(--cream); width:100%; max-width:540px; border-radius:20px 20px 0 0; max-height:88vh; display:flex; flex-direction:column; animation: sheetUp 0.35s cubic-bezier(0.22,1,0.36,1);">
+            <div style="width:40px;height:4px;background:#ddd;border-radius:2px;margin:12px auto 0;flex-shrink:0;"></div>
+            <div style="background:var(--ravens-purple);padding:16px 20px 14px;flex-shrink:0;position:relative;">
+                <button onclick="closeLibrary()" style="position:absolute;top:14px;right:14px;background:rgba(255,205,0,0.2);border:none;color:var(--ravens-gold);width:32px;height:32px;border-radius:50%;font-size:20px;cursor:pointer;line-height:1;">×</button>
+                <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:white;letter-spacing:0.5px;">📚 Exercise Library</div>
+                <div style="color:var(--ravens-gold);font-size:13px;font-weight:600;margin-top:2px;">Tap a category · tap + to add to Custom Day</div>
+            </div>
+            <div id="libraryBody" style="overflow-y:auto;padding:12px 16px 32px;flex:1;"></div>
         </div>
     </div>
 
@@ -1906,8 +2023,47 @@
         };
 
         // ============================================
-        // STRENGTH MATRIX
+        // EXERCISE LIBRARY
         // ============================================
+        const CUSTOM_KEY = 'customDayExercises';
+        const exerciseLibrary = {
+            'POSTERIOR CHAIN': [
+                { name: 'Deadlift',           sets: 3, reps: '6–8',       equip: 'FREE WEIGHTS' },
+                { name: 'Romanian Deadlift',  sets: 3, reps: '8–10',      equip: 'FREE WEIGHTS' },
+                { name: 'Single-Leg RDL',     sets: 3, reps: '8–10/side', equip: 'FREE WEIGHTS' },
+                { name: 'Good Mornings',      sets: 3, reps: '10',        equip: 'FREE WEIGHTS' },
+            ],
+            'BACK': [
+                { name: 'Lat Pulldown',      sets: 4, reps: '8–10',      equip: 'LAT PULLDOWN' },
+                { name: 'Seated Cable Row',  sets: 3, reps: '8–12',      equip: 'LOWER CABLE' },
+                { name: 'Single Arm DB Row', sets: 3, reps: '8–12/side', equip: 'FREE WEIGHTS' },
+                { name: 'Barbell Shrugs',    sets: 3, reps: '10–15',     equip: 'FREE WEIGHTS' },
+            ],
+            'CHEST': [
+                { name: 'Barbell Bench Press',    sets: 4, reps: '6–8',  equip: 'FREE WEIGHTS' },
+                { name: 'Incline DB Bench Press', sets: 3, reps: '8–12', equip: 'FREE WEIGHTS' },
+            ],
+            'SHOULDERS': [
+                { name: 'Barbell Shoulder Press',   sets: 3, reps: '6–10',  equip: 'FREE WEIGHTS' },
+                { name: 'Seated DB Shoulder Press', sets: 3, reps: '8–10',  equip: 'FREE WEIGHTS' },
+                { name: 'Rear-Delt Fly',            sets: 3, reps: '15–20', equip: 'FREE WEIGHTS' },
+                { name: 'Face Pulls',               sets: 3, reps: '15–20', equip: 'LAT PULLDOWN', resistanceType: 'band' },
+            ],
+            'ARMS': [
+                { name: 'Incline Bicep Curls', sets: 3, reps: '10–12', equip: 'FREE WEIGHTS' },
+            ],
+            'CORE': [
+                { name: 'Dead Bug',               sets: 3, reps: '8/side',    equip: 'FREE WEIGHTS' },
+                { name: 'Plank Pull-Throughs',    sets: 3, reps: '8–10/side', equip: 'FREE WEIGHTS' },
+                { name: 'Cable Hip Flexor Raise', sets: 3, reps: '12–15',     equip: 'LOWER CABLE' },
+            ],
+            'ACCESSORY': [
+                { name: '4-Way Neck', sets: 3, reps: '12–15 each', equip: 'FREE WEIGHTS' },
+            ],
+        };
+
+        // ============================================
+        // STRENGTH MATRIX
         const strengthMatrix = {
             'Barbell Bench Press': { rookie: 40, built: 70, strong: 100, veteran: 120, elite: 140 },
             'Barbell Shoulder Press': { rookie: 30, built: 50, strong: 65, veteran: 75, elite: 90 },
@@ -1950,7 +2106,7 @@
             'SHOULDERS': [
                 'Barbell Shoulder Press',
                 'Seated DB Shoulder Press',
-                'Rear Delt Fly',
+                'Rear-Delt Fly',
                 'Face Pulls'
             ],
             'LEGS': [
@@ -2110,73 +2266,51 @@
             const sessionDetail = document.getElementById('sessionDetailContent');
             if (sessionDetail) sessionDetail.remove();
             
-            switch(page) {
-                case 'home':
-                    document.getElementById('homeTab').style.display = 'block';
-                    document.getElementById('workoutTab').style.display = 'none';
-                    document.getElementById('statsTab').style.display = 'none';
-                    document.getElementById('historyTab').style.display = 'none';
-                    document.getElementById('tabNavigation').style.display = 'none';
-                    document.getElementById('backToHome').style.display = 'none';
-                    renderHome();
-                    break;
-                    
-                case 'workout':
-                    document.getElementById('homeTab').style.display = 'none';
-                    document.getElementById('workoutTab').style.display = 'block';
-                    document.getElementById('statsTab').style.display = 'none';
-                    document.getElementById('historyTab').style.display = 'none';
-                    document.getElementById('tabNavigation').style.display = 'flex';
-                    document.getElementById('backToHome').style.display = 'block';
-                    renderDay();
-                    break;
-                    
-                case 'stats':
-                    document.getElementById('homeTab').style.display = 'none';
-                    document.getElementById('workoutTab').style.display = 'none';
-                    document.getElementById('statsTab').style.display = 'block';
-                    document.getElementById('historyTab').style.display = 'none';
-                    document.getElementById('tabNavigation').style.display = 'flex';
-                    document.getElementById('backToHome').style.display = 'block';
-                    renderStats();
-                    break;
-                    
-                case 'history':
-                    document.getElementById('homeTab').style.display = 'none';
-                    document.getElementById('workoutTab').style.display = 'none';
-                    document.getElementById('statsTab').style.display = 'none';
-                    document.getElementById('historyTab').style.display = 'block';
-                    document.getElementById('tabNavigation').style.display = 'flex';
-                    document.getElementById('backToHome').style.display = 'block';
-                    renderHistory();
-                    break;
-            }
-            
+            const tabs = {
+                homeTab: page === 'home',
+                workoutTab: page === 'workout',
+                customDayTab: page === 'custom',
+                statsTab: page === 'stats',
+                historyTab: page === 'history',
+            };
+            Object.entries(tabs).forEach(([id, show]) => {
+                const el = document.getElementById(id);
+                if (el) el.style.display = show ? 'block' : 'none';
+            });
+
+            const showNav = page !== 'home';
+            document.getElementById('tabNavigation').style.display = showNav ? 'flex' : 'none';
+            document.getElementById('backToHome').style.display = showNav ? 'block' : 'none';
+
+            if (page === 'home') renderHome();
+            else if (page === 'workout') renderDay();
+            else if (page === 'custom') renderCustomDay();
+            else if (page === 'stats') renderStats();
+            else if (page === 'history') renderHistory();
+
             updateTabButtons(page);
             currentModal = null;
         }
 
         function updateTabButtons(page) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            
-            if (page === 'workout') {
-                if (currentDay === 'A') {
-                    document.querySelectorAll('.tab-btn')[0]?.classList.add('active');
-                } else if (currentDay === 'B') {
-                    document.querySelectorAll('.tab-btn')[1]?.classList.add('active');
-                } else if (currentDay === 'C') {
-                    document.querySelectorAll('.tab-btn')[2]?.classList.add('active');
-                }
-            } else if (page === 'stats') {
+            // Tab order: 0=DayA 1=DayB 2=DayC 3=Custom 4=Stats 5=History
+            const idx = { A: 0, B: 1, C: 2 };
+            if (page === 'workout' && idx[currentDay] !== undefined) {
+                document.querySelectorAll('.tab-btn')[idx[currentDay]]?.classList.add('active');
+            } else if (page === 'custom') {
                 document.querySelectorAll('.tab-btn')[3]?.classList.add('active');
-            } else if (page === 'history') {
+            } else if (page === 'stats') {
                 document.querySelectorAll('.tab-btn')[4]?.classList.add('active');
+            } else if (page === 'history') {
+                document.querySelectorAll('.tab-btn')[5]?.classList.add('active');
             }
         }
 
         function getCurrentPage() {
             if (document.getElementById('homeTab').style.display === 'block') return 'home';
             if (document.getElementById('workoutTab').style.display === 'block') return 'workout';
+            if (document.getElementById('customDayTab').style.display === 'block') return 'custom';
             if (document.getElementById('statsTab').style.display === 'block') return 'stats';
             if (document.getElementById('historyTab').style.display === 'block') return 'history';
             return 'home';
@@ -2220,24 +2354,17 @@
                 if (tab === 'dayA') currentDay = 'A';
                 else if (tab === 'dayB') currentDay = 'B';
                 else if (tab === 'dayC') currentDay = 'C';
-                
-                if (getCurrentPage() !== 'workout') {
-                    goToDay(currentDay);
-                } else {
-                    renderDay();
-                }
+                if (getCurrentPage() !== 'workout') goToDay(currentDay);
+                else renderDay();
+            } else if (tab === 'custom') {
+                if (getCurrentPage() !== 'custom') goToCustomDay();
+                else renderCustomDay();
             } else if (tab === 'stats') {
-                if (getCurrentPage() !== 'stats') {
-                    goToStats();
-                } else {
-                    renderStats();
-                }
+                if (getCurrentPage() !== 'stats') goToStats();
+                else renderStats();
             } else if (tab === 'history') {
-                if (getCurrentPage() !== 'history') {
-                    goToHistory();
-                } else {
-                    renderHistory();
-                }
+                if (getCurrentPage() !== 'history') goToHistory();
+                else renderHistory();
             }
         }
 
@@ -3305,7 +3432,9 @@
 
         function getLastWorkoutData(day, exerciseName) {
             const history = JSON.parse(localStorage.getItem('workoutHistory') || '[]');
-            const logs = history.filter(w => w.day === day && w.exercise === exerciseName);
+            const logs = day === 'Custom'
+                ? history.filter(w => w.exercise === exerciseName)
+                : history.filter(w => w.day === day && w.exercise === exerciseName);
             return logs.length > 0 ? logs[logs.length - 1] : null;
         }
 
@@ -3724,7 +3853,8 @@
             restTimerSeconds = 90;
 
             closeCurrentModal();
-            renderDay();
+            if (currentDay === 'Custom') renderCustomDay();
+            else renderDay();
             
             if (document.getElementById('statsTab').style.display !== 'none') {
                 renderStats();
@@ -3733,7 +3863,13 @@
 
         function saveAndNext() {
             saveWorkout();
-            
+            if (currentDay === 'Custom') {
+                const exs = getCustomExercises();
+                const next = currentExerciseIndex + 1;
+                if (next < exs.length) setTimeout(() => openCustomExercise(next), 50);
+                else showToast('All exercises complete! Great work! 🎉', 'success');
+                return;
+            }
             const nextIndex = currentExerciseIndex + 1;
             if (nextIndex < workoutData[currentDay].exercises.length) {
                 openExercise(nextIndex);
@@ -3751,7 +3887,7 @@
             
             const history = JSON.parse(localStorage.getItem('workoutHistory') || '[]');
             const exerciseHistory = history
-                .filter(w => w.exercise === currentExercise.name && w.day === currentDay)
+                .filter(w => w.exercise === currentExercise.name)
                 .slice(-5)
                 .reverse();
 
@@ -4359,6 +4495,7 @@
             if (filter === 'dayA') return history.filter(w => w.day === 'A');
             if (filter === 'dayB') return history.filter(w => w.day === 'B');
             if (filter === 'dayC') return history.filter(w => w.day === 'C');
+            if (filter === 'custom') return history.filter(w => w.day === 'Custom');
             return history;
         }
 
@@ -5332,6 +5469,274 @@
                 saveSessionState();
             }
         });
+
+        // ============================================
+        // CUSTOM DAY + EXERCISE LIBRARY
+        // ============================================
+        let customWorkoutActive = false;
+
+        function getCustomExercises() {
+            return JSON.parse(localStorage.getItem(CUSTOM_KEY) || '[]');
+        }
+        function saveCustomExercises(arr) {
+            localStorage.setItem(CUSTOM_KEY, JSON.stringify(arr));
+        }
+
+        function goToCustomDay() {
+            history.pushState({ page: 'custom', timestamp: Date.now() }, '', '');
+            historyStack.push('custom');
+            navigateToPage('custom');
+        }
+
+        function renderCustomDay() {
+            const exercises = getCustomExercises();
+            const startBtn = document.getElementById('startCustomBtn');
+            const progress = document.getElementById('customWorkoutProgress');
+            const container = document.getElementById('customExercisesList');
+
+            const sub = document.getElementById('homeCustomSubtitle');
+            if (sub) sub.textContent = exercises.length > 0
+                ? exercises.length + ' exercise' + (exercises.length !== 1 ? 's' : '') + ' saved'
+                : 'Build your own workout';
+
+            if (exercises.length === 0) {
+                startBtn.disabled = true;
+                startBtn.style.opacity = '0.5';
+                startBtn.textContent = 'Add exercises first';
+                startBtn.classList.remove('active');
+                progress.style.display = 'none';
+                container.innerHTML = '<div style="padding:40px 20px;text-align:center;">'
+                    + '<div style="font-size:56px;margin-bottom:16px;">🛠️</div>'
+                    + '<div style="font-family:\'Bebas Neue\',sans-serif;font-size:22px;color:var(--ravens-purple);margin-bottom:8px;">No exercises yet</div>'
+                    + '<div style="font-size:14px;color:var(--light-purple);font-weight:500;margin-bottom:28px;">Open the library and pick what you want to hit today</div>'
+                    + '<button class="open-library-btn" onclick="openLibrary()">📚 Open Exercise Library</button>'
+                    + '</div>';
+                return;
+            }
+
+            startBtn.disabled = false;
+            startBtn.style.opacity = '1';
+            if (customWorkoutActive) {
+                startBtn.textContent = 'End Workout';
+                startBtn.classList.add('active');
+                progress.style.display = 'block';
+                updateCustomProgress();
+            } else {
+                startBtn.textContent = 'Start Workout';
+                startBtn.classList.remove('active');
+                progress.style.display = 'none';
+            }
+
+            var wh = JSON.parse(localStorage.getItem('workoutHistory') || '[]');
+            var today = new Date().toDateString();
+            var html = '<div style="padding:0 20px 20px;">';
+            exercises.forEach(function(ex, idx) {
+                var isLogged = wh.some(function(w) {
+                    return w.day === 'Custom' && w.exercise === ex.name && new Date(w.date).toDateString() === today;
+                });
+                var logs = wh.filter(function(w) { return w.exercise === ex.name; });
+                var lastLog = logs.length > 0 ? logs[logs.length - 1] : null;
+                var lastWeight = (lastLog && lastLog.sets.length > 0 && !lastLog.sets[0].band)
+                    ? Math.max.apply(null, lastLog.sets.map(function(s){ return s.weight || 0; }))
+                    : null;
+                var removeBtn = customWorkoutActive ? '' :
+                    '<button class="cex-remove-btn" onclick="removeCustomExercise(' + idx + ',event)">×</button>';
+                html += '<div class="custom-ex-card' + (isLogged ? ' logged' : '') + '" onclick="openCustomExercise(' + idx + ')">'
+                    + '<div class="exercise-number">' + (idx + 1) + '</div>'
+                    + '<div class="exercise-info">'
+                    + '<div class="exercise-name">' + ex.name + '</div>'
+                    + '<div class="exercise-details">' + ex.sets + ' × ' + ex.reps + '</div>'
+                    + (lastWeight ? '<div style="font-size:12px;color:#888;margin-top:3px;">Last: <strong>' + lastWeight + 'kg</strong></div>' : '')
+                    + '</div>'
+                    + removeBtn
+                    + '</div>';
+            });
+            html += '<button class="add-more-btn" onclick="openLibrary()">+ Add More Exercises</button>';
+            if (!customWorkoutActive) {
+                html += '<button class="clear-custom-btn" onclick="clearCustomDay()">🗑️ Clear All Exercises</button>';
+            }
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        function removeCustomExercise(idx, event) {
+            event.stopPropagation();
+            var exercises = getCustomExercises();
+            var name = exercises[idx].name;
+            exercises.splice(idx, 1);
+            saveCustomExercises(exercises);
+            renderCustomDay();
+            showToast('Removed ' + name, 'info');
+        }
+
+        function clearCustomDay() {
+            if (!confirm('Clear all exercises from Custom Day?')) return;
+            saveCustomExercises([]);
+            renderCustomDay();
+            showToast('Custom Day cleared', 'info');
+        }
+
+        function toggleCustomWorkout() {
+            var exercises = getCustomExercises();
+            if (!customWorkoutActive) {
+                if (exercises.length === 0) { showToast('Add exercises first!', 'error'); return; }
+                customWorkoutActive = true;
+                if (!sessionStartTime) {
+                    sessionStartTime = Date.now();
+                    sessionInterval = setInterval(updateSessionTimer, 1000);
+                }
+                document.getElementById('sessionTimer').classList.add('active');
+                renderCustomDay();
+                showToast('Custom Workout started! 💪🏾', 'success');
+            } else {
+                if (confirm('End your Custom Day workout?')) showCustomSummary();
+            }
+        }
+
+        function updateCustomProgress() {
+            var exercises = getCustomExercises();
+            var wh = JSON.parse(localStorage.getItem('workoutHistory') || '[]');
+            var today = new Date().toDateString();
+            var done = exercises.filter(function(ex) {
+                return wh.some(function(w) {
+                    return w.day === 'Custom' && w.exercise === ex.name && new Date(w.date).toDateString() === today;
+                });
+            }).length;
+            var pct = exercises.length > 0 ? (done / exercises.length * 100) : 0;
+            var bar = document.getElementById('customProgressBar');
+            var txt = document.getElementById('customProgressText');
+            if (bar) bar.style.width = pct + '%';
+            if (txt) txt.textContent = done + ' / ' + exercises.length + ' exercises completed';
+        }
+
+        function openCustomExercise(idx) {
+            var exercises = getCustomExercises();
+            var ex = exercises[idx];
+            currentDay = 'Custom';
+            currentExercise = ex;
+            currentExerciseIndex = idx;
+            currentSetCount = ex.sets;
+
+            document.getElementById('modalExerciseName').textContent = ex.name;
+            document.getElementById('modalExerciseTarget').textContent = 'Target: ' + ex.sets + ' × ' + ex.reps;
+
+            var viewOnly = !customWorkoutActive;
+            document.getElementById('viewOnlyNotice').style.display = viewOnly ? 'block' : 'none';
+            document.getElementById('restTimer').style.display = viewOnly ? 'none' : 'block';
+            document.getElementById('addSetBtn').style.display = viewOnly ? 'none' : 'block';
+            document.getElementById('actionButtons').style.display = viewOnly ? 'none' : 'grid';
+            document.getElementById('exerciseNotes').disabled = viewOnly;
+
+            var lastWorkout = getLastWorkoutData('Custom', ex.name);
+            if (lastWorkout && !viewOnly) {
+                document.getElementById('prefillSection').style.display = 'block';
+                document.getElementById('prefillData').textContent = lastWorkout.sets.map(function(s) {
+                    return s.band ? s.band + ' × ' + s.reps : s.weight + 'kg × ' + s.reps;
+                }).join(', ');
+            } else {
+                document.getElementById('prefillSection').style.display = 'none';
+            }
+
+            renderSets(viewOnly);
+            loadExerciseHistory();
+            calculateStatsWithComparison();
+            document.getElementById('exerciseModal').classList.add('active');
+            currentModal = 'exercise';
+            history.pushState({ page: 'modal', type: 'exercise', timestamp: Date.now() }, '', '');
+            historyStack.push('modal');
+        }
+
+        function showCustomSummary() {
+            var wh = JSON.parse(localStorage.getItem('workoutHistory') || '[]');
+            var today = new Date().toDateString();
+            var todayCustom = wh.filter(function(w) { return w.day === 'Custom' && new Date(w.date).toDateString() === today; });
+            var elapsed = sessionStartTime ? Math.floor((Date.now() - sessionStartTime) / 60000) : 0;
+            var totalVolume = todayCustom.reduce(function(sum, ex) {
+                if (ex.sets.length > 0 && ex.sets[0].band) return sum;
+                return sum + ex.sets.reduce(function(s, set) { return s + (set.weight || 0) * set.reps; }, 0);
+            }, 0);
+            var totalSets = todayCustom.reduce(function(sum, ex) { return sum + ex.sets.length; }, 0);
+
+            document.getElementById('summaryDuration').textContent = elapsed + 'm';
+            document.getElementById('summaryExercises').textContent = new Set(todayCustom.map(function(w) { return w.exercise; })).size;
+            document.getElementById('summaryVolume').textContent = Math.round(totalVolume) + 'kg';
+            document.getElementById('summarySets').textContent = totalSets;
+            document.getElementById('summaryModal').classList.add('active');
+            currentModal = 'summary';
+            history.pushState({ page: 'modal', type: 'summary', timestamp: Date.now() }, '', '');
+            historyStack.push('modal');
+
+            customWorkoutActive = false;
+            clearInterval(sessionInterval);
+            sessionInterval = null;
+            sessionStartTime = null;
+            document.getElementById('sessionTimer').classList.remove('active');
+            document.getElementById('sessionTimer').textContent = '00:00';
+        }
+
+        function openLibrary() {
+            renderLibrary();
+            document.getElementById('libraryOverlay').style.display = 'flex';
+        }
+
+        function closeLibrary() {
+            document.getElementById('libraryOverlay').style.display = 'none';
+            if (getCurrentPage() === 'custom') renderCustomDay();
+        }
+
+        function renderLibrary() {
+            var current = getCustomExercises().map(function(e) { return e.name; });
+            var html = '';
+            Object.keys(exerciseLibrary).forEach(function(cat) {
+                var exercises = exerciseLibrary[cat];
+                var catId = 'libcat_' + cat.replace(/\s+/g, '_');
+                html += '<div class="lib-cat-hdr" onclick="toggleLibCat(\'' + catId + '\')">'
+                    + '<span>' + cat + '</span>'
+                    + '<span style="background:rgba(255,255,255,0.2);padding:2px 8px;border-radius:10px;font-size:12px;">' + exercises.length + '</span>'
+                    + '</div>'
+                    + '<div class="lib-cat-body" id="' + catId + '">';
+                exercises.forEach(function(ex, idx) {
+                    var added = current.indexOf(ex.name) !== -1;
+                    var btnId = 'lbtn_' + catId + '_' + idx;
+                    html += '<div class="lib-ex-row">'
+                        + '<div class="lib-ex-info">'
+                        + '<div class="lib-ex-name">' + ex.name + '</div>'
+                        + '<div class="lib-ex-meta">' + ex.sets + ' sets × ' + ex.reps + '</div>'
+                        + '</div>'
+                        + '<span class="lib-equip-tag">' + ex.equip + '</span>'
+                        + '<button class="lib-add-btn' + (added ? ' added' : '') + '" id="' + btnId + '" '
+                        + 'onclick="handleLibAdd(\'' + cat + '\',' + idx + ',\'' + btnId + '\')">'
+                        + (added ? '✓' : '+')
+                        + '</button>'
+                        + '</div>';
+                });
+                html += '</div>';
+            });
+            document.getElementById('libraryBody').innerHTML = html;
+        }
+
+        function toggleLibCat(catId) {
+            var body = document.getElementById(catId);
+            if (body) body.classList.toggle('open');
+        }
+
+        function handleLibAdd(cat, idx, btnId) {
+            var btn = document.getElementById(btnId);
+            if (btn && btn.classList.contains('added')) { showToast('Already in Custom Day', 'info', 1500); return; }
+            var ex = exerciseLibrary[cat][idx];
+            var exercises = getCustomExercises();
+            if (exercises.some(function(e) { return e.name === ex.name; })) {
+                if (btn) { btn.classList.add('added'); btn.textContent = '✓'; }
+                showToast('Already in Custom Day', 'info', 1500);
+                return;
+            }
+            var copy = {};
+            Object.keys(ex).forEach(function(k) { copy[k] = ex[k]; });
+            exercises.push(copy);
+            saveCustomExercises(exercises);
+            if (btn) { btn.classList.add('added'); btn.textContent = '✓'; }
+            showToast('✅ ' + ex.name + ' added', 'success', 2000);
+        }
 
         // Initialize
         function initialize() {
