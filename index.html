@@ -2033,38 +2033,72 @@
         // ============================================
         const CUSTOM_KEY = 'customDayExercises';
         const exerciseLibrary = {
-            'POSTERIOR CHAIN': [
-                { name: 'Deadlift',           sets: 3, reps: '6–8',       equip: 'FREE WEIGHTS' },
-                { name: 'Romanian Deadlift',  sets: 3, reps: '8–10',      equip: 'FREE WEIGHTS' },
-                { name: 'Single-Leg RDL',     sets: 3, reps: '8–10/side', equip: 'FREE WEIGHTS' },
-                { name: 'Good Mornings',      sets: 3, reps: '10',        equip: 'FREE WEIGHTS' },
+            'LEGS': [
+                { name: 'Zercher Squat',         sets: 4, reps: '6–8',       equip: 'FREE WEIGHTS' },
+                { name: 'Back Squat',             sets: 4, reps: '6–8',       equip: 'FREE WEIGHTS' },
+                { name: 'Bulgarian Split Squat',  sets: 3, reps: '8–10/side', equip: 'FREE WEIGHTS' },
+                { name: 'Barbell Step Ups',       sets: 3, reps: '10/side',   equip: 'FREE WEIGHTS' },
+                { name: 'Goblet Squat',           sets: 3, reps: '10–12',     equip: 'FREE WEIGHTS' },
+                { name: 'Nordic Curl',            sets: 3, reps: '5–8',       equip: 'FREE WEIGHTS' },
+            ],
+            'ARMS': [
+                { name: 'Cable Tricep Pushdown',      sets: 3, reps: '12–15', equip: 'LAT PULLDOWN' },
+                { name: 'Overhead Tricep Extension',  sets: 3, reps: '12–15', equip: 'LAT PULLDOWN' },
+                { name: 'Close-Grip Bench Press',     sets: 3, reps: '8–10',  equip: 'FREE WEIGHTS' },
+                { name: 'Hammer Curl',                sets: 3, reps: '10–12', equip: 'FREE WEIGHTS' },
+                { name: 'Incline Bicep Curls',        sets: 3, reps: '10–12', equip: 'FREE WEIGHTS' },
+                { name: 'Cable Curl',                 sets: 3, reps: '10–12', equip: 'LOWER CABLE' },
             ],
             'BACK': [
-                { name: 'Lat Pulldown',      sets: 4, reps: '8–10',      equip: 'LAT PULLDOWN' },
-                { name: 'Seated Cable Row',  sets: 3, reps: '8–12',      equip: 'LOWER CABLE' },
-                { name: 'Single Arm DB Row', sets: 3, reps: '8–12/side', equip: 'FREE WEIGHTS' },
-                { name: 'Barbell Shrugs',    sets: 3, reps: '10–15',     equip: 'FREE WEIGHTS' },
+                { name: 'Lat Pulldown',           sets: 4, reps: '8–10',      equip: 'LAT PULLDOWN' },
+                { name: 'Seated Cable Row',       sets: 3, reps: '8–12',      equip: 'LOWER CABLE' },
+                { name: 'Barbell Row',            sets: 3, reps: '8–10',      equip: 'FREE WEIGHTS' },
+                { name: 'Single Arm DB Row',      sets: 3, reps: '8–12/side', equip: 'FREE WEIGHTS' },
+                { name: 'DB Shrugs',              sets: 3, reps: '12–15',     equip: 'FREE WEIGHTS' },
+                { name: 'Trap Bar Shrugs',        sets: 3, reps: '12–15',     equip: 'FREE WEIGHTS' },
+                { name: 'Chest-Supported DB Row', sets: 3, reps: '10–12',     equip: 'FREE WEIGHTS' },
+                { name: 'Pull-Up',                sets: 4, reps: '6–10',      equip: 'PULL-UP BAR', resistanceType: 'band' },
+                { name: 'Chin-Up',                sets: 3, reps: '8–12',      equip: 'PULL-UP BAR', resistanceType: 'band' },
             ],
             'CHEST': [
-                { name: 'Barbell Bench Press',    sets: 4, reps: '6–8',  equip: 'FREE WEIGHTS' },
-                { name: 'Incline DB Bench Press', sets: 3, reps: '8–12', equip: 'FREE WEIGHTS' },
+                { name: 'Barbell Bench Press',    sets: 4, reps: '6–8',   equip: 'FREE WEIGHTS' },
+                { name: 'Flat DB Bench Press',    sets: 3, reps: '10–12', equip: 'FREE WEIGHTS' },
+                { name: 'Incline DB Bench Press', sets: 3, reps: '8–12',  equip: 'FREE WEIGHTS' },
+                { name: 'Dumbbell Fly',           sets: 3, reps: '12–15', equip: 'FREE WEIGHTS' },
+                { name: 'Cable Fly',              sets: 3, reps: '12–15', equip: 'LOWER CABLE' },
+                { name: 'Dips',                   sets: 3, reps: '8–12',  equip: 'DIP BAR', resistanceType: 'band' },
             ],
             'SHOULDERS': [
                 { name: 'Barbell Shoulder Press',   sets: 3, reps: '6–10',  equip: 'FREE WEIGHTS' },
                 { name: 'Seated DB Shoulder Press', sets: 3, reps: '8–10',  equip: 'FREE WEIGHTS' },
                 { name: 'Rear-Delt Fly',            sets: 3, reps: '15–20', equip: 'FREE WEIGHTS' },
                 { name: 'Face Pulls',               sets: 3, reps: '15–20', equip: 'LAT PULLDOWN', resistanceType: 'band' },
-            ],
-            'ARMS': [
-                { name: 'Incline Bicep Curls', sets: 3, reps: '10–12', equip: 'FREE WEIGHTS' },
+                { name: 'Lateral Raises',           sets: 3, reps: '12–15', equip: 'FREE WEIGHTS' },
             ],
             'CORE': [
-                { name: 'Dead Bug',               sets: 3, reps: '8/side',    equip: 'FREE WEIGHTS' },
-                { name: 'Plank Pull-Throughs',    sets: 3, reps: '8–10/side', equip: 'FREE WEIGHTS' },
-                { name: 'Cable Hip Flexor Raise', sets: 3, reps: '12–15',     equip: 'LOWER CABLE' },
+                { name: 'Dead Bug',            sets: 3, reps: '8/side',    equip: 'FREE WEIGHTS' },
+                { name: 'Plank Pull-Throughs', sets: 3, reps: '8–10/side', equip: 'FREE WEIGHTS' },
+                { name: 'Side Plank',          sets: 3, reps: '30–45s',    equip: 'FREE WEIGHTS' },
+                { name: 'Hanging Leg Raises',  sets: 3, reps: '10–15',     equip: 'PULL-UP BAR' },
+                { name: 'Lying Leg Raises',    sets: 3, reps: '12–15',     equip: 'FREE WEIGHTS' },
+                { name: 'Pallof Press',        sets: 3, reps: '12/side',   equip: 'LOWER CABLE' },
             ],
-            'ACCESSORY': [
-                { name: '4-Way Neck', sets: 3, reps: '12–15 each', equip: 'FREE WEIGHTS' },
+            'POSTERIOR CHAIN': [
+                { name: 'Deadlift',           sets: 3, reps: '6–8',       equip: 'FREE WEIGHTS' },
+                { name: 'Trap Bar Deadlift',  sets: 3, reps: '6–8',       equip: 'FREE WEIGHTS' },
+                { name: 'Romanian Deadlift',  sets: 3, reps: '8–10',      equip: 'FREE WEIGHTS' },
+                { name: 'Single-Leg RDL',     sets: 3, reps: '8–10/side', equip: 'FREE WEIGHTS' },
+                { name: 'Good Mornings',      sets: 3, reps: '10',        equip: 'FREE WEIGHTS' },
+                { name: 'Barbell Hip Thrust', sets: 3, reps: '10–12',     equip: 'FREE WEIGHTS' },
+            ],
+            'GLUTE & REHAB': [
+                { name: '4-Way Neck',               sets: 3, reps: '12–15 each', equip: 'FREE WEIGHTS' },
+                { name: '90/90 Hip Lift',           sets: 3, reps: '10/side',    equip: 'FREE WEIGHTS' },
+                { name: 'Cable Hip Flexor Raises',  sets: 3, reps: '12–15',      equip: 'LOWER CABLE' },
+                { name: 'Glute Bridge',             sets: 3, reps: '15–20',      equip: 'FREE WEIGHTS' },
+                { name: 'Clamshells',               sets: 3, reps: '15–20/side', equip: 'FREE WEIGHTS', resistanceType: 'band' },
+                { name: 'Mini Band Pull-Aparts',    sets: 3, reps: '20–25',      equip: 'FREE WEIGHTS', resistanceType: 'band' },
+                { name: 'Cable Kickbacks',          sets: 3, reps: '15/side',    equip: 'LOWER CABLE' },
             ],
         };
 
@@ -2093,57 +2127,50 @@
         // MUSCLE GROUPS FOR ORGANIZATION (v5.9.1 Feature)
         // ============================================
         const muscleGroups = {
-            'POSTERIOR CHAIN': [
-                'Deadlift',
-                'Romanian Deadlift',
-                'Good Mornings',
-                'Single-Leg RDL'
-            ],
-            'BACK': [
-                'Seated Cable Row',
-                'Lat Pulldown',
-                'Single Arm DB Row',
-                'Barbell Shrugs'
-            ],
-            'CHEST': [
-                'Barbell Bench Press',
-                'Incline DB Bench Press'
-            ],
-            'SHOULDERS': [
-                'Barbell Shoulder Press',
-                'Seated DB Shoulder Press',
-                'Rear-Delt Fly',
-                'Face Pulls'
-            ],
             'LEGS': [
-                'Zercher Squat'
-                // Future: Barbell Squat, Leg Press, Leg Extension, Leg Curl, Calf Raise
+                'Zercher Squat', 'Back Squat', 'Bulgarian Split Squat',
+                'Barbell Step Ups', 'Goblet Squat', 'Nordic Curl'
             ],
             'ARMS': [
-                'Incline Bicep Curls'
-                // Future: Barbell Curl, Dumbbell Curl, Tricep Pushdown, Skull Crusher
+                'Cable Tricep Pushdown', 'Overhead Tricep Extension', 'Close-Grip Bench Press',
+                'Hammer Curl', 'Incline Bicep Curls', 'Cable Curl'
+            ],
+            'BACK': [
+                'Lat Pulldown', 'Seated Cable Row', 'Barbell Row', 'Single Arm DB Row',
+                'DB Shrugs', 'Trap Bar Shrugs', 'Chest-Supported DB Row', 'Pull-Up', 'Chin-Up'
+            ],
+            'CHEST': [
+                'Barbell Bench Press', 'Flat DB Bench Press', 'Incline DB Bench Press',
+                'Dumbbell Fly', 'Cable Fly', 'Dips'
+            ],
+            'SHOULDERS': [
+                'Barbell Shoulder Press', 'Seated DB Shoulder Press',
+                'Rear-Delt Fly', 'Face Pulls', 'Lateral Raises'
             ],
             'CORE': [
-                'Dead Bug',
-                'Cable Hip Flexor Raise',
-                'Plank Pull-Throughs'
+                'Dead Bug', 'Plank Pull-Throughs', 'Side Plank',
+                'Hanging Leg Raises', 'Lying Leg Raises', 'Pallof Press'
             ],
-            'ACCESSORY': [
-                '4-Way Neck'
-                // Future: Wrist Curl, Neck Harness, Grip Training
+            'POSTERIOR CHAIN': [
+                'Deadlift', 'Trap Bar Deadlift', 'Romanian Deadlift',
+                'Single-Leg RDL', 'Good Mornings', 'Barbell Hip Thrust'
+            ],
+            'GLUTE & REHAB': [
+                '4-Way Neck', '90/90 Hip Lift', 'Cable Hip Flexor Raises',
+                'Glute Bridge', 'Clamshells', 'Mini Band Pull-Aparts', 'Cable Kickbacks'
             ]
         };
 
         // Group order for display
         const groupOrder = [
             'POSTERIOR CHAIN',
+            'LEGS',
             'BACK',
             'CHEST',
             'SHOULDERS',
-            'LEGS',
             'ARMS',
             'CORE',
-            'ACCESSORY'
+            'GLUTE & REHAB'
         ];
 
         // ============================================
