@@ -1636,7 +1636,7 @@
                 <button onclick="goToDay('A')" style="padding: 20px; background: white; border: 2px solid var(--ravens-gold); border-radius: 12px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 12px var(--shadow); display: flex; justify-content: space-between; align-items: center;">
                     <div style="text-align: left;">
                         <div style="font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--ravens-purple); letter-spacing: 1px;">Day A</div>
-                        <div style="font-size: 13px; color: var(--light-purple); font-weight: 500;">Upper + Hinge • 6 exercises</div>
+                        <div style="font-size: 13px; color: var(--light-purple); font-weight: 500;">Push — Chest · Triceps · Quads · Core</div>
                     </div>
                     <div style="font-size: 40px;">💪🏾</div>
                 </button>
@@ -1644,7 +1644,7 @@
                 <button onclick="goToDay('B')" style="padding: 20px; background: white; border: 2px solid var(--ravens-purple); border-radius: 12px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 12px var(--shadow); display: flex; justify-content: space-between; align-items: center;">
                     <div style="text-align: left;">
                         <div style="font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--ravens-purple); letter-spacing: 1px;">Day B</div>
-                        <div style="font-size: 13px; color: var(--light-purple); font-weight: 500;">Upper + Core • 6 exercises</div>
+                        <div style="font-size: 13px; color: var(--light-purple); font-weight: 500;">Pull — Back · Biceps · Hamstrings · Traps</div>
                     </div>
                     <div style="font-size: 40px;">🔥</div>
                 </button>
@@ -1652,7 +1652,7 @@
                 <button onclick="goToDay('C')" style="padding: 20px; background: white; border: 2px solid var(--ravens-gold); border-radius: 12px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 12px var(--shadow); display: flex; justify-content: space-between; align-items: center;">
                     <div style="text-align: left;">
                         <div style="font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--ravens-purple); letter-spacing: 1px;">Day C</div>
-                        <div style="font-size: 13px; color: var(--light-purple); font-weight: 500;">Hinge + Upper • 6 exercises</div>
+                        <div style="font-size: 13px; color: var(--light-purple); font-weight: 500;">Shoulders — Shoulders · Arms · Glutes</div>
                     </div>
                     <div style="font-size: 40px;">⚡</div>
                 </button>
@@ -1986,44 +1986,47 @@
         // ============================================
         const workoutData = {
             A: {
-                title: "Day A",
-                description: "Upper + Hinge Focus",
+                title: "Day A – Push",
+                description: "Chest · Triceps · Quads · Core",
                 mobility: "Elevated Pigeon 2×45s/side, Elephant Walks 2×8",
                 exercises: [
-                    { name: "Barbell Bench Press", sets: 4, reps: "6–8" },
-                    { name: "Lat Pulldown", sets: 4, reps: "8–10" },
-                    { name: "Seated Cable Row", sets: 3, reps: "8–12" },
-                    { name: "Deadlift", sets: 3, reps: "6–8" },
-                    { name: "Single-Leg RDL", sets: 3, reps: "8–10/side" },
-                    { name: "4-Way Neck", sets: 3, reps: "12–15 each direction" }
+                    { name: "Zercher Squat",         sets: 3, reps: "8–10" },
+                    { name: "Barbell Bench Press",    sets: 3, reps: "6–8" },
+                    { name: "Incline DB Bench Press", sets: 3, reps: "8–10" },
+                    { name: "Dumbbell Fly",           sets: 3, reps: "10–12" },
+                    { name: "DB Rollbacks",           sets: 3, reps: "10–12" },
+                    { name: "Cable Tricep Pushdown",  sets: 3, reps: "10–12" },
+                    { name: "Hanging Leg Raises",     sets: 3, reps: "12–15" }
                 ]
             },
             B: {
-                title: "Day B",
-                description: "Upper + Core Focus",
+                title: "Day B – Pull",
+                description: "Back · Biceps · Hamstrings · Traps",
                 mobility: "90/90 Rotations 2×8/side, Weighted Butterfly 2×45s",
                 exercises: [
-                    { name: "Incline DB Bench Press", sets: 3, reps: "8–12" },
-                    { name: "Seated DB Shoulder Press", sets: 3, reps: "8–10" },
-                    { name: "Lat Pulldown", sets: 3, reps: "8–10" },
-                    { name: "Barbell Shrugs", sets: 3, reps: "10–15" },
-                    { name: "Face Pulls", sets: 3, reps: "15–20", resistanceType: "band" },
-                    { name: "Cable Hip Flexor Raise", sets: 3, reps: "12–15" },
-                    { name: "Dead Bug", sets: 3, reps: "8/side" }
+                    { name: "Trap Bar Deadlift",   sets: 3, reps: "6–8" },
+                    { name: "Trap Bar Shrugs",      sets: 3, reps: "12–15" },
+                    { name: "Barbell Row",          sets: 3, reps: "8–10" },
+                    { name: "Seated Cable Row",     sets: 3, reps: "8–10" },
+                    { name: "Lat Pulldown",         sets: 3, reps: "8–10" },
+                    { name: "Romanian Deadlift",    sets: 3, reps: "10" },
+                    { name: "Incline Bicep Curls",  sets: 3, reps: "10–12" },
+                    { name: "Single-Arm DB Curl",   sets: 3, reps: "10–12" }
                 ]
             },
             C: {
-                title: "Day C",
-                description: "Hinge + Upper Balance",
+                title: "Day C – Shoulders",
+                description: "Shoulders · Arms · Glutes",
                 mobility: "Couch Stretch 2×45s/side, Elevated Pigeon 2×45s/side",
                 exercises: [
-                    { name: "Romanian Deadlift", sets: 3, reps: "8–10" },
-                    { name: "Good Mornings", sets: 3, reps: "10" },
-                    { name: "Barbell Shoulder Press", sets: 3, reps: "6–10" },
-                    { name: "Rear-Delt Fly", sets: 3, reps: "15–20" },
-                    { name: "Single Arm DB Row", sets: 3, reps: "8-12/side" },
-                    { name: "Incline Bicep Curls", sets: 3, reps: "10–12" },
-                    { name: "Plank Pull-Throughs", sets: 3, reps: "8–10/side" }
+                    { name: "Single-Leg RDL",           sets: 3, reps: "10–12/side" },
+                    { name: "Barbell Shoulder Press",   sets: 3, reps: "6–8" },
+                    { name: "Upright Row",              sets: 3, reps: "10–12" },
+                    { name: "Lateral Raises",           sets: 3, reps: "12–15" },
+                    { name: "Face Pulls",               sets: 3, reps: "15–20", resistanceType: "band" },
+                    { name: "Rear-Delt Fly",            sets: 3, reps: "12–15" },
+                    { name: "Cable Curl",               sets: 3, reps: "10–12" },
+                    { name: "Cable Tricep Pushdown",    sets: 3, reps: "10–12" }
                 ]
             }
         };
@@ -2044,9 +2047,11 @@
             'ARMS': [
                 { name: 'Cable Tricep Pushdown',      sets: 3, reps: '12–15', equip: 'LAT PULLDOWN' },
                 { name: 'Overhead Tricep Extension',  sets: 3, reps: '12–15', equip: 'LAT PULLDOWN' },
+                { name: 'DB Rollbacks',               sets: 3, reps: '10–12', equip: 'FREE WEIGHTS' },
                 { name: 'Close-Grip Bench Press',     sets: 3, reps: '8–10',  equip: 'FREE WEIGHTS' },
                 { name: 'Hammer Curl',                sets: 3, reps: '10–12', equip: 'FREE WEIGHTS' },
                 { name: 'Incline Bicep Curls',        sets: 3, reps: '10–12', equip: 'FREE WEIGHTS' },
+                { name: 'Single-Arm DB Curl',         sets: 3, reps: '10–12', equip: 'FREE WEIGHTS' },
                 { name: 'Cable Curl',                 sets: 3, reps: '10–12', equip: 'LOWER CABLE' },
             ],
             'BACK': [
@@ -2064,13 +2069,14 @@
                 { name: 'Barbell Bench Press',    sets: 4, reps: '6–8',   equip: 'FREE WEIGHTS' },
                 { name: 'Flat DB Bench Press',    sets: 3, reps: '10–12', equip: 'FREE WEIGHTS' },
                 { name: 'Incline DB Bench Press', sets: 3, reps: '8–12',  equip: 'FREE WEIGHTS' },
-                { name: 'Dumbbell Fly',           sets: 3, reps: '12–15', equip: 'FREE WEIGHTS' },
+                { name: 'Dumbbell Fly',           sets: 3, reps: '10–12', equip: 'FREE WEIGHTS' },
                 { name: 'Cable Fly',              sets: 3, reps: '12–15', equip: 'LOWER CABLE' },
                 { name: 'Dips',                   sets: 3, reps: '8–12',  equip: 'DIP BAR', resistanceType: 'band' },
             ],
             'SHOULDERS': [
                 { name: 'Barbell Shoulder Press',   sets: 3, reps: '6–10',  equip: 'FREE WEIGHTS' },
                 { name: 'Seated DB Shoulder Press', sets: 3, reps: '8–10',  equip: 'FREE WEIGHTS' },
+                { name: 'Upright Row',              sets: 3, reps: '10–12', equip: 'FREE WEIGHTS' },
                 { name: 'Rear-Delt Fly',            sets: 3, reps: '15–20', equip: 'FREE WEIGHTS' },
                 { name: 'Face Pulls',               sets: 3, reps: '15–20', equip: 'LAT PULLDOWN', resistanceType: 'band' },
                 { name: 'Lateral Raises',           sets: 3, reps: '12–15', equip: 'FREE WEIGHTS' },
@@ -2132,8 +2138,9 @@
                 'Barbell Step Ups', 'Goblet Squat', 'Nordic Curl'
             ],
             'ARMS': [
-                'Cable Tricep Pushdown', 'Overhead Tricep Extension', 'Close-Grip Bench Press',
-                'Hammer Curl', 'Incline Bicep Curls', 'Cable Curl'
+                'Cable Tricep Pushdown', 'Overhead Tricep Extension', 'DB Rollbacks',
+                'Close-Grip Bench Press', 'Hammer Curl', 'Incline Bicep Curls',
+                'Single-Arm DB Curl', 'Cable Curl'
             ],
             'BACK': [
                 'Lat Pulldown', 'Seated Cable Row', 'Barbell Row', 'Single Arm DB Row',
@@ -2144,7 +2151,7 @@
                 'Dumbbell Fly', 'Cable Fly', 'Dips'
             ],
             'SHOULDERS': [
-                'Barbell Shoulder Press', 'Seated DB Shoulder Press',
+                'Barbell Shoulder Press', 'Seated DB Shoulder Press', 'Upright Row',
                 'Rear-Delt Fly', 'Face Pulls', 'Lateral Raises'
             ],
             'CORE': [
