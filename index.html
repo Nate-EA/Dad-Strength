@@ -2011,7 +2011,7 @@
                     { name: "Lat Pulldown",         sets: 3, reps: "8–10" },
                     { name: "Romanian Deadlift",    sets: 3, reps: "10" },
                     { name: "Incline Bicep Curls",  sets: 3, reps: "10–12" },
-                    { name: "Single-Arm DB Curl",   sets: 3, reps: "10–12" }
+                    { name: "Single-Arm Preacher Curl", sets: 3, reps: "10–12" }
                 ]
             },
             C: {
@@ -2051,7 +2051,7 @@
                 { name: 'Close-Grip Bench Press',     sets: 3, reps: '8–10',  equip: 'FREE WEIGHTS' },
                 { name: 'Hammer Curl',                sets: 3, reps: '10–12', equip: 'FREE WEIGHTS' },
                 { name: 'Incline Bicep Curls',        sets: 3, reps: '10–12', equip: 'FREE WEIGHTS' },
-                { name: 'Single-Arm DB Curl',         sets: 3, reps: '10–12', equip: 'FREE WEIGHTS' },
+                { name: 'Single-Arm Preacher Curl',   sets: 3, reps: '10–12', equip: 'FREE WEIGHTS' },
                 { name: 'Cable Curl',                 sets: 3, reps: '10–12', equip: 'LOWER CABLE' },
             ],
             'BACK': [
@@ -2114,9 +2114,9 @@
             'Barbell Bench Press': { rookie: 40, built: 70, strong: 100, veteran: 120, elite: 140 },
             'Barbell Shoulder Press': { rookie: 30, built: 50, strong: 65, veteran: 75, elite: 90 },
             'Zercher Squat': { rookie: 60, built: 100, strong: 120, veteran: 140, elite: 160 },
-            'Deadlift': { rookie: 80, built: 120, strong: 140, veteran: 200, elite: 240 },
-            'Lat Pulldown': { rookie: 40, built: 60, strong: 80, veteran: 100, elite: 120 },
-            'Single Arm DB Row': { rookie: 20, built: 30, strong: 40, veteran: 50, elite: 60 }
+            'Trap Bar Deadlift': { rookie: 80, built: 120, strong: 140, veteran: 200, elite: 240 },
+            'Barbell Row': { rookie: 60, built: 70, strong: 80, veteran: 90, elite: 100 },
+            'Pull-Up': { rookie: 5, built: 10, strong: 15, veteran: 20, elite: 25, unit: 'reps' },
         };
 
         // Core lifts for strength score
@@ -2124,9 +2124,9 @@
             'Barbell Bench Press',
             'Barbell Shoulder Press',
             'Zercher Squat',
-            'Deadlift',
-            'Lat Pulldown',
-            'Single Arm DB Row'
+            'Trap Bar Deadlift',
+            'Barbell Row',
+            'Pull-Up'
         ];
 
         // ============================================
@@ -2140,7 +2140,7 @@
             'ARMS': [
                 'Cable Tricep Pushdown', 'Overhead Tricep Extension', 'DB Rollbacks',
                 'Close-Grip Bench Press', 'Hammer Curl', 'Incline Bicep Curls',
-                'Single-Arm DB Curl', 'Cable Curl'
+                'Single-Arm Preacher Curl', 'Cable Curl'
             ],
             'BACK': [
                 'Lat Pulldown', 'Seated Cable Row', 'Barbell Row', 'Single Arm DB Row',
@@ -2411,7 +2411,7 @@
         // ============================================
         // STRENGTH MATRIX FUNCTIONS
         // ============================================
-        function getTierAndProgress(currentWeight, exerciseName) {
+        function getTierAndProgress(currentValue, exerciseName) {
             let standards = null;
             
             if (strengthMatrix[exerciseName]) {
@@ -2421,18 +2421,16 @@
             } else if (exerciseName.includes('Shoulder Press')) {
                 standards = strengthMatrix['Barbell Shoulder Press'];
             } else if (exerciseName.includes('Deadlift')) {
-                standards = strengthMatrix['Deadlift'];
-            } else if (exerciseName.includes('Lat Pulldown')) {
-                standards = strengthMatrix['Lat Pulldown'];
-            } else if (exerciseName.includes('Single Arm DB Row')) {
-                standards = strengthMatrix['Single Arm DB Row'];
+                standards = strengthMatrix['Trap Bar Deadlift'];
             } else if (exerciseName.includes('Zercher')) {
                 standards = strengthMatrix['Zercher Squat'];
+            } else if (exerciseName.includes('Row')) {
+                standards = strengthMatrix['Barbell Row'];
             }
             
             if (!standards) return null;
             
-            if (currentWeight >= standards.elite) {
+            if (currentValue >= standards.elite) {
                 return { 
                     tier: 'ELITE', 
                     progress: 100, 
@@ -2443,8 +2441,8 @@
                     textColor: '#721c24'
                 };
             }
-            if (currentWeight >= standards.veteran) {
-                const progress = ((currentWeight - standards.veteran) / (standards.elite - standards.veteran)) * 100;
+            if (currentValue >= standards.veteran) {
+                const progress = ((currentValue - standards.veteran) / (standards.elite - standards.veteran)) * 100;
                 return { 
                     tier: 'VETERAN', 
                     progress: Math.min(progress, 100), 
@@ -2455,8 +2453,8 @@
                     textColor: '#0c5460'
                 };
             }
-            if (currentWeight >= standards.strong) {
-                const progress = ((currentWeight - standards.strong) / (standards.veteran - standards.strong)) * 100;
+            if (currentValue >= standards.strong) {
+                const progress = ((currentValue - standards.strong) / (standards.veteran - standards.strong)) * 100;
                 return { 
                     tier: 'STRONG', 
                     progress: Math.min(progress, 100), 
@@ -2467,8 +2465,8 @@
                     textColor: '#004085'
                 };
             }
-            if (currentWeight >= standards.built) {
-                const progress = ((currentWeight - standards.built) / (standards.strong - standards.built)) * 100;
+            if (currentValue >= standards.built) {
+                const progress = ((currentValue - standards.built) / (standards.strong - standards.built)) * 100;
                 return { 
                     tier: 'BUILT', 
                     progress: Math.min(progress, 100), 
@@ -2480,7 +2478,7 @@
                 };
             }
             
-            const progress = (currentWeight / standards.built) * 100;
+            const progress = (currentValue / standards.built) * 100;
             return { 
                 tier: 'ROOKIE', 
                 progress: Math.min(progress, 100), 
@@ -2643,16 +2641,23 @@
             
             workoutHistory.forEach(workout => {
                 const exercise = workout.exercise;
-                const max1RM = Math.max(...workout.sets.map(s => calculate1RM(s.weight || 0, s.reps)));
-                
-                let coreExercise = null;
-                if (coreLifts.includes(exercise)) {
-                    coreExercise = exercise;
-                }
-                
-                if (coreExercise && coreLifts.includes(coreExercise)) {
-                    if (!exerciseBest[coreExercise] || max1RM > exerciseBest[coreExercise]) {
-                        exerciseBest[coreExercise] = max1RM;
+                if (!coreLifts.includes(exercise)) return;
+
+                const standards = strengthMatrix[exercise];
+                if (!standards) return;
+
+                if (standards.unit === 'reps') {
+                    // For reps-based lifts, track best total reps in a single set
+                    const bestReps = Math.max(...workout.sets.map(s => s.reps || 0));
+                    if (bestReps > 0 && (!exerciseBest[exercise] || bestReps > exerciseBest[exercise])) {
+                        exerciseBest[exercise] = bestReps;
+                    }
+                } else {
+                    // Skip band sets for weight-based lifts
+                    if (workout.sets.length > 0 && workout.sets[0].band) return;
+                    const max1RM = Math.max(...workout.sets.map(s => calculate1RM(s.weight || 0, s.reps)));
+                    if (max1RM > 0 && (!exerciseBest[exercise] || max1RM > exerciseBest[exercise])) {
+                        exerciseBest[exercise] = max1RM;
                     }
                 }
             });
@@ -2683,12 +2688,12 @@
             `;
             
             const liftIcons = {
-                'Barbell Bench Press': '🏋️',
+                'Barbell Bench Press':    '🏋️',
                 'Barbell Shoulder Press': '🏋️',
-                'Zercher Squat': '🦵',
-                'Deadlift': '💪🏾',
-                'Lat Pulldown': '⬇️',
-                'Single Arm DB Row': '⛓️'
+                'Zercher Squat':          '🦵',
+                'Trap Bar Deadlift':      '💪🏾',
+                'Barbell Row':            '⛓️',
+                'Pull-Up':                '🔝'
             };
             
             coreLifts.forEach(lift => {
@@ -2699,7 +2704,15 @@
                 if (!result) return;
                 
                 const standards = strengthMatrix[lift];
+                const isReps = standards && standards.unit === 'reps';
                 const icon = liftIcons[lift] || '🏋️';
+                const displayValue = isReps ? `${best} reps` : `${best}kg`;
+                const nextLabel = isReps
+                    ? `Next: ${result.nextTier} (${result.next} reps)`
+                    : `Next: ${result.nextTier} (${result.next}kg)`;
+                const needLabel = isReps
+                    ? `Need ${Math.max(0, result.next - best)} more reps`
+                    : `Need ${Math.max(0, (result.next - best)).toFixed(1)}kg more`;
                 
                 html += `
                     <div class="matrix-card" style="border-left: 4px solid ${result.color};" onclick="showStrengthDetail('${lift.replace(/'/g, "\\'")}')">
@@ -2710,7 +2723,7 @@
                                 <span style="font-weight: 600; color: var(--ravens-purple);">${lift}</span>
                             </div>
                             <div style="display: flex; align-items: center; gap: 8px;">
-                                <span style="font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: var(--ravens-purple);">${best}kg</span>
+                                <span style="font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: var(--ravens-purple);">${displayValue}</span>
                                 <span style="background: ${result.color}; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; color: ${result.textColor};">${result.tier}</span>
                             </div>
                         </div>
@@ -2718,8 +2731,8 @@
                         ${result.next ? `
                             <div class="progress-section">
                                 <div class="progress-label">
-                                    <span style="font-size: 11px;">Need ${Math.max(0, (result.next - best)).toFixed(1)}kg more</span>
-                                    <span style="font-size: 11px;">Next: ${result.nextTier} (${result.next}kg)</span>
+                                    <span style="font-size: 11px;">${needLabel}</span>
+                                    <span style="font-size: 11px;">${nextLabel}</span>
                                 </div>
                                 <div class="progress-bar-bg">
                                     <div class="progress-bar-fill-matrix" style="width: ${result.progress}%;"></div>
@@ -2823,18 +2836,23 @@
         }
 
         function renderHeroBreakdown(history) {
-            // Core 6 best 1RMs
             const exerciseBest = {};
             history.forEach(workout => {
-                if (workout.sets.length > 0 && workout.sets[0].band) return;
-                const max1RM = Math.max(...workout.sets.map(s => calculate1RM(s.weight || 0, s.reps)));
-                let coreExercise = null;
-                if (coreLifts.includes(workout.exercise)) {
-                    coreExercise = workout.exercise;
-                }
-                if (coreExercise && coreLifts.includes(coreExercise)) {
-                    if (!exerciseBest[coreExercise] || max1RM > exerciseBest[coreExercise]) {
-                        exerciseBest[coreExercise] = max1RM;
+                const exercise = workout.exercise;
+                if (!coreLifts.includes(exercise)) return;
+                const standards = strengthMatrix[exercise];
+                if (!standards) return;
+
+                if (standards.unit === 'reps') {
+                    const bestReps = Math.max(...workout.sets.map(s => s.reps || 0));
+                    if (bestReps > 0 && (!exerciseBest[exercise] || bestReps > exerciseBest[exercise])) {
+                        exerciseBest[exercise] = bestReps;
+                    }
+                } else {
+                    if (workout.sets.length > 0 && workout.sets[0].band) return;
+                    const max1RM = Math.max(...workout.sets.map(s => calculate1RM(s.weight || 0, s.reps)));
+                    if (max1RM > 0 && (!exerciseBest[exercise] || max1RM > exerciseBest[exercise])) {
+                        exerciseBest[exercise] = max1RM;
                     }
                 }
             });
@@ -2847,8 +2865,10 @@
                 } else {
                     coreEl.innerHTML = coreLifts.map(lift => {
                         const val = exerciseBest[lift];
+                        const standards = strengthMatrix[lift];
+                        const isReps = standards && standards.unit === 'reps';
                         if (!val) return `<div class="hero-row"><span style="opacity:0.6;">${lift}</span><span class="hero-row-val" style="opacity:0.4;">—</span></div>`;
-                        return `<div class="hero-row"><span>${lift}</span><span class="hero-row-val">${val}kg</span></div>`;
+                        return `<div class="hero-row"><span>${lift}</span><span class="hero-row-val">${val}${isReps ? ' reps' : 'kg'}</span></div>`;
                     }).join('');
                 }
             }
@@ -4684,13 +4704,13 @@
                 }
             });
             
-            // Core 6 in specific order
+            // Core lifts in specific order
             const coreOrder = [
                 'Barbell Bench Press',
                 'Barbell Shoulder Press',
-                'Deadlift',
-                'Lat Pulldown',
-                'Single Arm DB Row',
+                'Trap Bar Deadlift',
+                'Barbell Row',
+                'Pull-Up',
                 'Zercher Squat'
             ];
             
@@ -4869,13 +4889,13 @@
                 }
             });
             
-            // Core 6 in specific order
+            // Core lifts in specific order
             const coreOrder = [
                 'Barbell Bench Press',
                 'Barbell Shoulder Press',
-                'Deadlift',
-                'Lat Pulldown',
-                'Single Arm DB Row',
+                'Trap Bar Deadlift',
+                'Barbell Row',
+                'Pull-Up',
                 'Zercher Squat'
             ];
             
