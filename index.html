@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dad Strength Tracker v5.18</title>
+    <title>Dad Strength Tracker v5.19</title>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -1602,7 +1602,7 @@
             <button id="backToHome" onclick="goHome()" style="background: rgba(158, 124, 12, 0.2); border: none; color: var(--ravens-gold); padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px; display: none; transition: all 0.3s ease;">
                 ← Home
             </button>
-            <div class="app-title">Dad Strength v5.18</div>
+            <div class="app-title">Dad Strength v5.19</div>
             <div class="session-timer" id="sessionTimer">00:00</div>
         </div>
         <div class="tab-navigation" id="tabNavigation" style="display: none;">
@@ -3078,6 +3078,48 @@
             }
         }
 
+        // Targeted post-save card update — only marks the saved exercise logged
+        // without re-rendering the entire list (prevents visual confusion)
+        function updateExerciseCardState(day, exerciseName, exerciseIndex) {
+            const cards = document.querySelectorAll('.exercise-card');
+            if (cards[exerciseIndex]) {
+                cards[exerciseIndex].classList.add('logged');
+                cards[exerciseIndex].classList.remove('in-progress');
+                // Update last weight shown on card
+                const stats = getExerciseStats(day, exerciseName);
+                const infoEl = cards[exerciseIndex].querySelector('.exercise-stats');
+                if (stats.lastWeight) {
+                    const statsHTML = `
+                        <div class="stat-item">
+                            <strong>${stats.lastWeight}kg</strong> last session
+                        </div>
+                        ${stats.trend ? `<div class="stat-item">Trend: <span class="stat-trend ${stats.trend > 0 ? 'up' : 'down'}">${stats.trend > 0 ? '↑' : '↓'} ${Math.abs(stats.trend)}%</span></div>` : ''}
+                    `;
+                    if (infoEl) {
+                        infoEl.innerHTML = statsHTML;
+                    } else {
+                        const exerciseInfo = cards[exerciseIndex].querySelector('.exercise-info');
+                        if (exerciseInfo) {
+                            const statsDiv = document.createElement('div');
+                            statsDiv.className = 'exercise-stats';
+                            statsDiv.innerHTML = statsHTML;
+                            exerciseInfo.appendChild(statsDiv);
+                        }
+                    }
+                }
+                if (stats.isPR) {
+                    let prBadge = cards[exerciseIndex].querySelector('.pr-badge');
+                    if (!prBadge) {
+                        prBadge = document.createElement('div');
+                        prBadge.className = 'pr-badge';
+                        prBadge.textContent = 'PR!';
+                        cards[exerciseIndex].prepend(prBadge);
+                    }
+                }
+            }
+            updateProgress();
+        }
+
         function renderDay() {
             const data = workoutData[currentDay];
             document.getElementById('dayInfo').innerHTML = `
@@ -3492,6 +3534,8 @@
 
         function getLastWorkoutData(day, exerciseName) {
             const history = JSON.parse(localStorage.getItem('workoutHistory') || '[]');
+            // For Custom Day, search all history for that exercise (no fixed day)
+            // For A/B/C days, search only that day's history
             const logs = day === 'Custom'
                 ? history.filter(w => w.exercise === exerciseName)
                 : history.filter(w => w.day === day && w.exercise === exerciseName);
@@ -3914,7 +3958,7 @@
 
             closeCurrentModal();
             if (currentDay === 'Custom') renderCustomDay();
-            else renderDay();
+            else updateExerciseCardState(currentDay, currentExercise.name, currentExerciseIndex);
             
             if (document.getElementById('statsTab').style.display !== 'none') {
                 renderStats();
