@@ -3514,6 +3514,12 @@
             currentEditWorkoutId = null;
             currentModal = null;
             
+            // Always restore original action buttons (editWorkout replaces them with Update/Delete)
+            document.getElementById('actionButtons').innerHTML = `
+                <button class="save-btn" onclick="saveWorkout()">Save</button>
+                <button class="next-btn" onclick="saveAndNext()">Save & Next →</button>
+            `;
+            
             document.getElementById('restTimer').style.display = 'block';
             const historySection = document.querySelector('.history-section');
             if (historySection) historySection.style.display = 'block';
