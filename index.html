@@ -63,19 +63,9 @@
             letter-spacing: 1px;
         }
 
-        .session-timer {
-            background: rgba(158, 124, 12, 0.2);
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 20px;
-            color: var(--ravens-gold);
-            letter-spacing: 0.5px;
-        }
+        
 
-        .session-timer.active {
-            animation: pulse 2s infinite;
-        }
+        
 
         @keyframes pulse {
             0%, 100% { opacity: 1; }
@@ -480,61 +470,21 @@
             font-size: 14px;
         }
 
-        .rest-timer-section {
-            background: var(--pale-purple);
-            border: 3px solid var(--ravens-gold);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 24px;
-            text-align: center;
-        }
+        
 
-        .rest-timer-section.active {
-            background: var(--ravens-purple);
-            border-color: var(--ravens-purple);
-        }
+        
 
-        .rest-timer-display {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 48px;
-            color: var(--ravens-purple);
-            margin-bottom: 16px;
-            letter-spacing: 2px;
-        }
+        
 
-        .rest-timer-section.active .rest-timer-display {
-            color: var(--ravens-gold);
-        }
+        
 
-        .rest-timer-controls {
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
+        
 
-        .timer-btn {
-            padding: 10px 20px;
-            border: 2px solid var(--ravens-purple);
-            background: white;
-            color: var(--ravens-purple);
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 14px;
-        }
+        
 
-        .timer-btn:hover {
-            background: var(--ravens-purple);
-            color: white;
-        }
+        
 
-        .timer-btn.active {
-            background: var(--red);
-            border-color: var(--red);
-            color: white;
-        }
+        
 
         .prefill-section {
             background: #e8f4f8;
@@ -884,30 +834,13 @@
             margin-bottom: 16px;
         }
 
-        .mobility-timer {
-            background: var(--pale-purple);
-            padding: 16px;
-            border-radius: 10px;
-            text-align: center;
-            border: 2px solid var(--ravens-gold);
-        }
+        
 
-        .mobility-timer-display {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 36px;
-            color: var(--ravens-purple);
-            margin-bottom: 12px;
-            letter-spacing: 1px;
-        }
+        
 
-        .mobility-timer.active {
-            background: var(--ravens-purple);
-            border-color: var(--ravens-purple);
-        }
+        
 
-        .mobility-timer.active .mobility-timer-display {
-            color: var(--ravens-gold);
-        }
+        
 
         .exercise-log-list {
             background: white;
@@ -1603,7 +1536,6 @@
                 ← Home
             </button>
             <div class="app-title">Dad Strength v5.19</div>
-            <div class="session-timer" id="sessionTimer">00:00</div>
         </div>
         <div class="tab-navigation" id="tabNavigation" style="display: none;">
             <button class="tab-btn" onclick="switchTab('dayA')">Day A</button>
@@ -1711,13 +1643,6 @@
         <div class="mobility-section">
             <div class="mobility-title">Mobility Work</div>
             <div id="mobilityContent" class="mobility-content"></div>
-            <div class="mobility-timer" id="mobilityTimer">
-                <div class="mobility-timer-display" id="mobilityTimerDisplay">00:45</div>
-                <div class="rest-timer-controls">
-                    <button class="timer-btn" onclick="startMobilityTimer()">Start Timer</button>
-                    <button class="timer-btn" onclick="resetMobilityTimer()">Reset</button>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -1893,16 +1818,6 @@
                     <p>Start your workout to log exercises</p>
                 </div>
 
-                <div class="rest-timer-section" id="restTimer">
-                    <div class="rest-timer-display" id="restTimerDisplay">01:30</div>
-                    <div class="rest-timer-controls">
-                        <button class="timer-btn" onclick="setRestTimer(60)">60s</button>
-                        <button class="timer-btn" onclick="setRestTimer(90)">90s</button>
-                        <button class="timer-btn" onclick="setRestTimer(120)">120s</button>
-                        <button class="timer-btn" id="restTimerBtn" onclick="toggleRestTimer()">Start</button>
-                    </div>
-                </div>
-
                 <div id="prefillSection" class="prefill-section" style="display: none;">
                     <div class="prefill-title">📋 Last Workout</div>
                     <div class="prefill-data" id="prefillData"></div>
@@ -2042,6 +1957,7 @@
                 { name: 'Bulgarian Split Squat',  sets: 3, reps: '8–10/side', equip: 'FREE WEIGHTS' },
                 { name: 'Barbell Step Ups',       sets: 3, reps: '10/side',   equip: 'FREE WEIGHTS' },
                 { name: 'Goblet Squat',           sets: 3, reps: '10–12',     equip: 'FREE WEIGHTS' },
+                { name: 'Lunge',                  sets: 3, reps: '10/side',   equip: 'FREE WEIGHTS' },
                 { name: 'Nordic Curl',            sets: 3, reps: '5–8',       equip: 'FREE WEIGHTS' },
             ],
             'ARMS': [
@@ -2140,7 +2056,7 @@
         const muscleGroups = {
             'LEGS': [
                 'Zercher Squat', 'Back Squat', 'Bulgarian Split Squat',
-                'Barbell Step Ups', 'Goblet Squat', 'Nordic Curl'
+                'Barbell Step Ups', 'Goblet Squat', 'Lunge', 'Nordic Curl'
             ],
             'ARMS': [
                 'Cable Tricep Pushdown', 'Overhead Tricep Extension', 'Cable Overhead Rope Extension',
@@ -2229,16 +2145,16 @@
         let currentExerciseIndex = 0;
         let currentSetCount = 0;
         let workoutActive = false;
-        let sessionStartTime = null;
-        let sessionInterval = null;
-        let restTimerInterval = null;
-        let restTimerSeconds = 90;
-        let restTimerActive = false;
-        let mobilityTimerInterval = null;
-        let mobilityTimerSeconds = 45;
-        let mobilityTimerActive = false;
         let currentLogFilter = 'all';
         let currentEditWorkoutId = null;
+        let currentDbDouble = false;
+
+        const bilateralDbExercises = [
+            'Incline DB Bench Press', 'Incline Bicep Curls', 'DB Rollbacks', 'Dumbbell Fly',
+            'Spider DB Curl', 'Flat DB Bench Press', 'Chest-Supported DB Row', 'DB Shrugs',
+            'Kelso Shrug', 'Rear-Delt Fly', 'Lateral Raises', 'Hammer Curl',
+            'Seated DB Shoulder Press', 'Goblet Squat'
+        ];
         let lastDeletedWorkout = null;
         let undoTimeout = null;
         let autoSaveInterval = null;
@@ -3241,222 +3157,12 @@
             return new Set(todayWorkouts.map(w => w.exercise)).size;
         }
 
-        function toggleWorkout() {
-            workoutActive = !workoutActive;
-            const btn = document.getElementById('startWorkoutBtn');
-            const timer = document.getElementById('sessionTimer');
-            const progress = document.getElementById('workoutProgress');
 
-            if (workoutActive) {
-                btn.textContent = 'End Workout';
-                btn.classList.add('active');
-                timer.classList.add('active');
-                progress.style.display = 'block';
-                sessionStartTime = Date.now();
-                sessionInterval = setInterval(updateSessionTimer, 1000);
-                startAutoSave();
-                saveSessionState();
-                showToast('Workout started! 💪🏾', 'success');
-            } else {
-                if (confirm('Are you sure you want to end this workout?')) {
-                    showSummary();
-                } else {
-                    workoutActive = true;
-                }
-            }
-        }
-
-        function updateSessionTimer() {
-            if (!sessionStartTime) return;
-            const elapsed = Math.floor((Date.now() - sessionStartTime) / 1000);
-            const minutes = Math.floor(elapsed / 60);
-            const seconds = elapsed % 60;
-            document.getElementById('sessionTimer').textContent = 
-                `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-        }
-
-        function startAutoSave() {
-            if (autoSaveInterval) clearInterval(autoSaveInterval);
-            
-            autoSaveInterval = setInterval(() => {
-                if (workoutActive) {
-                    saveSessionState();
-                }
-            }, 5000);
-        }
-
-        function saveSessionState() {
-            if (!workoutActive) return;
-            
-            const history = JSON.parse(localStorage.getItem('workoutHistory') || '[]');
-            const today = new Date().toDateString();
-            const todayWorkouts = history.filter(w => new Date(w.date).toDateString() === today);
-            
-            let currentExerciseData = null;
-            const modal = document.getElementById('exerciseModal');
-            if (modal && modal.classList.contains('active') && currentExercise) {
-                const sets = [];
-                for (let i = 1; i <= currentSetCount; i++) {
-                    if (currentExercise.resistanceType === 'band') {
-                        const band = document.querySelector(`[data-set="${i}"][data-type="band"]`)?.value;
-                        const reps = document.querySelector(`[data-set="${i}"][data-type="reps"]`)?.value;
-                        if (band || reps) {
-                            sets.push({
-                                band: band || '',
-                                reps: parseInt(reps) || 0
-                            });
-                        }
-                    } else {
-                        const weight = document.querySelector(`[data-set="${i}"][data-type="weight"]`)?.value;
-                        const reps = document.querySelector(`[data-set="${i}"][data-type="reps"]`)?.value;
-                        if (weight || reps) {
-                            sets.push({
-                                weight: parseFloat(weight) || 0,
-                                reps: parseInt(reps) || 0
-                            });
-                        }
-                    }
-                }
-                
-                currentExerciseData = {
-                    exercise: currentExercise,
-                    exerciseIndex: currentExerciseIndex,
-                    setCount: currentSetCount,
-                    sets: sets,
-                    notes: document.getElementById('exerciseNotes')?.value || ''
-                };
-            }
-            
-            const sessionState = {
-                active: workoutActive,
-                day: currentDay,
-                startTime: sessionStartTime,
-                currentExerciseIndex: currentExerciseIndex,
-                todayWorkouts: todayWorkouts,
-                currentExerciseData: currentExerciseData,
-                timestamp: Date.now()
-            };
-            
-            localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(sessionState));
-        }
-
-        function loadSessionState() {
-            const savedState = localStorage.getItem(SESSION_STORAGE_KEY);
-            if (!savedState) return null;
-            
-            try {
-                const state = JSON.parse(savedState);
-                if (Date.now() - state.timestamp > SESSION_TIMEOUT) {
-                    localStorage.removeItem(SESSION_STORAGE_KEY);
-                    return null;
-                }
-                return state;
-            } catch (e) {
-                return null;
-            }
-        }
-
-        function clearSessionState() {
-            localStorage.removeItem(SESSION_STORAGE_KEY);
-            if (autoSaveInterval) {
-                clearInterval(autoSaveInterval);
-                autoSaveInterval = null;
-            }
-        }
-
-        function resumeSession(state) {
-            currentDay = state.day;
-            sessionStartTime = state.startTime;
-            currentExerciseIndex = state.currentExerciseIndex || 0;
-            
-            goToDay(currentDay);
-            
-            workoutActive = true;
-            const btn = document.getElementById('startWorkoutBtn');
-            const timer = document.getElementById('sessionTimer');
-            const progress = document.getElementById('workoutProgress');
-            
-            btn.textContent = 'End Workout';
-            btn.classList.add('active');
-            timer.classList.add('active');
-            progress.style.display = 'block';
-            
-            sessionInterval = setInterval(updateSessionTimer, 1000);
-            startAutoSave();
-            updateProgress();
-            
-            if (state.currentExerciseData && state.currentExerciseData.exercise) {
-                const exerciseData = state.currentExerciseData;
-                
-                currentExercise = exerciseData.exercise;
-                currentExerciseIndex = exerciseData.exerciseIndex;
-                currentSetCount = exerciseData.setCount;
-                
-                document.getElementById('exerciseModal').classList.add('active');
-                currentModal = 'exercise';
-                document.getElementById('modalExerciseName').textContent = currentExercise.name;
-                document.getElementById('modalExerciseTarget').textContent = `Target: ${currentExercise.sets} × ${currentExercise.reps}`;
-                
-                document.getElementById('viewOnlyNotice').style.display = 'none';
-                document.getElementById('restTimer').style.display = 'block';
-                document.getElementById('prefillSection').style.display = 'block';
-                document.getElementById('addSetBtn').style.display = 'block';
-                document.getElementById('actionButtons').style.display = 'grid';
-                
-                renderSets(false);
-                
-                exerciseData.sets.forEach((set, idx) => {
-                    const setNum = idx + 1;
-                    if (currentExercise.resistanceType === 'band') {
-                        const bandInput = document.querySelector(`[data-set="${setNum}"][data-type="band"]`);
-                        const repsInput = document.querySelector(`[data-set="${setNum}"][data-type="reps"]`);
-                        if (bandInput) bandInput.value = set.band || '';
-                        if (repsInput) repsInput.value = set.reps || '';
-                    } else {
-                        const weightInput = document.querySelector(`[data-set="${setNum}"][data-type="weight"]`);
-                        const repsInput = document.querySelector(`[data-set="${setNum}"][data-type="reps"]`);
-                        if (weightInput) weightInput.value = set.weight || '';
-                        if (repsInput) repsInput.value = set.reps || '';
-                    }
-                });
-                
-                if (exerciseData.notes) {
-                    document.getElementById('exerciseNotes').value = exerciseData.notes;
-                }
-                
-                loadExerciseHistory();
-                calculateStatsWithComparison();
-                
-                showToast('Workout restored! Continue where you left off', 'success');
-            }
-        }
-
-        function showResumePrompt() {
-            const state = loadSessionState();
-            if (!state || !state.active) {
-                navigateToPage('home');
-                renderDay();
-                return;
-            }
-            
-            const elapsed = Math.floor((Date.now() - state.startTime) / 60000);
-            
-            if (confirm(`You have an active Day ${state.day} workout from ${elapsed} minutes ago. Resume it?`)) {
-                resumeSession(state);
-            } else {
-                clearSessionState();
-                navigateToPage('home');
-                renderDay();
-            }
-        }
-
-        // ============================================
-        // EXERCISE MODAL FUNCTIONS with Band Support
-        // ============================================
         function openExercise(idx) {
             currentExercise = workoutData[currentDay].exercises[idx];
             currentExerciseIndex = idx;
             currentSetCount = currentExercise.sets;
+            currentDbDouble = false;
             
             document.getElementById('modalExerciseName').textContent = currentExercise.name;
             document.getElementById('modalExerciseTarget').textContent = 
@@ -3464,7 +3170,7 @@
             
             const viewOnly = !workoutActive && !currentEditWorkoutId;
             document.getElementById('viewOnlyNotice').style.display = viewOnly ? 'block' : 'none';
-            document.getElementById('restTimer').style.display = viewOnly ? 'none' : 'block';
+
             document.getElementById('addSetBtn').style.display = viewOnly ? 'none' : 'block';
             document.getElementById('actionButtons').style.display = viewOnly ? 'none' : 'grid';
             document.getElementById('exerciseNotes').disabled = viewOnly;
@@ -3512,10 +3218,7 @@
             if (sessionDetail) {
                 sessionDetail.remove();
             }
-            
-            stopRestTimer();
-            restTimerSeconds = 90;
-            updateRestTimerDisplay();
+
             currentEditWorkoutId = null;
             currentModal = null;
             
@@ -3524,8 +3227,6 @@
                 <button class="save-btn" onclick="saveWorkout()">Save</button>
                 <button class="next-btn" onclick="saveAndNext()">Save & Next →</button>
             `;
-            
-            document.getElementById('restTimer').style.display = 'block';
             const historySection = document.querySelector('.history-section');
             if (historySection) historySection.style.display = 'block';
             document.getElementById('setsContainer').style.display = 'block';
@@ -3556,18 +3257,33 @@
         function renderSets(disabled = false) {
             const container = document.getElementById('setsContainer');
             container.innerHTML = '';
-            
+
             const isBandExercise = currentExercise && currentExercise.resistanceType === 'band';
-            
+            const isBilateralDb = currentExercise && bilateralDbExercises.includes(currentExercise.name);
+
+            // DB double toggle — shown above sets for bilateral DB exercises
+            if (isBilateralDb && !isBandExercise && !disabled) {
+                const toggleHtml = `
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;background:var(--pale-purple);border-radius:10px;padding:10px 14px;">
+                        <span style="font-size:13px;font-weight:600;color:var(--ravens-purple);flex:1;">Enter weight per DB</span>
+                        <button id="dbToggleBtn" onclick="toggleDbDouble()"
+                            style="display:flex;border:none;border-radius:8px;overflow:hidden;cursor:pointer;padding:0;background:transparent;">
+                            <span id="dbToggleX1" style="padding:6px 14px;font-weight:700;font-size:13px;background:${currentDbDouble ? '#ddd' : 'var(--ravens-purple)'};color:${currentDbDouble ? '#999' : 'white'};">× 1</span>
+                            <span id="dbToggleX2" style="padding:6px 14px;font-weight:700;font-size:13px;background:${currentDbDouble ? 'var(--ravens-gold)' : '#ddd'};color:${currentDbDouble ? 'white' : '#999'};">× 2</span>
+                        </button>
+                    </div>
+                `;
+                container.innerHTML += toggleHtml;
+            }
+
             for (let i = 1; i <= currentSetCount; i++) {
                 if (isBandExercise) {
-                    // Band resistance selector
                     container.innerHTML += `
                         <div class="set-row" id="set-row-${i}">
                             <div class="set-label">Set ${i}</div>
                             <div class="input-group">
                                 <select class="input-field" ${disabled ? 'disabled' : ''} 
-                                        onchange="calculateStatsWithComparison(); autoStartRestTimer(); saveSessionState()"
+                                        onchange="calculateStatsWithComparison(); saveSessionState()"
                                         data-set="${i}" data-type="band" id="band-${i}">
                                     <option value="">Select Band</option>
                                     <option value="yellow">🟡 Yellow (2-7kg)</option>
@@ -3582,7 +3298,7 @@
                             </div>
                             <div class="input-group">
                                 <input type="number" class="input-field" placeholder="0" 
-                                       ${disabled ? 'disabled' : ''} onchange="calculateStatsWithComparison(); autoStartRestTimer(); saveSessionState()" 
+                                       ${disabled ? 'disabled' : ''} onchange="calculateStatsWithComparison(); saveSessionState()" 
                                        data-set="${i}" data-type="reps" id="reps-${i}">
                                 <div class="input-label">Reps</div>
                             </div>
@@ -3590,19 +3306,21 @@
                         </div>
                     `;
                 } else {
-                    // Normal weight input
+                    const weightLabel = isBilateralDb
+                        ? (currentDbDouble ? 'Per DB (×2)' : 'Per DB (×1)')
+                        : 'Weight (kg)';
                     container.innerHTML += `
                         <div class="set-row" id="set-row-${i}">
                             <div class="set-label">Set ${i}</div>
                             <div class="input-group">
                                 <input type="number" step="0.5" class="input-field" placeholder="0" 
-                                       ${disabled ? 'disabled' : ''} onchange="calculateStatsWithComparison(); autoStartRestTimer(); saveSessionState()" 
+                                       ${disabled ? 'disabled' : ''} onchange="calculateStatsWithComparison(); saveSessionState()" 
                                        data-set="${i}" data-type="weight" id="weight-${i}">
-                                <div class="input-label">Weight (kg)</div>
+                                <div class="input-label">${weightLabel}</div>
                             </div>
                             <div class="input-group">
                                 <input type="number" class="input-field" placeholder="0" 
-                                       ${disabled ? 'disabled' : ''} onchange="calculateStatsWithComparison(); autoStartRestTimer(); saveSessionState()" 
+                                       ${disabled ? 'disabled' : ''} onchange="calculateStatsWithComparison(); saveSessionState()" 
                                        data-set="${i}" data-type="reps" id="reps-${i}">
                                 <div class="input-label">Reps</div>
                             </div>
@@ -3611,6 +3329,29 @@
                     `;
                 }
             }
+        }
+
+        function toggleDbDouble() {
+            // Capture current values before re-render
+            const values = [];
+            for (let i = 1; i <= currentSetCount; i++) {
+                values.push({
+                    weight: document.querySelector(`[data-set="${i}"][data-type="weight"]`)?.value || '',
+                    reps: document.querySelector(`[data-set="${i}"][data-type="reps"]`)?.value || ''
+                });
+            }
+            currentDbDouble = !currentDbDouble;
+            renderSets(false);
+            // Restore values
+            setTimeout(() => {
+                values.forEach((v, idx) => {
+                    const w = document.querySelector(`[data-set="${idx+1}"][data-type="weight"]`);
+                    const r = document.querySelector(`[data-set="${idx+1}"][data-type="reps"]`);
+                    if (w && v.weight) w.value = v.weight;
+                    if (r && v.reps) r.value = v.reps;
+                });
+                calculateStatsWithComparison();
+            }, 10);
         }
 
         function addSet() {
@@ -3723,100 +3464,15 @@
             showToast('Last workout loaded!', 'info');
         }
 
-        function autoStartRestTimer() {
-            if (!restTimerActive && workoutActive) {
-                setTimeout(() => {
-                    startRestTimer();
-                }, 500);
-            }
-        }
 
-        function setRestTimer(seconds) {
-            restTimerSeconds = seconds;
-            updateRestTimerDisplay();
-        }
 
-        function toggleRestTimer() {
-            if (restTimerActive) {
-                stopRestTimer();
-            } else {
-                startRestTimer();
-            }
-        }
 
-        function startRestTimer() {
-            if (restTimerActive) return;
-            
-            restTimerActive = true;
-            document.getElementById('restTimer').classList.add('active');
-            document.getElementById('restTimerBtn').textContent = 'Stop';
-            document.getElementById('restTimerBtn').classList.add('active');
-            
-            restTimerInterval = setInterval(() => {
-                restTimerSeconds--;
-                updateRestTimerDisplay();
-                
-                if (restTimerSeconds <= 0) {
-                    stopRestTimer();
-                    playAlert();
-                    restTimerSeconds = 90;
-                    updateRestTimerDisplay();
-                }
-            }, 1000);
-        }
 
-        function stopRestTimer() {
-            restTimerActive = false;
-            clearInterval(restTimerInterval);
-            document.getElementById('restTimer').classList.remove('active');
-            document.getElementById('restTimerBtn').textContent = 'Start';
-            document.getElementById('restTimerBtn').classList.remove('active');
-        }
 
-        function updateRestTimerDisplay() {
-            const minutes = Math.floor(restTimerSeconds / 60);
-            const seconds = restTimerSeconds % 60;
-            document.getElementById('restTimerDisplay').textContent = 
-                `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-        }
 
-        function startMobilityTimer() {
-            if (mobilityTimerActive) return;
-            
-            mobilityTimerActive = true;
-            document.getElementById('mobilityTimer').classList.add('active');
-            
-            mobilityTimerInterval = setInterval(() => {
-                mobilityTimerSeconds--;
-                updateMobilityTimerDisplay();
-                
-                if (mobilityTimerSeconds <= 0) {
-                    resetMobilityTimer();
-                    playAlert();
-                }
-            }, 1000);
-        }
 
-        function resetMobilityTimer() {
-            mobilityTimerActive = false;
-            clearInterval(mobilityTimerInterval);
-            document.getElementById('mobilityTimer').classList.remove('active');
-            mobilityTimerSeconds = 45;
-            updateMobilityTimerDisplay();
-        }
 
-        function updateMobilityTimerDisplay() {
-            const minutes = Math.floor(mobilityTimerSeconds / 60);
-            const seconds = mobilityTimerSeconds % 60;
-            document.getElementById('mobilityTimerDisplay').textContent = 
-                `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-        }
 
-        function playAlert() {
-            if (navigator.vibrate) {
-                navigator.vibrate([200, 100, 200]);
-            }
-        }
 
         function calculateStatsWithComparison() {
             if (!currentExercise || !currentExercise.name) {
@@ -3836,11 +3492,12 @@
             let maxWeight = 0;
             let maxReps = 0;
             let totalVolume = 0;
+            const dbMultiplier = currentDbDouble ? 2 : 1;
 
             inputs.forEach(input => {
                 const set = input.dataset.set;
                 const type = input.dataset.type;
-                const value = parseFloat(input.value) || 0;
+                const value = (parseFloat(input.value) || 0) * dbMultiplier;
 
                 if (type === 'weight' && value > maxWeight) {
                     maxWeight = value;
@@ -3893,7 +3550,6 @@
         }
 
         function saveWorkout() {
-            const inputs = document.querySelectorAll('.input-field');
             const sets = [];
             const isBandExercise = currentExercise && currentExercise.resistanceType === 'band';
 
@@ -3901,40 +3557,29 @@
                 if (isBandExercise) {
                     const band = document.querySelector(`[data-set="${i}"][data-type="band"]`)?.value;
                     const reps = document.querySelector(`[data-set="${i}"][data-type="reps"]`)?.value;
-                    if (band && reps) {
-                        sets.push({ band: band, reps: parseInt(reps) });
-                    }
+                    if (band && reps) sets.push({ band: band, reps: parseInt(reps) });
                 } else {
                     const weight = document.querySelector(`[data-set="${i}"][data-type="weight"]`)?.value;
                     const reps = document.querySelector(`[data-set="${i}"][data-type="reps"]`)?.value;
                     if (weight && reps) {
-                        sets.push({ weight: parseFloat(weight), reps: parseInt(reps) });
+                        const savedWeight = currentDbDouble ? parseFloat(weight) * 2 : parseFloat(weight);
+                        sets.push({ weight: savedWeight, reps: parseInt(reps) });
                     }
                 }
             }
 
-            if (sets.length === 0) {
-                showToast('Please enter at least one set!', 'error');
-                return;
-            }
+            if (sets.length === 0) { showToast('Please enter at least one set!', 'error'); return; }
 
-            // Skip validation for band exercises
             if (!isBandExercise) {
-                try {
-                    validateWorkoutInputs(sets);
-                } catch (error) {
-                    showToast(error.message, 'error');
-                    return;
-                }
+                try { validateWorkoutInputs(sets); }
+                catch (error) { showToast(error.message, 'error'); return; }
             }
 
+            let history = JSON.parse(localStorage.getItem('workoutHistory') || '[]');
             let duration = null;
             if (currentEditWorkoutId) {
-                const history = JSON.parse(localStorage.getItem('workoutHistory') || '[]');
                 const existing = history.find(w => w.id === currentEditWorkoutId);
                 if (existing) duration = existing.duration;
-            } else if (sessionStartTime) {
-                duration = Math.floor((Date.now() - sessionStartTime) / 60000);
             }
 
             const workout = {
@@ -3947,33 +3592,22 @@
                 duration: duration
             };
 
-            let history = JSON.parse(localStorage.getItem('workoutHistory') || '[]');
-            
             if (currentEditWorkoutId) {
                 const index = history.findIndex(w => w.id === currentEditWorkoutId);
-                if (index !== -1) {
-                    history[index] = workout;
-                }
+                if (index !== -1) history[index] = workout;
                 currentEditWorkoutId = null;
                 showToast('Workout updated! ✅', 'success');
             } else {
                 history.push(workout);
                 showToast('Exercise saved! 💪🏾', 'success');
             }
-            
+
             localStorage.setItem('workoutHistory', JSON.stringify(history));
-
             document.getElementById('exerciseNotes').value = '';
-            stopRestTimer();
-            restTimerSeconds = 90;
-
             closeCurrentModal();
             if (currentDay === 'Custom') renderCustomDay();
             else updateExerciseCardState(currentDay, currentExercise.name, currentExerciseIndex);
-            
-            if (document.getElementById('statsTab').style.display !== 'none') {
-                renderStats();
-            }
+            if (document.getElementById('statsTab').style.display !== 'none') renderStats();
         }
 
         function saveAndNext() {
@@ -4089,7 +3723,6 @@
                 `Editing ${workout.sets.length} sets from ${new Date(workout.date).toLocaleDateString()}`;
             
             document.getElementById('viewOnlyNotice').style.display = 'none';
-            document.getElementById('restTimer').style.display = 'none';
             document.getElementById('addSetBtn').style.display = 'block';
             document.getElementById('actionButtons').style.display = 'grid';
             document.getElementById('exerciseNotes').disabled = false;
@@ -4244,7 +3877,7 @@
         }
 
         function showSummary() {
-            const duration = Math.floor((Date.now() - sessionStartTime) / 1000);
+            const duration = 0;
             const minutes = Math.floor(duration / 60);
             
             const wh = JSON.parse(localStorage.getItem('workoutHistory') || '[]');
@@ -4285,8 +3918,8 @@
 
         function finishWorkout() {
             workoutActive = false;
-            clearInterval(sessionInterval);
-            sessionStartTime = null;
+
+
             
             const btn = document.getElementById('startWorkoutBtn');
             const timer = document.getElementById('sessionTimer');
@@ -4303,6 +3936,10 @@
             renderDay();
             showToast('Great work! Session saved! 💪🏾', 'success');
         }
+
+        // ============================================
+        // HISTORY FUNCTIONS
+        // ============================================
 
         // ============================================
         // HISTORY FUNCTIONS
@@ -4432,7 +4069,6 @@
             document.getElementById('modalExerciseTarget').textContent = `Day ${session.day} - Complete Session`;
             
             document.getElementById('viewOnlyNotice').style.display = 'none';
-            document.getElementById('restTimer').style.display = 'none';
             document.getElementById('prefillSection').style.display = 'none';
             const sectionTitles = document.getElementById('setsContainer').parentElement.querySelectorAll('.section-title');
             if (sectionTitles[0]) sectionTitles[0].style.display = 'none';
@@ -5282,7 +4918,6 @@
             document.getElementById('modalExerciseTarget').textContent = '';
             
             document.getElementById('viewOnlyNotice').style.display = 'none';
-            document.getElementById('restTimer').style.display = 'none';
             document.getElementById('prefillSection').style.display = 'none';
             
             const sectionTitles = document.querySelectorAll('.section-title');
@@ -5696,11 +5331,6 @@
             if (!customWorkoutActive) {
                 if (exercises.length === 0) { showToast('Add exercises first!', 'error'); return; }
                 customWorkoutActive = true;
-                if (!sessionStartTime) {
-                    sessionStartTime = Date.now();
-                    sessionInterval = setInterval(updateSessionTimer, 1000);
-                }
-                document.getElementById('sessionTimer').classList.add('active');
                 renderCustomDay();
                 showToast('Custom Workout started! 💪🏾', 'success');
             } else {
@@ -5731,13 +5361,13 @@
             currentExercise = ex;
             currentExerciseIndex = idx;
             currentSetCount = ex.sets;
+            currentDbDouble = false;
 
             document.getElementById('modalExerciseName').textContent = ex.name;
             document.getElementById('modalExerciseTarget').textContent = 'Target: ' + ex.sets + ' × ' + ex.reps;
 
             var viewOnly = !customWorkoutActive;
             document.getElementById('viewOnlyNotice').style.display = viewOnly ? 'block' : 'none';
-            document.getElementById('restTimer').style.display = viewOnly ? 'none' : 'block';
             document.getElementById('addSetBtn').style.display = viewOnly ? 'none' : 'block';
             document.getElementById('actionButtons').style.display = viewOnly ? 'none' : 'grid';
             document.getElementById('exerciseNotes').disabled = viewOnly;
@@ -5765,7 +5395,7 @@
             var wh = JSON.parse(localStorage.getItem('workoutHistory') || '[]');
             var today = new Date().toDateString();
             var todayCustom = wh.filter(function(w) { return w.day === 'Custom' && new Date(w.date).toDateString() === today; });
-            var elapsed = sessionStartTime ? Math.floor((Date.now() - sessionStartTime) / 60000) : 0;
+            var elapsed = 0;
             var totalVolume = todayCustom.reduce(function(sum, ex) {
                 if (ex.sets.length > 0 && ex.sets[0].band) return sum;
                 return sum + ex.sets.reduce(function(s, set) { return s + (set.weight || 0) * set.reps; }, 0);
@@ -5782,11 +5412,6 @@
             historyStack.push('modal');
 
             customWorkoutActive = false;
-            clearInterval(sessionInterval);
-            sessionInterval = null;
-            sessionStartTime = null;
-            document.getElementById('sessionTimer').classList.remove('active');
-            document.getElementById('sessionTimer').textContent = '00:00';
         }
 
         function openLibrary() {
@@ -5854,6 +5479,157 @@
         }
 
         // Initialize
+        function toggleWorkout() {
+            workoutActive = !workoutActive;
+            const btn = document.getElementById('startWorkoutBtn');
+            const progress = document.getElementById('workoutProgress');
+
+            if (workoutActive) {
+                btn.textContent = 'End Workout';
+                btn.classList.add('active');
+                progress.style.display = 'block';
+                startAutoSave();
+                saveSessionState();
+                showToast('Workout started! 💪🏾', 'success');
+            } else {
+                if (confirm('Are you sure you want to end this workout?')) {
+                    showSummary();
+                } else {
+                    workoutActive = true;
+                }
+            }
+        }
+
+        function startAutoSave() {
+            if (autoSaveInterval) clearInterval(autoSaveInterval);
+            autoSaveInterval = setInterval(() => {
+                if (workoutActive) saveSessionState();
+            }, 5000);
+        }
+
+        function saveSessionState() {
+            if (!workoutActive) return;
+            const history = JSON.parse(localStorage.getItem('workoutHistory') || '[]');
+            const today = new Date().toDateString();
+            const todayWorkouts = history.filter(w => new Date(w.date).toDateString() === today);
+            let currentExerciseData = null;
+            const modal = document.getElementById('exerciseModal');
+            if (modal && modal.classList.contains('active') && currentExercise) {
+                const sets = [];
+                for (let i = 1; i <= currentSetCount; i++) {
+                    if (currentExercise.resistanceType === 'band') {
+                        const band = document.querySelector(`[data-set="${i}"][data-type="band"]`)?.value;
+                        const reps = document.querySelector(`[data-set="${i}"][data-type="reps"]`)?.value;
+                        if (band || reps) sets.push({ band: band || '', reps: parseInt(reps) || 0 });
+                    } else {
+                        const weight = document.querySelector(`[data-set="${i}"][data-type="weight"]`)?.value;
+                        const reps = document.querySelector(`[data-set="${i}"][data-type="reps"]`)?.value;
+                        if (weight || reps) sets.push({ weight: parseFloat(weight) || 0, reps: parseInt(reps) || 0 });
+                    }
+                }
+                currentExerciseData = {
+                    exercise: currentExercise,
+                    exerciseIndex: currentExerciseIndex,
+                    setCount: currentSetCount,
+                    sets: sets,
+                    notes: document.getElementById('exerciseNotes')?.value || ''
+                };
+            }
+            const sessionState = {
+                active: workoutActive,
+                day: currentDay,
+                currentExerciseIndex: currentExerciseIndex,
+                todayWorkouts: todayWorkouts,
+                currentExerciseData: currentExerciseData,
+                timestamp: Date.now()
+            };
+            localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(sessionState));
+        }
+
+        function loadSessionState() {
+            const savedState = localStorage.getItem(SESSION_STORAGE_KEY);
+            if (!savedState) return null;
+            try {
+                const state = JSON.parse(savedState);
+                if (Date.now() - state.timestamp > SESSION_TIMEOUT) {
+                    localStorage.removeItem(SESSION_STORAGE_KEY);
+                    return null;
+                }
+                return state;
+            } catch (e) { return null; }
+        }
+
+        function clearSessionState() {
+            localStorage.removeItem(SESSION_STORAGE_KEY);
+            if (autoSaveInterval) {
+                clearInterval(autoSaveInterval);
+                autoSaveInterval = null;
+            }
+        }
+
+        function resumeSession(state) {
+            currentDay = state.day;
+            currentExerciseIndex = state.currentExerciseIndex || 0;
+            goToDay(currentDay);
+            workoutActive = true;
+            const btn = document.getElementById('startWorkoutBtn');
+            const progress = document.getElementById('workoutProgress');
+            btn.textContent = 'End Workout';
+            btn.classList.add('active');
+            progress.style.display = 'block';
+            startAutoSave();
+            updateProgress();
+            if (state.currentExerciseData && state.currentExerciseData.exercise) {
+                const exerciseData = state.currentExerciseData;
+                currentExercise = exerciseData.exercise;
+                currentExerciseIndex = exerciseData.exerciseIndex;
+                currentSetCount = exerciseData.setCount;
+                document.getElementById('exerciseModal').classList.add('active');
+                currentModal = 'exercise';
+                document.getElementById('modalExerciseName').textContent = currentExercise.name;
+                document.getElementById('modalExerciseTarget').textContent = `Target: ${currentExercise.sets} × ${currentExercise.reps}`;
+                document.getElementById('viewOnlyNotice').style.display = 'none';
+                document.getElementById('prefillSection').style.display = 'none';
+                document.getElementById('addSetBtn').style.display = 'block';
+                document.getElementById('actionButtons').style.display = 'grid';
+                renderSets(false);
+                exerciseData.sets.forEach((set, idx) => {
+                    const setNum = idx + 1;
+                    if (currentExercise.resistanceType === 'band') {
+                        const bandInput = document.querySelector(`[data-set="${setNum}"][data-type="band"]`);
+                        const repsInput = document.querySelector(`[data-set="${setNum}"][data-type="reps"]`);
+                        if (bandInput) bandInput.value = set.band || '';
+                        if (repsInput) repsInput.value = set.reps || '';
+                    } else {
+                        const weightInput = document.querySelector(`[data-set="${setNum}"][data-type="weight"]`);
+                        const repsInput = document.querySelector(`[data-set="${setNum}"][data-type="reps"]`);
+                        if (weightInput) weightInput.value = set.weight || '';
+                        if (repsInput) repsInput.value = set.reps || '';
+                    }
+                });
+                if (exerciseData.notes) document.getElementById('exerciseNotes').value = exerciseData.notes;
+                loadExerciseHistory();
+                calculateStatsWithComparison();
+                showToast('Workout restored! Continue where you left off', 'success');
+            }
+        }
+
+        function showResumePrompt() {
+            const state = loadSessionState();
+            if (!state || !state.active) {
+                navigateToPage('home');
+                renderDay();
+                return;
+            }
+            if (confirm(`You have an active Day ${state.day} workout. Resume it?`)) {
+                resumeSession(state);
+            } else {
+                clearSessionState();
+                navigateToPage('home');
+                renderDay();
+            }
+        }
+
         function initialize() {
             migrateOldData();
             
