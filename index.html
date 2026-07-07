@@ -1990,13 +1990,14 @@
                 description: "Chest · Triceps · Quads · Core",
                 mobility: "Elevated Pigeon 2×45s/side, Elephant Walks 2×8",
                 exercises: [
-                    { name: "Zercher Squat",         sets: 3, reps: "8–10" },
-                    { name: "Barbell Bench Press",    sets: 3, reps: "6–8" },
-                    { name: "Incline DB Bench Press", sets: 3, reps: "8–10" },
-                    { name: "Dumbbell Fly",           sets: 3, reps: "10–12" },
-                    { name: "DB Rollbacks",           sets: 3, reps: "10–12" },
-                    { name: "Cable Tricep Pushdown",  sets: 3, reps: "10–12" },
-                    { name: "Hanging Leg Raises",     sets: 3, reps: "12–15" }
+                    { name: "Zercher Squat",                 sets: 3, reps: "8–10" },
+                    { name: "Barbell Bench Press",           sets: 3, reps: "8–10" },
+                    { name: "Incline DB Bench Press",        sets: 3, reps: "12–15" },
+                    { name: "Kelso Shrug",                   sets: 3, reps: "12–15" },
+                    { name: "Dumbbell Fly",                  sets: 3, reps: "10–12" },
+                    { name: "DB Rollbacks",                  sets: 3, reps: "12–15" },
+                    { name: "Cable Tricep Pushdown",         sets: 3, reps: "12–15" },
+                    { name: "Hanging Leg Raises",            sets: 3, reps: "12–15" }
                 ]
             },
             B: {
@@ -2004,29 +2005,28 @@
                 description: "Back · Biceps · Hamstrings · Traps",
                 mobility: "90/90 Rotations 2×8/side, Weighted Butterfly 2×45s",
                 exercises: [
-                    { name: "Trap Bar Deadlift",   sets: 3, reps: "6–8" },
-                    { name: "Trap Bar Shrugs",      sets: 3, reps: "12–15" },
-                    { name: "Barbell Row",          sets: 3, reps: "8–10" },
-                    { name: "Seated Cable Row",     sets: 3, reps: "8–10" },
-                    { name: "Lat Pulldown",         sets: 3, reps: "8–10" },
-                    { name: "Single-Leg RDL",       sets: 3, reps: "10–12/side" },
-                    { name: "Incline Bicep Curls",  sets: 3, reps: "10–12" },
-                    { name: "Single-Arm Preacher Curl", sets: 3, reps: "10–12" }
+                    { name: "Trap Bar Deadlift",             sets: 3, reps: "6–8" },
+                    { name: "Trap Bar Shrugs",               sets: 3, reps: "12–15" },
+                    { name: "Barbell Row",                   sets: 3, reps: "8–10" },
+                    { name: "Inverted Row",                  sets: 3, reps: "8–10" },
+                    { name: "Single-Leg RDL",                sets: 3, reps: "10–12/side" },
+                    { name: "Incline Bicep Curls",           sets: 3, reps: "12–15" },
+                    { name: "Spider DB Curl",                sets: 3, reps: "12–15" }
                 ]
             },
             C: {
                 title: "Day C – Shoulders",
-                description: "Shoulders · Arms · Glutes",
+                description: "Shoulders · Arms · Posterior Chain",
                 mobility: "Couch Stretch 2×45s/side, Elevated Pigeon 2×45s/side",
                 exercises: [
-                    { name: "Romanian Deadlift",        sets: 3, reps: "8–10" },
-                    { name: "Barbell Shoulder Press",   sets: 3, reps: "6–8" },
-                    { name: "Upright Row",              sets: 3, reps: "10–12" },
-                    { name: "Lateral Raises",           sets: 3, reps: "12–15" },
-                    { name: "Face Pulls",               sets: 3, reps: "15–20", resistanceType: "band" },
-                    { name: "Rear-Delt Fly",            sets: 3, reps: "12–15" },
-                    { name: "Cable Curl",               sets: 3, reps: "10–12" },
-                    { name: "Cable Tricep Pushdown",    sets: 3, reps: "10–12" }
+                    { name: "Romanian Deadlift",             sets: 3, reps: "10–12" },
+                    { name: "Barbell Shoulder Press",        sets: 3, reps: "8–10" },
+                    { name: "Lateral Raises",                sets: 3, reps: "12–15" },
+                    { name: "Upright Row",                   sets: 3, reps: "10–12" },
+                    { name: "Face Pulls",                    sets: 3, reps: "15–20", resistanceType: "band" },
+                    { name: "Rear-Delt Fly",                 sets: 3, reps: "12–15" },
+                    { name: "Cable Rope Curl",               sets: 3, reps: "12–15" },
+                    { name: "Cable Overhead Rope Extension", sets: 3, reps: "12–15" }
                 ]
             }
         };
@@ -2045,20 +2045,25 @@
                 { name: 'Nordic Curl',            sets: 3, reps: '5–8',       equip: 'FREE WEIGHTS' },
             ],
             'ARMS': [
-                { name: 'Cable Tricep Pushdown',      sets: 3, reps: '12–15', equip: 'LAT PULLDOWN' },
-                { name: 'Overhead Tricep Extension',  sets: 3, reps: '12–15', equip: 'LAT PULLDOWN' },
-                { name: 'DB Rollbacks',               sets: 3, reps: '10–12', equip: 'FREE WEIGHTS' },
-                { name: 'Close-Grip Bench Press',     sets: 3, reps: '8–10',  equip: 'FREE WEIGHTS' },
-                { name: 'Hammer Curl',                sets: 3, reps: '10–12', equip: 'FREE WEIGHTS' },
-                { name: 'Incline Bicep Curls',        sets: 3, reps: '10–12', equip: 'FREE WEIGHTS' },
-                { name: 'Single-Arm Preacher Curl',   sets: 3, reps: '10–12', equip: 'FREE WEIGHTS' },
-                { name: 'Cable Curl',                 sets: 3, reps: '10–12', equip: 'LOWER CABLE' },
+                { name: 'Cable Tricep Pushdown',          sets: 3, reps: '12–15', equip: 'LAT PULLDOWN' },
+                { name: 'Overhead Tricep Extension',      sets: 3, reps: '12–15', equip: 'LAT PULLDOWN' },
+                { name: 'Cable Overhead Rope Extension',  sets: 3, reps: '12–15', equip: 'LAT PULLDOWN' },
+                { name: 'DB Rollbacks',                   sets: 3, reps: '12–15', equip: 'FREE WEIGHTS' },
+                { name: 'Close-Grip Bench Press',         sets: 3, reps: '8–10',  equip: 'FREE WEIGHTS' },
+                { name: 'Hammer Curl',                    sets: 3, reps: '10–12', equip: 'FREE WEIGHTS' },
+                { name: 'Incline Bicep Curls',            sets: 3, reps: '12–15', equip: 'FREE WEIGHTS' },
+                { name: 'Spider DB Curl',                 sets: 3, reps: '12–15', equip: 'FREE WEIGHTS' },
+                { name: 'Single-Arm Preacher Curl',       sets: 3, reps: '10–12', equip: 'FREE WEIGHTS' },
+                { name: 'Cable Rope Curl',                sets: 3, reps: '12–15', equip: 'LOWER CABLE' },
+                { name: 'Cable Curl',                     sets: 3, reps: '10–12', equip: 'LOWER CABLE' },
             ],
             'BACK': [
                 { name: 'Lat Pulldown',           sets: 4, reps: '8–10',      equip: 'LAT PULLDOWN' },
                 { name: 'Seated Cable Row',       sets: 3, reps: '8–12',      equip: 'LOWER CABLE' },
                 { name: 'Barbell Row',            sets: 3, reps: '8–10',      equip: 'FREE WEIGHTS' },
+                { name: 'Inverted Row',           sets: 3, reps: '8–10',      equip: 'FREE WEIGHTS' },
                 { name: 'Single Arm DB Row',      sets: 3, reps: '8–12/side', equip: 'FREE WEIGHTS' },
+                { name: 'Kelso Shrug',            sets: 3, reps: '12–15',     equip: 'FREE WEIGHTS' },
                 { name: 'DB Shrugs',              sets: 3, reps: '12–15',     equip: 'FREE WEIGHTS' },
                 { name: 'Trap Bar Shrugs',        sets: 3, reps: '12–15',     equip: 'FREE WEIGHTS' },
                 { name: 'Chest-Supported DB Row', sets: 3, reps: '10–12',     equip: 'FREE WEIGHTS' },
@@ -2138,13 +2143,13 @@
                 'Barbell Step Ups', 'Goblet Squat', 'Nordic Curl'
             ],
             'ARMS': [
-                'Cable Tricep Pushdown', 'Overhead Tricep Extension', 'DB Rollbacks',
-                'Close-Grip Bench Press', 'Hammer Curl', 'Incline Bicep Curls',
-                'Single-Arm Preacher Curl', 'Cable Curl'
+                'Cable Tricep Pushdown', 'Overhead Tricep Extension', 'Cable Overhead Rope Extension',
+                'DB Rollbacks', 'Close-Grip Bench Press', 'Hammer Curl', 'Incline Bicep Curls',
+                'Spider DB Curl', 'Single-Arm Preacher Curl', 'Cable Rope Curl', 'Cable Curl'
             ],
             'BACK': [
-                'Lat Pulldown', 'Seated Cable Row', 'Barbell Row', 'Single Arm DB Row',
-                'DB Shrugs', 'Trap Bar Shrugs', 'Chest-Supported DB Row', 'Pull-Up', 'Chin-Up'
+                'Lat Pulldown', 'Seated Cable Row', 'Barbell Row', 'Inverted Row', 'Single Arm DB Row',
+                'Kelso Shrug', 'DB Shrugs', 'Trap Bar Shrugs', 'Chest-Supported DB Row', 'Pull-Up', 'Chin-Up'
             ],
             'CHEST': [
                 'Barbell Bench Press', 'Flat DB Bench Press', 'Incline DB Bench Press',
