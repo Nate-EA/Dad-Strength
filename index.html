@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dad Strength Tracker v5.19</title>
+    <title>Dad Strength Tracker v5.20</title>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -1535,7 +1535,7 @@
             <button id="backToHome" onclick="goHome()" style="background: rgba(158, 124, 12, 0.2); border: none; color: var(--ravens-gold); padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px; display: none; transition: all 0.3s ease;">
                 ← Home
             </button>
-            <div class="app-title">Dad Strength v5.19</div>
+            <div class="app-title">Dad Strength v5.20</div>
         </div>
         <div class="tab-navigation" id="tabNavigation" style="display: none;">
             <button class="tab-btn" onclick="switchTab('dayA')">Day A</button>
@@ -1568,7 +1568,7 @@
                 <button onclick="goToDay('A')" style="padding: 20px; background: white; border: 2px solid var(--ravens-gold); border-radius: 12px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 12px var(--shadow); display: flex; justify-content: space-between; align-items: center;">
                     <div style="text-align: left;">
                         <div style="font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--ravens-purple); letter-spacing: 1px;">Day A</div>
-                        <div style="font-size: 13px; color: var(--light-purple); font-weight: 500;">Push — Chest · Triceps · Quads · Core</div>
+                        <div style="font-size: 13px; color: var(--light-purple); font-weight: 500;">Chest</div>
                     </div>
                     <div style="font-size: 40px;">💪🏾</div>
                 </button>
@@ -1576,7 +1576,7 @@
                 <button onclick="goToDay('B')" style="padding: 20px; background: white; border: 2px solid var(--ravens-purple); border-radius: 12px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 12px var(--shadow); display: flex; justify-content: space-between; align-items: center;">
                     <div style="text-align: left;">
                         <div style="font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--ravens-purple); letter-spacing: 1px;">Day B</div>
-                        <div style="font-size: 13px; color: var(--light-purple); font-weight: 500;">Pull — Back · Biceps · Hamstrings · Traps</div>
+                        <div style="font-size: 13px; color: var(--light-purple); font-weight: 500;">Back</div>
                     </div>
                     <div style="font-size: 40px;">🔥</div>
                 </button>
@@ -1584,7 +1584,7 @@
                 <button onclick="goToDay('C')" style="padding: 20px; background: white; border: 2px solid var(--ravens-gold); border-radius: 12px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 12px var(--shadow); display: flex; justify-content: space-between; align-items: center;">
                     <div style="text-align: left;">
                         <div style="font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--ravens-purple); letter-spacing: 1px;">Day C</div>
-                        <div style="font-size: 13px; color: var(--light-purple); font-weight: 500;">Shoulders — Shoulders · Arms · Glutes</div>
+                        <div style="font-size: 13px; color: var(--light-purple); font-weight: 500;">Shoulders</div>
                     </div>
                     <div style="font-size: 40px;">⚡</div>
                 </button>
@@ -1873,10 +1873,6 @@
                     <div class="summary-title">Great Work!</div>
                     <div class="summary-stats">
                         <div class="summary-stat">
-                            <div class="summary-stat-value" id="summaryDuration">—</div>
-                            <div class="summary-stat-label">Duration</div>
-                        </div>
-                        <div class="summary-stat">
                             <div class="summary-stat-value" id="summaryExercises">—</div>
                             <div class="summary-stat-label">Exercises</div>
                         </div>
@@ -1902,11 +1898,11 @@
         const workoutData = {
             A: {
                 title: "Day A – Push",
-                description: "Chest · Triceps · Quads · Core",
+                description: "Chest",
                 mobility: "Elevated Pigeon 2×45s/side, Elephant Walks 2×8",
                 exercises: [
-                    { name: "Zercher Squat",                 sets: 3, reps: "8–10" },
                     { name: "Barbell Bench Press",           sets: 3, reps: "8–10" },
+                    { name: "Zercher Squat",                 sets: 3, reps: "8–10" },
                     { name: "Incline DB Bench Press",        sets: 3, reps: "12–15" },
                     { name: "Kelso Shrug",                   sets: 3, reps: "12–15" },
                     { name: "Dumbbell Fly",                  sets: 3, reps: "10–12" },
@@ -1917,27 +1913,27 @@
             },
             B: {
                 title: "Day B – Pull",
-                description: "Back · Biceps · Hamstrings · Traps",
+                description: "Back",
                 mobility: "90/90 Rotations 2×8/side, Weighted Butterfly 2×45s",
                 exercises: [
                     { name: "Trap Bar Deadlift",             sets: 3, reps: "6–8" },
                     { name: "Trap Bar Shrugs",               sets: 3, reps: "12–15" },
-                    { name: "Barbell Row",                   sets: 3, reps: "8–10" },
                     { name: "Inverted Row",                  sets: 3, reps: "8–10" },
-                    { name: "Single-Leg RDL",                sets: 3, reps: "10–12/side" },
+                    { name: "Seated Cable Row",              sets: 3, reps: "8–10" },
+                    { name: "Lunge",                         sets: 3, reps: "10–12/side" },
                     { name: "Incline Bicep Curls",           sets: 3, reps: "12–15" },
                     { name: "Spider DB Curl",                sets: 3, reps: "12–15" }
                 ]
             },
             C: {
                 title: "Day C – Shoulders",
-                description: "Shoulders · Arms · Posterior Chain",
+                description: "Shoulders",
                 mobility: "Couch Stretch 2×45s/side, Elevated Pigeon 2×45s/side",
                 exercises: [
                     { name: "Romanian Deadlift",             sets: 3, reps: "10–12" },
                     { name: "Barbell Shoulder Press",        sets: 3, reps: "8–10" },
-                    { name: "Lateral Raises",                sets: 3, reps: "12–15" },
                     { name: "Upright Row",                   sets: 3, reps: "10–12" },
+                    { name: "Lateral Raises",                sets: 3, reps: "12–15" },
                     { name: "Face Pulls",                    sets: 3, reps: "15–20", resistanceType: "band" },
                     { name: "Rear-Delt Fly",                 sets: 3, reps: "12–15" },
                     { name: "Cable Rope Curl",               sets: 3, reps: "12–15" },
@@ -3589,7 +3585,6 @@
                 date: new Date().toISOString(),
                 sets: sets,
                 notes: document.getElementById('exerciseNotes').value,
-                duration: duration
             };
 
             if (currentEditWorkoutId) {
@@ -3877,8 +3872,6 @@
         }
 
         function showSummary() {
-            const duration = 0;
-            const minutes = Math.floor(duration / 60);
             
             const wh = JSON.parse(localStorage.getItem('workoutHistory') || '[]');
             const today = new Date().toDateString();
@@ -3887,7 +3880,6 @@
             let updated = false;
             wh.forEach(w => {
                 if (w.day === currentDay && new Date(w.date).toDateString() === today) {
-                    w.duration = minutes;
                     updated = true;
                 }
             });
@@ -3904,8 +3896,6 @@
                 return sum + w.sets.reduce((s, set) => s + ((set.weight || 0) * set.reps), 0);
             }, 0);
             const uniqueExercises = new Set(todayWorkouts.map(w => w.exercise)).size;
-
-            document.getElementById('summaryDuration').textContent = minutes + 'm';
             document.getElementById('summaryExercises').textContent = uniqueExercises;
             document.getElementById('summaryVolume').textContent = Math.round(totalVolume) + 'kg';
             document.getElementById('summarySets').textContent = totalSets;
@@ -4004,8 +3994,7 @@
                     return sum + ex.sets.reduce((s, set) => s + ((set.weight || 0) * set.reps), 0);
                 }, 0);
                 const totalSets = session.exercises.reduce((sum, ex) => sum + ex.sets.length, 0);
-                const duration = session.exercises[0].duration;
-                
+                                
                 const hasPR = session.exercises.some(workout => {
                     // Skip PR check for band exercises
                     if (workout.sets.length > 0 && workout.sets[0].band) return false;
@@ -4032,7 +4021,7 @@
                             <span>💪🏾 ${session.exercises.length} exercises</span>
                             <span>📊 ${totalSets} sets</span>
                             <span>🏋️ ${Math.round(totalVolume)}kg volume</span>
-                            ${duration ? `<span>⏱️ ${duration}m</span>` : ''}
+                            
                         </div>
                     </div>
                 `;
@@ -4062,9 +4051,7 @@
                 return sum + ex.sets.reduce((s, set) => s + ((set.weight || 0) * set.reps), 0);
             }, 0);
             const totalSets = session.exercises.reduce((sum, ex) => sum + ex.sets.length, 0);
-            const duration = session.exercises[0].duration;
-            const durationDisplay = duration ? `${duration}m` : '—';
-            
+                                    
             document.getElementById('modalExerciseName').textContent = date;
             document.getElementById('modalExerciseTarget').textContent = `Day ${session.day} - Complete Session`;
             
@@ -4094,8 +4081,7 @@
                             <div style="font-size: 12px; color: var(--light-purple); font-weight: 600;">TOTAL VOLUME (KG)</div>
                         </div>
                         <div style="text-align: center; grid-column: 1 / -1;">
-                            <div style="font-family: 'Bebas Neue', sans-serif; font-size: 32px; color: var(--ravens-purple);">${durationDisplay}</div>
-                            <div style="font-size: 12px; color: var(--light-purple); font-weight: 600;">DURATION</div>
+                                                        <div style="font-size: 12px; color: var(--light-purple); font-weight: 600;">DURATION</div>
                         </div>
                     </div>
                 </div>
@@ -5401,8 +5387,6 @@
                 return sum + ex.sets.reduce(function(s, set) { return s + (set.weight || 0) * set.reps; }, 0);
             }, 0);
             var totalSets = todayCustom.reduce(function(sum, ex) { return sum + ex.sets.length; }, 0);
-
-            document.getElementById('summaryDuration').textContent = elapsed + 'm';
             document.getElementById('summaryExercises').textContent = new Set(todayCustom.map(function(w) { return w.exercise; })).size;
             document.getElementById('summaryVolume').textContent = Math.round(totalVolume) + 'kg';
             document.getElementById('summarySets').textContent = totalSets;
